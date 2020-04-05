@@ -43,15 +43,19 @@
             </div>
         </div>
     </div>
+    <script src="libs/vue.min.js"></script>
     <script src="libs/jquery.min.js"></script>
     <script src="libs/popper.min.js"></script>
     <script src="libs/bootstrap.min.js"></script>
     <script src="libs/parse.min.js"></script>
-    <script src="libs/vue.min.js"></script>
+
     <script>
+
+        const dataUrl = "/jsondata";
 
         const query = new Parse.Query("Bookmark");
         let lastResult = [];
+
         new Vue({
             el: "#app",
             data: {
@@ -60,15 +64,11 @@
             },
             methods: {
                 list() {
-                    let result = query.equalTo("top", true).find();
-                    query.descending("top", true).find().then(data => {
-                        this.bookmarks = data.map(n => n.attributes);
-                        lastResult = data.map(n => n.attributes);
-                    });
+                    fetch(`${dataUrl}/Bookmark.json`).then(res => res.json()).then(data => {
+                        this.bookmarks = data;
+                    })
                 },
                 filter() {
-                    // query.startsWith("title", this.filterTxt);
-                    // this.list();
                     this.bookmarks = lastResult.filter(
                         n => n.title.toUpperCase().indexOf(this.filterTxt.toUpperCase()) != -1
                             || n.remarks.toUpperCase().indexOf(this.filterTxt.toUpperCase()) != -1
@@ -76,33 +76,9 @@
                 }
             },
             mounted() {
-                Parse.initialize("yanhui2020");
-                Parse.serverURL = 'https://212.64.91.205:5210/parse';
                 this.list();
             }
         })
-
-
-
-        // const GameScore = Parse.Object.extend("GameScore");
-        // const gameScore = new GameScore();
-
-        // let currentUser = Parse.User.current();
-
-        // const query = new Parse.Query("Test");
-        // query.find().then(res => console.log(res))
-
-        // const Test = Parse.Object.extend("Test");
-        // const t1 = new Test();
-        // let now = new Date();
-        // t1.set("name", "yanhui" + new Date().getTime());
-        // t1.save().then(t => { console.log(t) }, error => { console.log(err) })
-
-        // Parse.User.logIn("yanhui", "123456").then(data => {
-        //     console.log(data);
-        // });
-
-
 
     </script>
 </body>
