@@ -66,6 +66,7 @@
                 list() {
                     fetch(`${dataUrl}/Bookmark.json`).then(res => res.json()).then(data => {
                         this.bookmarks = data;
+                        lastResult = data;
                     })
                 },
                 filter() {
