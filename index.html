@@ -35,13 +35,16 @@
 
         <a-layout-content style="margin-left: 6px;margin-top: 68px;min-height: calc(100vh - 68px);">
 
-            <a-row style="margin-top: 6px;">
-                <a-input-search placeholder="Filter By Tilte & Remarks" v-model="filterText" @change="filter"
-                    style="width: 260px;margin-right: 6px;">
-                </a-input-search>
-                <a-tag style="cursor: pointer;" :color="selectedType===bmt._id ? 'red' : ''"
-                    v-for="bmt in bookmarkTypes" @click="filterType(bmt)">{{bmt.name}}
-                </a-tag>
+            <a-row style="margin-top: 6px;" :gutter="8">
+                <a-col :sm="24" :md="6">
+                    <a-input-search placeholder="Filter By Tilte & Remarks" v-model="filterText" @change="filter">
+                    </a-input-search>
+                </a-col>
+                <a-col :sm="24" :md="18" style="margin-top: 4px;">
+                    <a-tag style="cursor: pointer;" :color="selectedType===bmt._id ? 'red' : ''"
+                        v-for="bmt in bookmarkTypes" @click="filterType(bmt)">{{bmt.name}}
+                    </a-tag>
+                </a-col>
             </a-row>
 
             <a-row gutter="16" style="margin-top: 6px;">
@@ -49,7 +52,8 @@
                     :md="8" :lg="6" :xl="6">
                     <a-card hoverable :title="bm.title" :style="{ height: '160px' }">
                         <p>{{bm.remarks}}</p>
-                        <a-icon v-if="!!bm.top" type="heart" style="position: absolute;right: 6px;bottom: 6px;color: red;">
+                        <a-icon v-if="!!bm.top" type="heart"
+                            style="position: absolute;right: 6px;bottom: 6px;color: red;">
                         </a-icon>
                     </a-card>
                 </a-col>
@@ -79,7 +83,7 @@
             },
             methods: {
                 openEditSite() {
-                    window.open("https://yanhui2018.gitee.io/manage/#/");
+                    window.open("/manage/#/");
                 },
                 openNewWin(bm) {
                     window.open(bm.link);
