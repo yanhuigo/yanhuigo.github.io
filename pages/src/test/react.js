@@ -14,6 +14,11 @@ function App() {
                 <button onClick={() => { history.push('/a') }}>a route</button>
                 <button onClick={() => { history.push('/b') }}>b route</button>
                 <button onClick={() => { history.push('/c') }}>c route</button>
+                <i className="material-icons">home</i>
+                <i className="material-icons md-18">backup</i>
+                <i className="material-icons md-24">book</i>
+                <i className="material-icons md-36">bookmark</i>
+                <i className="material-icons md-48">favorite</i>
             </div>
             <Route path="/" exact component={DefaultComponent}></Route>
             <Route path="/a" component={AComponent}></Route>
