@@ -26,27 +26,38 @@
 </head>
 
 <body>
-  <div id="app" class="container-fluid">
+  <div id="app" class="container-fluid pt-3">
 
-    <div class="row mt-2 d-flex justify-content-center">
-      <h2>Bookmark Preview</h2>
-    </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top w-100">
+      <a class="navbar-brand" href="#">Bookmark</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav" aria-controls="nav"
+        aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="nav">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="/manage/">Manage</a>
+          </li>
+        </ul>
+        <div class="form-inline my-2 my-lg-0">
+          <input id="input_search" v-model="serachTxt" type="text" @keyup="serach" class="form-control bm-serach w-20"
+            placeholder="Search Bookmark ..." />
+        </div>
+      </div>
+    </nav>
 
-    <div class="row p-2">
-      <input id="input_search" v-model="serachTxt" type="text" @keyup="serach" class="form-control bm-serach"
-        placeholder="Filter By Title,URL,Type,Tag" />
-    </div>
-
-    <div class="row d-flex justify-content-center">
+    <div class="row d-flex justify-content-center mt-5">
       <span :class="checkedType===type ? 'badge-primary':'badge-info'" @click="typeFilter(type)"
         v-for="type in typeList" class="badge p-2 m-2 cursor-pointer">{{type}}</span>
     </div>
+
     <div class="row d-flex justify-content-center">
       <span :class="checkedTag===tag ? 'badge-primary':'badge-secondary'" @click="tagFilter(tag)" v-for="tag in tagList"
         class="badge p-1 m-1 cursor-pointer">{{tag}}</span>
     </div>
     <div class="row">
-      <ul class="list-group list-group-item-info overflow-hidden border border-secondary w-100">
+      <ul class="list-group list-group-item-info overflow-hidden mt-3 w-100">
         <li v-for="bm in bmList" class="list-group-item overflow-hidden bm-item text-center">
           <a :href="bm.url" class="text-info">{{bm.title}} # {{bm.url}}</a>
         </li>
@@ -54,6 +65,8 @@
     </div>
   </div>
   <script src="cdn/vue.min.js"></script>
+  <script src="cdn/jquery.min.js"></script>
+  <script src="cdn/bootstrap.min.js"></script>
   <script>
     window.pageJsonUrl = "https://212.64.91.205:5210/pageJson";
   </script>
