@@ -1,24 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-  <title>Index page</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
-  <script src="cdn/react.production.min.js"></script>
-  <script src="cdn/react-dom.production.min.js"></script>
-  <script src="cdn/react-router-dom.min.js"></script>
-  <script src="cdn/material-ui.production.min.js"></script>
-  <script src="cdn/babel.min.js"></script>
-  <link href="cdn/material-design-icons/material-icons.min.css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="cdn/bootstrap.min.css" crossorigin="anonymous">
+
+  <title>Bookmark Preview</title>
+
+  <style type="text/css">
+    .cursor-pointer {
+      cursor: pointer;
+    }
+
+    .bm-item {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .bm-serach {
+      width: 100%;
+    }
+  </style>
 </head>
 
 <body>
-  <div id="root"></div>
+  <div id="app" class="container-fluid">
+
+    <div class="row mt-2 d-flex justify-content-center">
+      <h2>Bookmark Preview</h2>
+    </div>
+
+    <div class="row p-2">
+      <input id="input_search" v-model="serachTxt" type="text" @keyup="serach" class="form-control bm-serach"
+        placeholder="Filter By Title,URL,Type,Tag" />
+    </div>
+
+    <div class="row d-flex justify-content-center">
+      <span :class="checkedType===type ? 'badge-primary':'badge-info'" @click="typeFilter(type)"
+        v-for="type in typeList" class="badge p-2 m-2 cursor-pointer">{{type}}</span>
+    </div>
+    <div class="row d-flex justify-content-center">
+      <span :class="checkedTag===tag ? 'badge-primary':'badge-secondary'" @click="tagFilter(tag)" v-for="tag in tagList"
+        class="badge p-1 m-1 cursor-pointer">{{tag}}</span>
+    </div>
+    <div class="row">
+      <ul class="list-group list-group-item-info overflow-hidden border border-secondary w-100">
+        <li v-for="bm in bmList" class="list-group-item overflow-hidden bm-item text-center">
+          <a :href="bm.url" class="text-info">{{bm.title}} # {{bm.url}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <script src="cdn/vue.min.js"></script>
   <script>
     window.pageJsonUrl = "https://212.64.91.205:5210/pageJson";
   </script>
-  <script type="text/babel" src="src/index.js"></script>
+  <script src="src/index.js"></script>
 </body>
 
 </html>
