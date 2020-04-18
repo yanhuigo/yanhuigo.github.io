@@ -1,0 +1,700 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Java8-Stream流式操作集合 - 颜辉的个人博客</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="TriDiamond Obsidian,"> 
+    <meta name="description" content="
+利用java8提供的集合数据处理能力，快速完成日常工作中的分组，排序，过滤，求和，去重……
+测试类
+Person.java
+
+后面的测试都是以Person对象的集合处理展开
+@Data
+@AllA,"> 
+    <meta name="author" content="颜辉"> 
+    <link rel="alternative" href="atom.xml" title="颜辉的个人博客" type="application/atom+xml"> 
+    <link rel="icon" href="/note/img/favicon.png"> 
+    <link href="https://fonts.loli.net/css?family=Roboto+Mono|Rubik&display=swap" rel="stylesheet">
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1429596_nzgqgvnmkjb.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+    
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/codemirror.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/theme/dracula.css">
+
+    
+<link rel="stylesheet" href="/note/css/obsidian.css">
+
+    
+<link rel="stylesheet" href="/note/css/ball-atom.min.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body class="loading">
+    <div class="loader">
+        <div class="la-ball-atom la-2x">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <span id="config-title" style="display:none">颜辉的个人博客</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div class="scrollbar gradient-bg-rev"></div>
+<div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <div class="navigation animated fadeIn fast delay-1s">
+        <img id="home-icon" class="icon-home" src="/note/img/favicon.png" alt="" data-url="http://yanhui2018.gitee.io/note">
+        <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
+        <h3 class="subtitle">Java8-Stream流式操作集合</h3>
+        <div class="social">
+            <!--        <div class="like-icon">-->
+            <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+            <!--        </div>-->
+            <div>
+                <div class="share">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="section">
+        <div class=article-header-wrapper>
+    <div class="article-header">
+        <div class="article-cover animated fadeIn" style="
+            animation-delay: 600ms;
+            animation-duration: 1.2s;
+            background-image: 
+                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+                url(/note/img/cover.jpg) ">
+        </div>
+        <div class="else">
+            <p class="animated fadeInDown">
+                
+                <a href="javascript:;"><b>「 </b>文章<b> 」</b></a>
+                
+                四月 18, 2020
+            </p>
+            <h3 class="post-title animated fadeInDown"><a href="/note/2020/04/18/java/Java8-Stream%E6%B5%81%E5%BC%8F%E6%93%8D%E4%BD%9C%E9%9B%86%E5%90%88/" title="Java8-Stream流式操作集合" class="">Java8-Stream流式操作集合</a>
+            </h3>
+            
+            <p class="post-count animated fadeInDown">
+                
+                <span>
+                    <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                    16k
+                </span>
+                
+                
+                <span>
+                    <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                    14 mins.
+                </span>
+                
+                
+                
+                <span id="busuanzi_container_page_pv">
+                    <b class="iconfont icon-read"></b> <i>阅读次数</i>
+                    <span id="busuanzi_value_page_pv">0</span>
+                </span>
+                
+            </p>
+            
+            
+        </div>
+    </div>
+</div>
+
+<div class="screen-gradient-after">
+    <div class="screen-gradient-content">
+        <div class="screen-gradient-content-inside">
+            <div class="bold-underline-links screen-gradient-sponsor">
+                <p>
+                    <span class="animated fadeIn delay-1s"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class='main'>
+        <div class="content markdown animated fadeIn">
+            <p><img src="/note/note/2020/04/18/java/Java8-Stream%E6%B5%81%E5%BC%8F%E6%93%8D%E4%BD%9C%E9%9B%86%E5%90%88/image-20200418113624106.png" alt="image-20200418113624106"></p>
+<p>利用java8提供的集合数据处理能力，快速完成日常工作中的分组，排序，过滤，求和，去重……</p>
+<h2 id="测试类"><a href="#测试类" class="headerlink" title="测试类"></a>测试类</h2><ul>
+<li>Person.java</li>
+</ul>
+<p>后面的测试都是以Person对象的集合处理展开</p>
+<pre><code class="java">@Data
+@AllArgsConstructor
+@ToString
+class Person {
+    // 姓名
+    String name;
+    // 性别
+    String sex;
+    // 年纪
+    Integer age;
+    // 工资
+    Integer salary;
+}</code></pre>
+<h2 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h2><h3 id="List循环"><a href="#List循环" class="headerlink" title="List循环"></a>List循环</h3><pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+    personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+    personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 25, 5000));
+    personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+    personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 48, 7000));
+    personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+
+personList.forEach(System.out::println);</code></pre>
+<p>执行结果：</p>
+<pre><code>Person(name=张三, sex=男, age=17, salary=1000)
+Person(name=李四, sex=男, age=25, salary=5000)
+Person(name=王五, sex=女, age=36, salary=3000)
+Person(name=赵六, sex=女, age=48, salary=7000)
+Person(name=多多, sex=男, age=100, salary=9000)</code></pre><h3 id="Map循环"><a href="#Map循环" class="headerlink" title="Map循环"></a>Map循环</h3><pre><code class="java">Map&lt;String, List&lt;Person&gt;&gt; sexMap = new HashMap&lt;&gt;();
+sexMap.put(&quot;男&quot;, Arrays.asList(
+        new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000),
+        new Person(&quot;李四&quot;, &quot;男&quot;, 25, 5000)
+));
+sexMap.put(&quot;女&quot;, Arrays.asList(
+        new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000),
+        new Person(&quot;赵六&quot;, &quot;女&quot;, 48, 7000)
+));
+sexMap.forEach((key, value) -&gt; {
+    System.out.println(key);
+    System.out.println(value);
+});</code></pre>
+<p>执行结果：</p>
+<pre><code>女
+[Person(name=王五, sex=女, age=36, salary=3000), Person(name=赵六, sex=女, age=48, salary=7000)]
+男
+[Person(name=张三, sex=男, age=17, salary=1000), Person(name=李四, sex=男, age=25, salary=5000)]</code></pre><h2 id="结果收集"><a href="#结果收集" class="headerlink" title="结果收集"></a>结果收集</h2><p>收集集合流中的所有人的姓名，拼接返回字符串</p>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 36, 5000));
+personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+personList.add(new Person(&quot;张三&quot;, &quot;女&quot;, 17, 7000));
+personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+personList.add(new Person(&quot;哈哈&quot;, &quot;男&quot;, 36, 4000));
+String nameStr = personList.stream().map(Person::getName).collect(Collectors.joining(&quot;,&quot;));
+System.out.println(nameStr);</code></pre>
+<p>执行结果：</p>
+<pre><code>张三,李四,王五,张三,多多,哈哈</code></pre><h2 id="映射"><a href="#映射" class="headerlink" title="映射"></a>映射</h2><p>映射原始集合，结合collect方法生成新的集合</p>
+<ul>
+<li>获取所有人的姓名集合</li>
+</ul>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+  personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+  personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 25, 5000));
+  personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+  personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 48, 7000));
+  personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+
+List&lt;String&gt; nameList = personList.stream().map(Person::getName).collect(Collectors.toList());
+System.out.println(nameList);</code></pre>
+<p>执行结果：</p>
+<pre><code>[张三, 李四, 王五, 赵六, 多多]</code></pre><h2 id="过滤"><a href="#过滤" class="headerlink" title="过滤"></a>过滤</h2><p>找出列表中满足条件元素</p>
+<ul>
+<li>找出年龄大于30岁的人</li>
+</ul>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+    personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+    personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 25, 5000));
+    personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+    personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 48, 7000));
+    personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+
+List&lt;Person&gt; personListResult = personList.stream().filter(person -&gt; person.getAge() &gt; 30).collect(Collectors.toList());
+System.out.println(personListResult);</code></pre>
+<p>执行结果：</p>
+<pre><code>[Person(name=王五, sex=女, age=36, salary=3000), 
+Person(name=赵六, sex=女, age=48, salary=7000), 
+Person(name=多多, sex=男, age=100, salary=9000)]</code></pre><h2 id="去重"><a href="#去重" class="headerlink" title="去重"></a>去重</h2><p>找出所有不重复的年龄</p>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+  personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+  personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 36, 5000));
+  personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+  personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 17, 7000));
+  personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+  personList.add(new Person(&quot;哈哈&quot;, &quot;男&quot;, 36, 4000));
+List&lt;Integer&gt; ages = personList.stream().map(Person::getAge).distinct().collect(Collectors.toList());
+System.out.println(ages);</code></pre>
+<p>执行结果：</p>
+<pre><code>[17, 36, 100]</code></pre><h2 id="求和"><a href="#求和" class="headerlink" title="求和"></a>求和</h2><p>所有人的工资总和</p>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+    personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+    personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 36, 5000));
+    personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+    personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 17, 7000));
+    personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+    personList.add(new Person(&quot;哈哈&quot;, &quot;男&quot;, 36, 4000));
+Integer salarySum = personList.stream().mapToInt(Person::getSalary).sum();
+System.out.println(salarySum);</code></pre>
+<p>执行结果：</p>
+<pre><code>29000</code></pre><h2 id="平均值"><a href="#平均值" class="headerlink" title="平均值"></a>平均值</h2><p>找出36岁年龄人群的平均工资</p>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+    personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+    personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 36, 5000));
+    personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+    personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 17, 7000));
+    personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+    personList.add(new Person(&quot;哈哈&quot;, &quot;男&quot;, 36, 4000));
+Double average = personList.stream().filter(person -&gt; person.age == 36).mapToInt(Person::getSalary).average().getAsDouble();
+System.out.println(average);</code></pre>
+<p>执行结果：</p>
+<pre><code>4000.0</code></pre><h2 id="最大值"><a href="#最大值" class="headerlink" title="最大值"></a>最大值</h2><p>找出工资最高的人</p>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 36, 5000));
+personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 17, 7000));
+personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+personList.add(new Person(&quot;哈哈&quot;, &quot;男&quot;, 36, 4000));
+Person salaryMaxPerson = personList.stream().max(Comparator.comparingInt(Person::getSalary)).get();
+System.out.println(salaryMaxPerson);</code></pre>
+<p>执行结果：</p>
+<pre><code>Person(name=多多, sex=男, age=100, salary=9000)</code></pre><h2 id="最小值"><a href="#最小值" class="headerlink" title="最小值"></a>最小值</h2><pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 36, 5000));
+personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 17, 7000));
+personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+personList.add(new Person(&quot;哈哈&quot;, &quot;男&quot;, 36, 4000));
+Person salaryMaxPerson = personList.stream().min(Comparator.comparingInt(Person::getSalary)).get();
+System.out.println(salaryMaxPerson);</code></pre>
+<p>执行结果：</p>
+<pre><code>Person(name=张三, sex=男, age=17, salary=1000)</code></pre><h2 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h2><p>根据对象中的指定名称进行分组，返回一个Map&lt;分组字段,对象集合&gt;</p>
+<ul>
+<li>根据性别分组</li>
+</ul>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+  personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+  personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 25, 5000));
+  personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+  personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 48, 7000));
+  personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+
+Map&lt;String, List&lt;Person&gt;&gt; sexMap = personList.stream().collect(Collectors.groupingBy(Person::getSex));
+System.out.println(sexMap);</code></pre>
+<p>执行结果：</p>
+<pre><code>{
+女=[Person(name=王五, sex=女, age=36, salary=3000), Person(name=赵六, sex=女, age=48, salary=7000)], 
+男=[Person(name=张三, sex=男, age=17, salary=1000), Person(name=李四, sex=男, age=25, salary=5000), Person(name=多多, sex=男, age=100, salary=9000)]
+}</code></pre><h3 id="分组有序"><a href="#分组有序" class="headerlink" title="分组有序"></a>分组有序</h3><ul>
+<li>默认分组后的map是无序的，如果要保证分组后原顺序不受影响，可参考如下代码</li>
+</ul>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+    personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+    personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 25, 5000));
+    personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+    personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 48, 7000));
+    personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+
+Map&lt;String, List&lt;Person&gt;&gt; sexMap = personList.stream().collect(Collectors.groupingBy(Person::getSex, LinkedHashMap::new, Collectors.toList()));
+System.out.println(sexMap);</code></pre>
+<p>执行结果：</p>
+<pre><code>{
+男=[
+Person(name=张三, sex=男, age=17, salary=1000), 
+Person(name=李四, sex=男, age=25, salary=5000), 
+Person(name=多多, sex=男, age=100, salary=9000)], 
+女=[
+Person(name=王五, sex=女, age=36, salary=3000), 
+Person(name=赵六, sex=女, age=48, salary=7000)]}</code></pre><h3 id="分组求和"><a href="#分组求和" class="headerlink" title="分组求和"></a>分组求和</h3><p>根据性别分组，然后求出男女的工资总和</p>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 36, 5000));
+personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 17, 7000));
+personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+personList.add(new Person(&quot;哈哈&quot;, &quot;男&quot;, 36, 4000));
+Map&lt;String, Integer&gt; salarySumMap = personList.stream().collect(Collectors.groupingBy(Person::getSex, Collectors.summingInt(Person::getSalary)));
+System.out.println(salarySumMap);</code></pre>
+<p>执行结果：</p>
+<pre><code>{女=10000, 男=19000}</code></pre><h3 id="分组求平均值"><a href="#分组求平均值" class="headerlink" title="分组求平均值"></a>分组求平均值</h3><p>根据性别分组，求出男女平均工资</p>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 36, 5000));
+personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 17, 7000));
+personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+personList.add(new Person(&quot;哈哈&quot;, &quot;男&quot;, 36, 4000));
+Map&lt;String, Double&gt; salarySumMap = personList.stream().collect(
+      Collectors.groupingBy(Person::getSex, Collectors.averagingInt(Person::getSalary)));
+System.out.println(salarySumMap);</code></pre>
+<p>执行结果：</p>
+<pre><code>{女=5000.0, 男=4750.0}</code></pre><h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><h3 id="顺序"><a href="#顺序" class="headerlink" title="顺序"></a>顺序</h3><ul>
+<li>根据年龄顺序排序</li>
+</ul>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+    personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+    personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 36, 5000));
+    personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 25, 3000));
+    personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 22, 7000));
+    personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+personList = personList.stream().sorted(Comparator.comparingInt(Person::getAge)).collect(Collectors.toList());
+System.out.println(personList);</code></pre>
+<p>执行结果：</p>
+<pre><code>[
+Person(name=张三, sex=男, age=17, salary=1000), 
+Person(name=赵六, sex=女, age=22, salary=7000), 
+Person(name=王五, sex=女, age=25, salary=3000), 
+Person(name=李四, sex=男, age=36, salary=5000), 
+Person(name=多多, sex=男, age=100, salary=9000)]</code></pre><h3 id="倒序"><a href="#倒序" class="headerlink" title="倒序"></a>倒序</h3><ul>
+<li>根据年龄倒序排序</li>
+</ul>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+    personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+    personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 36, 5000));
+    personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 25, 3000));
+    personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 22, 7000));
+    personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+personList = personList.stream().sorted(Comparator.comparingInt(Person::getAge).reversed()).collect(Collectors.toList());
+System.out.println(personList);</code></pre>
+<p>执行结果：</p>
+<pre><code>[
+Person(name=多多, sex=男, age=100, salary=9000),
+Person(name=李四, sex=男, age=36, salary=5000), 
+Person(name=王五, sex=女, age=25, salary=3000), 
+Person(name=赵六, sex=女, age=22, salary=7000), 
+Person(name=张三, sex=男, age=17, salary=1000)]</code></pre><h3 id="多条件排序"><a href="#多条件排序" class="headerlink" title="多条件排序"></a>多条件排序</h3><ul>
+<li>根据年龄和工资进行排序</li>
+<li>年龄相同，工资作为第二排序条件</li>
+</ul>
+<pre><code class="java">List&lt;Person&gt; personList = new ArrayList&lt;&gt;();
+    personList.add(new Person(&quot;张三&quot;, &quot;男&quot;, 17, 1000));
+    personList.add(new Person(&quot;李四&quot;, &quot;男&quot;, 36, 5000));
+    personList.add(new Person(&quot;王五&quot;, &quot;女&quot;, 36, 3000));
+    personList.add(new Person(&quot;赵六&quot;, &quot;女&quot;, 17, 7000));
+    personList.add(new Person(&quot;多多&quot;, &quot;男&quot;, 100, 9000));
+    personList.add(new Person(&quot;哈哈&quot;, &quot;男&quot;, 36, 4000));
+personList = personList.stream().sorted(
+        Comparator.comparingInt(Person::getAge).thenComparing(Person::getSalary)
+).collect(Collectors.toList());
+System.out.println(personList);</code></pre>
+<p>执行结果：</p>
+<pre><code>[
+Person(name=张三, sex=男, age=17, salary=1000), 
+Person(name=赵六, sex=女, age=17, salary=7000), 
+Person(name=王五, sex=女, age=36, salary=3000), 
+Person(name=哈哈, sex=男, age=36, salary=4000), 
+Person(name=李四, sex=男, age=36, salary=5000), 
+Person(name=多多, sex=男, age=100, salary=9000)]</code></pre>
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls"
+                data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+            <ul id="audio-list" style="display:none">
+                
+                
+                <li title='0' data-url='/note/statics/chengdu.mp3'></li>
+                
+                    
+            </ul>
+            
+            
+            
+        </div>
+        <div class="sidebar">
+            <div class="box animated fadeInRight">
+                <div class="subbox">
+                    <img src="https://res.cloudinary.com/tridiamond/image/upload/v1573019751/TriDiamond_logo_ui_xeublz.jpg" height=300 width=300></img>
+                    <p>颜辉</p>
+                    <span>Think like an artist, develop like an artisan</span>
+                    <dl>
+                        <dd><a href="https://github.com/yanhuigo" target="_blank"><span
+                                    class=" iconfont icon-github"></span></a></dd>
+                        <dd><a href="https://yanhui2018.gitee.io/note"" target="_blank"><span
+                                    class=" iconfont icon-twitter"></span></a></dd>
+                        <dd><a href="https://github.com/yanhuigo" target="_blank"><span
+                                    class=" iconfont icon-stack-overflow"></span></a></dd>
+                    </dl>
+                </div>
+                <ul>
+                    <li><a href="/">2 <p>文章</p></a></li>
+                    <li><a href="/categories">1 <p>分类</p></a></li>
+                    <li><a href="/tags">1 <p>标签</p></a></li>
+                </ul>
+            </div>
+            
+            
+            
+            <div class="box sticky animated fadeInRight faster">
+                <div id="toc" class="subbox">
+                    <h4>目录</h4>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#测试类"><span class="toc-number">1.</span> <span class="toc-text">测试类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#循环"><span class="toc-number">2.</span> <span class="toc-text">循环</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#List循环"><span class="toc-number">2.1.</span> <span class="toc-text">List循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Map循环"><span class="toc-number">2.2.</span> <span class="toc-text">Map循环</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结果收集"><span class="toc-number">3.</span> <span class="toc-text">结果收集</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#映射"><span class="toc-number">4.</span> <span class="toc-text">映射</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#过滤"><span class="toc-number">5.</span> <span class="toc-text">过滤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#去重"><span class="toc-number">6.</span> <span class="toc-text">去重</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#求和"><span class="toc-number">7.</span> <span class="toc-text">求和</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#平均值"><span class="toc-number">8.</span> <span class="toc-text">平均值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最大值"><span class="toc-number">9.</span> <span class="toc-text">最大值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#最小值"><span class="toc-number">10.</span> <span class="toc-text">最小值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分组"><span class="toc-number">11.</span> <span class="toc-text">分组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#分组有序"><span class="toc-number">11.1.</span> <span class="toc-text">分组有序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分组求和"><span class="toc-number">11.2.</span> <span class="toc-text">分组求和</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分组求平均值"><span class="toc-number">11.3.</span> <span class="toc-text">分组求平均值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#排序"><span class="toc-number">12.</span> <span class="toc-text">排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#顺序"><span class="toc-number">12.1.</span> <span class="toc-text">顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#倒序"><span class="toc-number">12.2.</span> <span class="toc-text">倒序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多条件排序"><span class="toc-number">12.3.</span> <span class="toc-text">多条件排序</span></a></li></ol></li></ol>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+    <div id="back-to-top" class="animated fadeIn faster">
+        <div class="flow"></div>
+        <span class="percentage animated fadeIn faster">0%</span>
+        <span class="iconfont icon-top02 animated fadeIn faster"></span>
+    </div>
+</body>
+<footer>
+    <p class="copyright" id="copyright">
+        &copy; 2020
+        <span class="gradient-text">
+            颜辉
+        </span>.
+        Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
+        Theme
+        <span class="gradient-text">
+            <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
+        </span>
+        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.3" target="_blank" rel="noopener">v1.4.3</a></small>
+    </p>
+</footer>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script>
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+      preferredFont: "TeX",
+      availableFonts: ["STIX", "TeX"],
+      linebreaks: {
+        automatic: true
+      },
+      EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"]
+      ],
+      processEscapes: true,
+      ignoreClass: "tex2jax_ignore|dno",
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      noUndefined: {
+        attributes: {
+          mathcolor: "red",
+          mathbackground: "#FFEEEE",
+          mathsize: "90%"
+        }
+      },
+      Macros: {
+        href: "{}"
+      }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script>
+  function initialMathJax() {
+    MathJax.Hub.Queue(function () {
+      var all = MathJax.Hub.getAllJax(),
+        i;
+      // console.log(all);
+      for (i = 0; i < all.length; i += 1) {
+        console.log(all[i].SourceElement().parentNode)
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  }
+
+  function reprocessMathJax() {
+    if (typeof MathJax !== 'undefined') {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+  }
+</script>
+
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/note/js/plugin.js"></script>
+<script src="/note/js/obsidian.js"></script>
+<script src="/note/js/jquery.truncate.js"></script>
+<script src="/note/js/search.js"></script>
+
+
+<script src="//cdn.bootcss.com/typed.js/2.0.10/typed.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+
+<script src="https://cdn.bootcss.com/codemirror/5.48.4/codemirror.min.js"></script>
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/css/css.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/xml/xml.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/htmlmixed/htmlmixed.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/clike/clike.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/php/php.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/shell/shell.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/python/python.min.js"></script>
+
+
+
+
+    
+<script src="/note/js/busuanzi.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            if ($('span[id^="busuanzi_"]').length) {
+                initialBusuanzi();
+            }
+        });
+    </script>
+
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/default-skin/default-skin.min.css">
+
+
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="//www.googletagmanager.com/gtag/js?id=UA-149874671-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-149874671-1');
+    </script>
+
+
+
+
+
+<script>
+    function initialTyped () {
+        var typedTextEl = $('.typed-text');
+        if (typedTextEl && typedTextEl.length > 0) {
+            var typed = new Typed('.typed-text', {
+                strings: ["Think like an artist, develop like an artisan", "艺术家思维去思考问题，工匠创造精神去开发"],
+                typeSpeed: 90,
+                loop: true,
+                loopCount: Infinity,
+                backSpeed: 20,
+            });
+        }
+    }
+
+    if ($('.article-header') && $('.article-header').length) {
+        $(document).ready(function () {
+            initialTyped();
+        });
+    }
+</script>
+
+
+
+
+</html>
