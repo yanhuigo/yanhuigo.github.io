@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Archive</title>
+    <title>Category: java - 颜辉的个人博客</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
@@ -50,156 +50,154 @@
     </div>
     <span id="config-title" style="display:none">颜辉的个人博客</span>
     <div id="loader"></div>
-    <div id="single" class="page">
-    <div id="top">
-        <a class="iconfont icon-left image-icon" href="javascript:history.back()"></a>
+    <div class="nav">
+    <ul id="menu-menu" class="menu">
+        
+        <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+            <a href="/note/./" title="首页" external="false">首页</a>
+        </li>
+        
+        <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+            <a href="/note/archives/" title="归档" external="false">归档</a>
+        </li>
+        
+        <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+            <a href="/note/categories/" title="分类" external="false">分类</a>
+        </li>
+        
+        <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+            <a href="/note/tags/" title="标签" external="false">标签</a>
+        </li>
+        
+    </ul>
+    <p class="copyright" id="copyright">
+        &copy; 2020 颜辉.
+        Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
+        Theme <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
+    </p>
+</div>
+
+<div id="container">
+    
+<div class="search-box">
+    <form class="site-search-form">
+        <span class="iconfont icon-search"></span>
+        <input type="text" id="local-search-input" class="st-search-input" />
+        <div class="iconfont icon-cross search-box-close"></div>
+    </form>
+    <div class="search-scrollable">
+        <div id="local-search-result" class="local-search-result-cls" data-initialise="首次搜索，正在载入索引文件，请稍后……"
+            data-start="输入关键词搜索。" data-empty="没有找到内容，请尝试更换检索词。">
+            <span>输入关键词搜索。</span>
+        </div>
     </div>
-    <div class="dark-obsidian section">
-        <div class="article animated fadeIn">
-            <div class="main">
-                <div class="content animated fadeIn">
-                    <div class="set">
-                        <h1 style="text-align: center">归档</h1>
-                        <p style="text-align: center">「 3 」</p>
-                        <ul class="timeline timeline-centered">
-                            
-                            
-                                
-                                <li class="timeline-item period">
-                                    <div class="timeline-info"></div>
-                                    <div class="timeline-marker"></div>
-                                    <div class="timeline-content">
-                                        <h2 class="timeline-title">四月 2020</h2>
-                                    </div>
-                                </li>
-                                
-                                <li class="timeline-item">
-                                    <div class="timeline-info">
-                                        <span class="gradient-text">四月 18, 2020</span>
-                                    </div>
-                                    <div class="timeline-marker"></div>
-                                    <div class="timeline-content">
-                                        <a class="timeline-title" target="_self" href="/note/2020/04/18/java/Java8-Stream%E6%B5%81%E5%BC%8F%E6%93%8D%E4%BD%9C%E9%9B%86%E5%90%88/">Java8-Stream流式操作集合</a>
-                                        <p>
-                                            
-利用java8提供的集合数据处理能力，快速完成日常工作中的分组，排序，过滤，求和，去重……
-测试类
-Person.java
+</div>
+<div id="header">
+    <div>
+        <div class="logo animated fadeInDown">
+            <img src="/note/img/favicon.png" alt="">
+            <a class="image-logo" href="/"></a>
+        </div>
+        <ul id="menu-menu" class="menu text-menu">
+            
+            <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+                <a href="/note/./" title="首页" external="false" class="menu-link">首页</a>
+            </li>
+            
+            <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+                <a href="/note/archives/" title="归档" external="false" class="menu-link">归档</a>
+            </li>
+            
+            <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+                <a href="/note/categories/" title="分类" external="false" class="menu-link">分类</a>
+            </li>
+            
+            <li class="animated fadeInDown menu-item menu-item-type-post_type menu-item-object-page">
+                <a href="/note/tags/" title="标签" external="false" class="menu-link">标签</a>
+            </li>
+            
+            
+        </ul>
+        <div class="iconfont icon-menu switchmenu gradient-text animated fadeInDown"></div>
+    </div>
+</div>
+<div id="screen">
+    <div id="mark">
+        <div class="cover animated fadeIn" style="
+            animation-delay: 900ms;
+            animation-duration: 2.8s;
+            background-image:
+                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.56), #100e17),
+                url(/note/img/cover.jpg);">
+        </div>
+    </div>
+    
+    <div id="post0" class="else">
+        <p class="animated fadeInDown">
+            
+            <a href="/categories/java"><b>「
+                </b>JAVA<b> 」</b></a>
+            
+            四月 18, 2020
+        </p>
+        <h3 class="post-title animated fadeInDown">
+            <a href="/note/2020/04/18/java/Java8-Stream%E6%B5%81%E5%BC%8F%E6%93%8D%E4%BD%9C%E9%9B%86%E5%90%88/" title="Java8-Stream流式操作集合" class="posttitle">Java8-Stream流式操作集合</a></h3>
+        
+        <p class="post-count animated fadeInDown">
+            
+            <span>
+                <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                16k
+            </span>
+            
+            
+            <span>
+                <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                14 mins.
+            </span>
+            
+            
+        </p>
+        
+        
+        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/note/tags/java8/" rel="tag">java8</a></li></ul>
+        
+        <div class="md-content animated fadeIn">
+            
+            <p></p>
+<p>利用java8提供的集合数据处理能力，快速完成日常工作中的分组，排序，过滤，求和，去重……</p>
+<ul>
+<li>Person.java</li>
+</ul>
+<p>后面的测试都是以Person对象的集合处理展开</p>
+<pre><code class="java">@Data
+@AllArgsConstructor...</code></pre>
+            
+            <span class="read-more"><a href="/note/2020/04/18/java/Java8-Stream%E6%B5%81%E5%BC%8F%E6%93%8D%E4%BD%9C%E9%9B%86%E5%90%88/" title="查看全文" class="posttitle">查看全文</a>
+                <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+        </div>
+    </div>
+    
+</div>
 
-后面的测试都是以Person对象的集合处理展开
-@Data
-@AllArgsConstructor
-@ToString
-class Person {
-    // 姓名
-    String name;
-    // 性别
-    String sex;
-    /...
-                                        </p>
-                                    </div>
-                                </li>
-                            
-                                
-                                <li class="timeline-item">
-                                    <div class="timeline-info">
-                                        <span class="gradient-text">四月 18, 2020</span>
-                                    </div>
-                                    <div class="timeline-marker"></div>
-                                    <div class="timeline-content">
-                                        <a class="timeline-title" target="_self" href="/note/2020/04/18/other/hexo%E5%86%99%E4%BD%9C/">Hexo文章变量</a>
-                                        <p>
-                                            Hexo文章变量在markdown文章的最上方以 ---包裹的区域内声明文章变量
----
-title: Hello World
-date: 2013/7/13 20:46:25
----
-
-
-参数
-描述
-默认值
-
-
-
-layout
-布局
-
-
-
-title
-标题
-文章的文件名
-
-
-date
-建立日期
-文件建立日期
-
-
-updated
-更新日期
-文件更新日期
-
-
-comments
-开启文章的评论功...
-                                        </p>
-                                    </div>
-                                </li>
-                            
-                                
-                                <li class="timeline-item">
-                                    <div class="timeline-info">
-                                        <span class="gradient-text">四月 18, 2020</span>
-                                    </div>
-                                    <div class="timeline-marker"></div>
-                                    <div class="timeline-content">
-                                        <a class="timeline-title" target="_self" href="/note/2020/04/18/work/%E5%B7%A5%E4%BD%9C%E4%BB%BB%E5%8A%A1%E8%AE%B0%E5%BD%952020/">工作任务记录2020</a>
-                                        <p>
-                                            工作任务记录2020模块
-多租户
-
-物资计划
-生产
-调拨
-采购
-
-
-物资到货
-生产
-采购
-调拨
-捐赠
-当日产量填报
-可分配物资汇总
-生产物资汇总录入
-
-
-
-
-4月
-多租户平台数据权限开发20200418
-
-
-
- 数据库表名规范化
- 机构表查询逻辑调整
- 机构数据隔离
-
-
-
-                                        </p>
-                                    </div>
-                                </li>
-                            
-                        </ul>
-                    </div>
-                </div>
+<div class="screen-gradient-after">
+    <div class="screen-gradient-content">
+        <div class="screen-gradient-content-inside">
+            <div class="bold-underline-links screen-gradient-sponsor">
+                <p>
+                    <span class="typed-text"></span>
+                </p>
             </div>
         </div>
     </div>
 </div>
+
+    <div id="primary">
+        
+    </div>
+    
+</div>
+<div id="preview"></div>
 
     <div id="back-to-top" class="animated fadeIn faster">
         <div class="flow"></div>
