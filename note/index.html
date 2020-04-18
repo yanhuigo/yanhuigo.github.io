@@ -135,45 +135,62 @@
     <div id="post0" class="else">
         <p class="animated fadeInDown">
             
-            <a href="/categories/java"><b>「
-                </b>JAVA<b> 」</b></a>
+            <a href="/categories/work"><b>「
+                </b>WORK<b> 」</b></a>
             
             四月 18, 2020
         </p>
         <h3 class="post-title animated fadeInDown">
-            <a href="/note/2020/04/18/java/Java8-Stream%E6%B5%81%E5%BC%8F%E6%93%8D%E4%BD%9C%E9%9B%86%E5%90%88/" title="Java8-Stream流式操作集合" class="posttitle">Java8-Stream流式操作集合</a></h3>
+            <a href="/note/2020/04/18/work/%E5%B7%A5%E4%BD%9C%E4%BB%BB%E5%8A%A1%E8%AE%B0%E5%BD%952020/" title="工作任务记录2020" class="posttitle">工作任务记录2020</a></h3>
         
         <p class="post-count animated fadeInDown">
             
             <span>
                 <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                16k
+                738
             </span>
             
             
             <span>
                 <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                14 mins.
+                1 mins.
             </span>
             
             
         </p>
         
         
-        <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/note/tags/java8/" rel="tag">java8</a></li></ul>
-        
         <div class="md-content animated fadeIn">
             
-            <p></p>
-<p>利用java8提供的集合数据处理能力，快速完成日常工作中的分组，排序，过滤，求和，去重……</p>
+            <blockquote>
+<p><strong>多租户</strong></p>
 <ul>
-<li>Person.java</li>
+<li>物资计划<ul>
+<li>生产</li>
+<li>调拨</li>
+<li>采购</li>
 </ul>
-<p>后面的测试都是以Person对象的集合处理展开</p>
-<pre><code class="java">@Data
-@AllArgsConstructor...</code></pre>
+</li>
+<li>物资到货<ul>
+<li>生产</li>
+<li>采购</li>
+<li>调拨</li>
+<li>捐赠</li>
+<li>当日产量填报</li>
+<li>可分配物资汇总</li>
+<li>生产物资汇总录入</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li>多租户平台数据权限开发20200418</li>
+</ul>
+<blockquote>
+<ul>
+<li><input checked disabled type="checkbox"> 数据库表名规范化...</li></ul></blockquote>
             
-            <span class="read-more"><a href="/note/2020/04/18/java/Java8-Stream%E6%B5%81%E5%BC%8F%E6%93%8D%E4%BD%9C%E9%9B%86%E5%90%88/" title="查看全文" class="posttitle">查看全文</a>
+            <span class="read-more"><a href="/note/2020/04/18/work/%E5%B7%A5%E4%BD%9C%E4%BB%BB%E5%8A%A1%E8%AE%B0%E5%BD%952020/" title="查看全文" class="posttitle">查看全文</a>
                 <b class="iconfont icon-arrow-right- gradient-text"></b></span>
         </div>
     </div>
@@ -194,6 +211,71 @@
 
     <div id="primary">
         
+<div class="post" id="post">
+    <div class="post-cover animated fadeIn" style="
+            background-image:
+            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+            url(/img/welcome-cover.jpg);">
+    </div>
+    <div class="else">
+        <p class="animated fadeInDown">
+            
+                <a href="/categories/java">
+                  <b>「 </b>JAVA<b> 」</b>
+                </a>
+            
+            四月 18, 2020
+        </p>
+        <h3 class="post-title animated fadeInDown"><a href="/note/2020/04/18/java/Java8-Stream%E6%B5%81%E5%BC%8F%E6%93%8D%E4%BD%9C%E9%9B%86%E5%90%88/" title="Java8-Stream流式操作集合" class="posttitle">Java8-Stream流式操作集合</a></h3>
+        
+            <p class="post-count animated fadeInDown">
+                
+                    <span>
+                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                        16k
+                    </span>
+                
+                
+                    <span>
+                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                        14 mins.
+                    </span>
+                
+                
+            </p>
+            
+                <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/note/tags/java8/" rel="tag">java8</a></li></ul>
+            
+        
+        <div class="md-content animated fadeIn">
+            
+                <p></p>
+<p>利用java8提供的集合数据处理能力，快速完成日常工作中的分组，排序，过滤，求和，去重……</p>
+<ul>
+<li>Person.java</li>
+</ul>
+<p>后面的测试都是以Person对象的集合处理展开</p>
+<pre><code class="java">@Data
+@AllArgsConstructor
+@ToString
+class Person {
+    // 姓名
+    String name;
+    // 性别
+    String sex;
+    // 年纪
+    Integer age;
+    // 工资
+    Integer salary;
+}</code></pre>
+<h3 id="List循环"><a href="#List循环" class="headerlink" title="List循环"></a>List循环</h3><pre><code class="java">List&lt;Person&gt; personList...</code></pre>
+            
+            <span class="read-more"><a href="/note/2020/04/18/java/Java8-Stream%E6%B5%81%E5%BC%8F%E6%93%8D%E4%BD%9C%E9%9B%86%E5%90%88/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
+        </div>
+    </div>
+</div>
+
+
 <div class="post" id="post">
     <div class="post-cover animated fadeIn" style="
             background-image:
@@ -283,81 +365,6 @@ date: 2013/7/13 20:46:25
 <td align="left"><code>permalink...</code></td></tr></tbody></table>
             
             <span class="read-more"><a href="/note/2020/04/18/other/hexo%E5%86%99%E4%BD%9C/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
-        </div>
-    </div>
-</div>
-
-
-<div class="post" id="post">
-    <div class="post-cover animated fadeIn" style="
-            background-image:
-            radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
-            url(/img/welcome-cover.jpg);">
-    </div>
-    <div class="else">
-        <p class="animated fadeInDown">
-            
-                <a href="/categories/work">
-                  <b>「 </b>WORK<b> 」</b>
-                </a>
-            
-            四月 18, 2020
-        </p>
-        <h3 class="post-title animated fadeInDown"><a href="/note/2020/04/18/work/%E5%B7%A5%E4%BD%9C%E4%BB%BB%E5%8A%A1%E8%AE%B0%E5%BD%952020/" title="工作任务记录2020" class="posttitle">工作任务记录2020</a></h3>
-        
-            <p class="post-count animated fadeInDown">
-                
-                    <span>
-                        <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                        714
-                    </span>
-                
-                
-                    <span>
-                        <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                        1 mins.
-                    </span>
-                
-                
-            </p>
-            
-        
-        <div class="md-content animated fadeIn">
-            
-                <blockquote>
-<p><strong>多租户</strong></p>
-<ul>
-<li>物资计划<ul>
-<li>生产</li>
-<li>调拨</li>
-<li>采购</li>
-</ul>
-</li>
-<li>物资到货<ul>
-<li>生产</li>
-<li>采购</li>
-<li>调拨</li>
-<li>捐赠</li>
-<li>当日产量填报</li>
-<li>可分配物资汇总</li>
-<li>生产物资汇总录入</li>
-</ul>
-</li>
-</ul>
-</blockquote>
-<ul>
-<li>多租户平台数据权限开发20200418</li>
-</ul>
-<blockquote>
-<ul>
-<li><input disabled type="checkbox"> 数据库表名规范化</li>
-<li><input disabled type="checkbox"> 机构表查询逻辑调整</li>
-<li><input disabled type="checkbox"> 机构数据隔离</li>
-</ul>
-</blockquote>
-
-            
-            <span class="read-more"><a href="/note/2020/04/18/work/%E5%B7%A5%E4%BD%9C%E4%BB%BB%E5%8A%A1%E8%AE%B0%E5%BD%952020/" title="查看全文" class="posttitle">查看全文</a> <b class="iconfont icon-arrow-right- gradient-text"></b></span>
         </div>
     </div>
 </div>
