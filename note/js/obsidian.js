@@ -854,7 +854,7 @@ $(function () {
       if (e.state) location.href = e.state.u;
     });
     Obsidian.player();
-    $('.icon-icon, .image-icon').attr('href', '/');
+    $('.icon-icon, .image-icon').attr('href', '/note/');
     $('#top').show();
   }
   (() => {
