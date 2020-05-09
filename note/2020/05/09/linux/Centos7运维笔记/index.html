@@ -1,0 +1,1047 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Centos7运维笔记 - 颜辉的个人博客</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="TriDiamond Obsidian,"> 
+    <meta name="description" content="
+记录腾讯云Centos7服务器运维中的软件安装过程及问题
+常用开发软件的简单应用
+
+Linux常用命令文件目录
+cd 目录切换
+
+
+cd .. 上级目录
+
+
+
+cd ~ 当前用户目录，与直接 cd,"> 
+    <meta name="author" content="颜辉"> 
+    <link rel="alternative" href="atom.xml" title="颜辉的个人博客" type="application/atom+xml"> 
+    <link rel="icon" href="/note/img/favicon.png"> 
+    <link href="https://fonts.loli.net/css?family=Roboto+Mono|Rubik&display=swap" rel="stylesheet">
+    
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1429596_nzgqgvnmkjb.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+    
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/codemirror.min.css">
+
+    
+<link rel="stylesheet" href="//cdn.bootcss.com/codemirror/5.48.4/theme/dracula.css">
+
+    
+<link rel="stylesheet" href="/note/css/obsidian.css">
+
+    
+<link rel="stylesheet" href="/note/css/ball-atom.min.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body class="loading">
+    <div class="loader">
+        <div class="la-ball-atom la-2x">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <span id="config-title" style="display:none">颜辉的个人博客</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div class="scrollbar gradient-bg-rev"></div>
+<div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <div class="navigation animated fadeIn fast delay-1s">
+        <img id="home-icon" class="icon-home" src="/note/img/favicon.png" alt="" data-url="/note/">
+        <div id="play-icon" title="Play/Pause" class="iconfont icon-play"></div>
+        <h3 class="subtitle">Centos7运维笔记</h3>
+        <div class="social">
+            <!--        <div class="like-icon">-->
+            <!--            <a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+            <!--        </div>-->
+            <div>
+                <div class="share">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="section">
+        <div class=article-header-wrapper>
+    <div class="article-header">
+        <div class="article-cover animated fadeIn" style="
+            animation-delay: 600ms;
+            animation-duration: 1.2s;
+            background-image: 
+                radial-gradient(ellipse closest-side, rgba(0, 0, 0, 0.65), #100e17),
+                url(/note/img/cover.jpg) ">
+        </div>
+        <div class="else">
+            <p class="animated fadeInDown">
+                
+                <a href="/note/categories/linux"><b>「
+                    </b>LINUX<b> 」</b></a>
+                
+                五月 09, 2020
+            </p>
+            <h3 class="post-title animated fadeInDown"><a href="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/" title="Centos7运维笔记" class="">Centos7运维笔记</a>
+            </h3>
+            
+            <p class="post-count animated fadeInDown">
+                
+                <span>
+                    <b class="iconfont icon-text2"></b> <i>文章字数</i>
+                    21k
+                </span>
+                
+                
+                <span>
+                    <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
+                    19 mins.
+                </span>
+                
+                
+                
+                <span id="busuanzi_container_page_pv">
+                    <b class="iconfont icon-read"></b> <i>阅读次数</i>
+                    <span id="busuanzi_value_page_pv">0</span>
+                </span>
+                
+            </p>
+            
+            
+            <ul class="animated fadeInDown post-tags-list" itemprop="keywords"><li class="animated fadeInDown post-tags-list-item"><a class="animated fadeInDown post-tags-list-link" href="/note/tags/centos7/" rel="tag">centos7</a></li></ul>
+            
+        </div>
+    </div>
+</div>
+
+<div class="screen-gradient-after">
+    <div class="screen-gradient-content">
+        <div class="screen-gradient-content-inside">
+            <div class="bold-underline-links screen-gradient-sponsor">
+                <p>
+                    <span class="animated fadeIn delay-1s"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="article">
+    <div class='main'>
+        <div class="content markdown animated fadeIn">
+            <ul>
+<li>记录腾讯云Centos7服务器运维中的软件安装过程及问题</li>
+<li>常用开发软件的简单应用</li>
+</ul>
+<h2 id="Linux常用命令"><a href="#Linux常用命令" class="headerlink" title="Linux常用命令"></a>Linux常用命令</h2><h3 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h3><ul>
+<li><p><code>cd</code> 目录切换</p>
+</li>
+<li><ul>
+<li><code>cd ..</code> 上级目录</li>
+</ul>
+</li>
+<li><ul>
+<li><code>cd ~</code> 当前用户目录，与直接 cd 效果一样</li>
+</ul>
+</li>
+<li><ul>
+<li><code>cd -</code> 上次操作目录</li>
+</ul>
+</li>
+<li><p><code>mkdir test</code> 新建目录</p>
+</li>
+<li><ul>
+<li><code>mv test test2</code> 重命名目录</li>
+</ul>
+</li>
+<li><ul>
+<li><code>rm -rf test2</code> 删除目录</li>
+</ul>
+</li>
+<li><ul>
+<li><code>cp -R test2 test3</code> 复制test2目录生成test3目录</li>
+</ul>
+</li>
+<li><ul>
+<li><code>mkdir -p d1/d2/d3</code> 创建多级目录</li>
+</ul>
+</li>
+<li><p><code>touch a.txt</code> 创建文件</p>
+</li>
+<li><ul>
+<li><code>mv a.txt a2.txt</code> 重命名文件</li>
+</ul>
+</li>
+<li><ul>
+<li><code>rm -rf a2.txt</code> 删除文件</li>
+</ul>
+</li>
+<li><ul>
+<li><code>cat a.txt</code> 查看文件内容</li>
+</ul>
+</li>
+<li><p>ls 查看当前目录下的文件</p>
+</li>
+<li><ul>
+<li><code>ls [options] [file...]</code></li>
+</ul>
+</li>
+<li><ul>
+<li><code>ls /etc</code> 查看目录 /etc 下的所有文件</li>
+</ul>
+</li>
+<li><ul>
+<li>-l 以列表形式查看文件</li>
+</ul>
+</li>
+<li><ul>
+<li>-al 查看所有文件，包含隐藏文件</li>
+</ul>
+</li>
+<li><ul>
+<li>-lh 查看文件，文件大小友好展示（eg…1k,1m,1g）</li>
+</ul>
+</li>
+<li><p>pwd 查看当前目录</p>
+</li>
+<li><ul>
+<li>-L 逻辑路径</li>
+</ul>
+</li>
+<li><ul>
+<li>-P 真实路径，可显示软链接的真实路径</li>
+</ul>
+</li>
+<li><p>ln 文件链接</p>
+</li>
+<li><ul>
+<li><code>ln [options] source [dest]</code></li>
+</ul>
+</li>
+<li><ul>
+<li>软链接：<code>ln -s 目标文件/目录 链接名称</code>；</li>
+<li>硬链接：<code>ln 目标文件 链接文件</code></li>
+</ul>
+</li>
+<li><ul>
+<li>-d 目录硬链接</li>
+</ul>
+</li>
+<li><p>find文件查找</p>
+</li>
+<li><ul>
+<li><code>find /etc -name &quot;*.cnf&quot;</code> 找出/etc目录下以.cnf结尾的文件</li>
+</ul>
+</li>
+<li><ul>
+<li><code>find /etc -ctime 1</code> 找出近1天内文件<strong>状态</strong>发生改变的文件</li>
+</ul>
+</li>
+<li><ul>
+<li><code>find /etc -mtime 1</code> 找出近1天内文件<strong>内容</strong>发生改变的文件</li>
+</ul>
+</li>
+<li><ul>
+<li><code>find /etc -size +10k</code> 找出大于10k的文件</li>
+</ul>
+</li>
+<li><ul>
+<li><code>find /etc -size -10k</code> 找出小于10k的文件</li>
+</ul>
+</li>
+<li><ul>
+<li><code>find /etc -empty</code> 找空目录或者大小为0的文件</li>
+</ul>
+</li>
+<li><p>du 显示当前目录下的文件对磁盘空间的使用情况</p>
+</li>
+<li><ul>
+<li><code>du [options] [file...]</code></li>
+</ul>
+</li>
+<li><ul>
+<li>-h 以友好的方式显示使用磁盘大小</li>
+</ul>
+</li>
+<li><ul>
+<li>du -h /etc 展示/etc目录下的文件磁盘使用情况</li>
+</ul>
+</li>
+</ul>
+<h3 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h3><ul>
+<li><p><code>hostname</code> 显示主机名</p>
+</li>
+<li><p><code>ping www.baidu.com</code> 向目标机器发送数据包</p>
+</li>
+<li><ul>
+<li>-c 指定发送次数</li>
+</ul>
+</li>
+<li><p><code>ifconfig</code> 查看网络配置，与 ip addr 类似</p>
+</li>
+<li><p><code>nslookup www.baidu.com</code> 查看域名对应的ip地址</p>
+</li>
+<li><p><code>traceroute www.baidu.com</code> 查看到达指定地址经过的路由ip和时间</p>
+</li>
+</ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589017549895.png" alt="img"></p>
+<h3 id="系统"><a href="#系统" class="headerlink" title="系统"></a>系统</h3><ul>
+<li><p><code>free</code> 查看内存使用情况</p>
+</li>
+<li><ul>
+<li>-m 以M为单位显示</li>
+</ul>
+</li>
+<li><p><code>systemctl</code>系统服务管理，service和chkconfig两个命令的结合</p>
+</li>
+<li><ul>
+<li><code>systemctl start nginx.service</code> 启动nginx服务</li>
+</ul>
+</li>
+<li><ul>
+<li><code>systemctl enable nginx.service</code> 开机自动启动</li>
+</ul>
+</li>
+<li><ul>
+<li><code>systemctl disable nginx.service</code> 关闭开机自动启动</li>
+</ul>
+</li>
+<li><ul>
+<li><code>systemctl status nginx.service</code> 查看当前服务状态</li>
+</ul>
+</li>
+<li><ul>
+<li><code>systemctl restart nginx.service</code> 重启服务</li>
+</ul>
+</li>
+<li><p><code>yum</code> 软件管理命令</p>
+</li>
+<li><ul>
+<li><code>yum install nginx</code> 安装软件</li>
+</ul>
+</li>
+<li><ul>
+<li><code>yum remove nginx</code> 卸载软件</li>
+</ul>
+</li>
+<li><ul>
+<li><code>yum update nginx</code> 更新软件</li>
+</ul>
+</li>
+<li><ul>
+<li><code>yum list</code> 展示所有已安装或者可以安装的程序包</li>
+</ul>
+</li>
+<li><ul>
+<li><code>yum list installed</code> 显示已安装的软件包</li>
+</ul>
+</li>
+<li><ul>
+<li><code>yum list available</code> 显示可用的软件包</li>
+</ul>
+</li>
+<li><ul>
+<li><code>yum list httpd</code> 显示httpd的安装情况</li>
+</ul>
+</li>
+<li><ul>
+<li><code>yum clean package</code> 清除缓存目录下的软件包</li>
+</ul>
+</li>
+<li><ul>
+<li><code>yum search</code> 软件名 在仓库中搜索软件</li>
+</ul>
+</li>
+<li><p>w 显示系统当前登录用户信息</p>
+</li>
+</ul>
+<h3 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h3><ul>
+<li><p><code>df</code> 显示磁盘上可使用的空间</p>
+</li>
+<li><ul>
+<li>-h 友好的方式展示磁盘大小</li>
+</ul>
+</li>
+<li><ul>
+<li>-a 展示全部的文件系统</li>
+</ul>
+</li>
+</ul>
+<h2 id="Linux系统文件目录说明"><a href="#Linux系统文件目录说明" class="headerlink" title="Linux系统文件目录说明"></a>Linux系统文件目录说明</h2><h3 id="etc-passwd"><a href="#etc-passwd" class="headerlink" title="/etc/passwd"></a>/etc/passwd</h3><p><strong>用户信息</strong>，配置文件每一行表示一个用户信息，用“:”分隔用户信息</p>
+<ul>
+<li><p>第一列为账户名称</p>
+</li>
+<li><p>第二列为密码占位符（x表示该账户需要密码才能登录，为空时，账户无须密码即可登录）</p>
+</li>
+<li><p>第三列为账户UID</p>
+</li>
+<li><p>第四列为GID</p>
+</li>
+<li><p>第五列为账户附加基本信息，一般存储账户名全称，联系方式等信息</p>
+</li>
+<li><p>第六列为账户家目录位置</p>
+</li>
+<li><p>第七列为账户登录Shell，/bin/bash为可登录系统Shell，/sbin/nologin表示账户无法登录系统。</p>
+</li>
+</ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589017680986.png" alt="img"></p>
+<h3 id="etc-shadow"><a href="#etc-shadow" class="headerlink" title="/etc/shadow"></a>/etc/shadow</h3><p><strong>用户安全信息</strong>，与/etc/passwd中的用户行一一对应，它由pwconv命令根据/etc/passwd中的数据自动产生</p>
+<ul>
+<li><p>第一列为账户名称</p>
+</li>
+<li><p>第二列为密码（账户未设置密码时为!!，设置密码后加密显示）</p>
+</li>
+<li><ul>
+<li>如果格式为 “$<strong>id</strong>$<strong>salt</strong>$<strong>hashed</strong>“，则表示该用户密码正常。其中$id$的id表示密码的加密算法，</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>$1$  表示使用MD5算法</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>$2a$  表示使用Blowfish算法</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>$2y$  是另一算法长度的Blowfish,</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>$5$  表示SHA-256算法</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>$6$  表示SHA-512算法</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>如下图,root用户使用的MD5算法，通过以上规则可以用 openssl 验证root密码,</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>openssl passwd -1 “root用户密码”</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>openssl passwd -1 -salt “slat” “root用户密码”，经验证，生成结果与密码列一致</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>第三列为上次修改密码的时间距离1970年01月01日多少天</p>
+</li>
+<li><p>第四列为密码最短有效天数，0表示无限制</p>
+</li>
+<li><p>第五列为密码最长有效天数（默认位99999天，可以理解为永不过期）</p>
+</li>
+<li><p>第六列为密码过期后的宽限天数（密码过期后，预留几天给账号修改密码，此时已无法使用旧密码登录）</p>
+</li>
+<li><p>第八列为账户失效日期（从1970年01月01日起多少天后账户失效）</p>
+</li>
+<li><p>第九列暂时保留未使用。</p>
+</li>
+</ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589017678758.png" alt="img"></p>
+<h2 id="帮助文档"><a href="#帮助文档" class="headerlink" title="帮助文档"></a>帮助文档</h2><h3 id="man-自带帮助文档"><a href="#man-自带帮助文档" class="headerlink" title="man 自带帮助文档"></a>man 自带帮助文档</h3><p>linux自带命令帮助文档工具 man ，输入 man ls 即可查看相关命令的帮助文档</p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-20200509172351834.png" alt="image-20200509172351834"></p>
+<h3 id="cman-中文帮助文档"><a href="#cman-中文帮助文档" class="headerlink" title="cman 中文帮助文档"></a>cman 中文帮助文档</h3><ol>
+<li><p>安装：<code>yum install man-pages-zh-CN</code> </p>
+</li>
+<li><p>设置别名： <code>alias cman=&#39;man -M /usr/share/man/zh_CN&#39;</code> </p>
+</li>
+</ol>
+<h2 id="Mysql8安装"><a href="#Mysql8安装" class="headerlink" title="Mysql8安装"></a>Mysql8安装</h2><h3 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h3><p><code>wget -i -c https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm</code></p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><ol>
+<li><p><code>yum -y install mysql80-community-release-el7-3.noarch.rpm</code> </p>
+</li>
+<li><p><code>yum -y install mysql-community-server</code> </p>
+</li>
+</ol>
+<h4 id="下载加速"><a href="#下载加速" class="headerlink" title="下载加速"></a>下载加速</h4><p>官方下载速度很慢，慢到你崩溃加怀疑人生</p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image.png" alt="img"></p>
+<p>此时你可以取消下载，打开 yum 下载缓存目录 <code>/var/cache/yum/x86_64/7/mysql80-community/packages</code> ,</p>
+<p>切换到该目录，不出意外的话，你可以看到刚刚没有下载完成的文件</p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016296791.png" alt="img"></p>
+<p>通过以下国内镜像站点可以找到对应的文件</p>
+<ul>
+<li><p><a href="http://uni.mirrors.163.com/mysql/Downloads/MySQL-8.0/" target="_blank" rel="noopener">http://uni.mirrors.163.com/mysql/Downloads/MySQL-8.0/</a></p>
+</li>
+<li><p><a href="http://mirrors.ustc.edu.cn/mysql-ftp/Downloads/MySQL-8.0/" target="_blank" rel="noopener">http://mirrors.ustc.edu.cn/mysql-ftp/Downloads/MySQL-8.0/</a></p>
+</li>
+</ul>
+<p>找到对应的文件，复制下载地址</p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016307720.png" alt="img"></p>
+<p>通过 wget 命令下载文件，然后覆盖掉原有文件即可</p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016311009.png" alt="img"></p>
+<p>重新执行安装命令yum -y install mysql-community-server  ，此时则会跳过下载，直接开始安装了。</p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016324992.png" alt="img"></p>
+<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><ul>
+<li>查看mysql服务状态：<code>systemctl status mysqld</code> </li>
+<li>启动mysql服务：<code>systemctl start mysqld</code> </li>
+<li>通过日志查看root密码：<code>grep &quot;password&quot; /var/log/mysqld.log</code> </li>
+</ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016330196.png" alt="img"></p>
+<ul>
+<li>登陆mysql， <code>mysql -u root -p</code> ，输入启动日志中的密码</li>
+</ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016332459.png" alt="img"></p>
+<h3 id="重置密码"><a href="#重置密码" class="headerlink" title="重置密码"></a>重置密码</h3><ul>
+<li>密码必须符合规则，暂且设置成带有大小写，数字，特殊字符的密码</li>
+</ul>
+<pre><code>ALTER USER &#39;root&#39;@&#39;[localhost](http://localhost)&#39; IDENTIFIED BY &#39;123456&#39;; </code></pre><p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016335331.png" alt="img"></p>
+<ul>
+<li>查看密码规则 </li>
+</ul>
+<pre><code>SHOW VARIABLES LIKE &#39;validate_password%&#39;; </code></pre><p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016337796.png" alt="img"></p>
+<ul>
+<li>设置简单密码，只满足长度最小为1即可</li>
+</ul>
+<pre><code>set global validate_password.policy=0;
+set global validate_password.length=1;
+ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;123456&#39;;</code></pre><p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016341920.png" alt="img"></p>
+<h3 id="开启远程连接"><a href="#开启远程连接" class="headerlink" title="开启远程连接"></a>开启远程连接</h3><ul>
+<li><p>直接给 root 用户赋远程访问权限会包语法错误，需要我们新增一个远程访问用户</p>
+<ul>
+<li><p>CREATE USER ‘yanhui’@’%’ IDENTIFIED BY ‘926484’; </p>
+</li>
+<li><p>GRANT ALL ON <em>.</em> TO ‘yanhui’@’%’; </p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016345758.png" alt="img"></p>
+<h3 id="客户端连接"><a href="#客户端连接" class="headerlink" title="客户端连接"></a>客户端连接</h3><p>使用sqlyog连接时报错：plugin caching_sha2_password …</p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016351856.png" alt="img"></p>
+<p>此时需要修改默认的密码策略</p>
+<p><code>ALTER USER &#39;yanhui&#39;@&#39;%&#39; IDENTIFIED WITH mysql_native_password BY &#39;123456&#39;;</code> </p>
+<p>修改后再次测试，连接成功！！！</p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016355883.png" alt="img"></p>
+<h2 id="定时任务crontab"><a href="#定时任务crontab" class="headerlink" title="定时任务crontab"></a>定时任务crontab</h2><h3 id="安装使用"><a href="#安装使用" class="headerlink" title="安装使用"></a>安装使用</h3><p>centos7上的定时任务默认采用  crond.service 服务实现</p>
+<ul>
+<li><p>服务安装 yum install crontabs </p>
+</li>
+<li><p>查看服务状态 systemctl status crond.service </p>
+</li>
+</ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016358973.png" alt="img"></p>
+<ul>
+<li>查看当前定时任务列表 crontab -l </li>
+</ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016365291.png" alt="img"></p>
+<ul>
+<li>编辑定时任务 crontab -e ，新增一条定时任务记录 :wq  保持即可，</li>
+</ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016367754.png" alt="img"></p>
+<h3 id="cron格式"><a href="#cron格式" class="headerlink" title="cron格式"></a>cron格式</h3><pre><code>*　　*　　*　　*　　*　　command分　 时　 日　 月　 周　 命令
+第1列表示分钟1～59 每分钟用 /1表示
+第2列表示小时1～23（0表示0点）
+第3列表示日期1～31
+第4列表示月份1～12
+第5列标识号星期0～6（0表示星期天）
+第6列要运行的命令
+- 每天凌晨2点30执行脚本push.auto.sh
+30 02 * * * cd /root/gitee/tcloud &amp;&amp; ./push.auto.sh &gt; /root/gitee/tcloud/crontab.log 2&gt;&amp;1 &amp;</code></pre><h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><h3 id="Redis-Key-命令"><a href="#Redis-Key-命令" class="headerlink" title="Redis Key 命令"></a>Redis Key 命令</h3><ul>
+<li><p>获取数据类型： <code>type key</code> </p>
+</li>
+<li><p>删除指定的key： <code>del key</code> </p>
+</li>
+<li><p>查询指定key是否存在： <code>exists key1 key2 ...</code> ，返回存在的数量，不存在则返回0</p>
+</li>
+<li><p>获取key的过期时间： <code>ttl key</code> ，以秒为单位返回过期时间</p>
+</li>
+<li><p>获取匹配指定模式的key： <code>keys pattern</code> ，例如 <code>keys *</code> ，查看所有key；<code>keys abc*</code> ，查询所有以abc开头的key</p>
+</li>
+<li><p>从数据库中随机返回一个key： <code>random</code> </p>
+</li>
+<li><p>移除key的过期时间： <code>persits key</code> ，移除后key将不会过期</p>
+</li>
+<li><p>修改key名称： <code>rename key_name_old key_name_new</code> </p>
+</li>
+</ul>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p>参考文档：<a href="https://www.redis.net.cn/order/" target="_blank" rel="noopener">https://www.redis.net.cn/order/</a></p>
+<h4 id="String-字符串"><a href="#String-字符串" class="headerlink" title="String 字符串"></a>String 字符串</h4><ul>
+<li><p>设置： <code>set key value</code> </p>
+</li>
+<li><p>设置多个key-value： <code>set key1 value1 key2 value2 ...</code> </p>
+</li>
+<li><p>设置值及过期时间： <code>setex key seconds value</code> ，以秒为单位设置过期时间； psetex 以毫秒为单位</p>
+</li>
+<li><p>获取： <code>get key</code> </p>
+</li>
+<li><p>获取多个key： <code>mget key1 key2 key3 ...</code> </p>
+</li>
+<li><p>返回key的旧值，并设置新值： <code>getset key newValue</code> </p>
+</li>
+<li><p>获取字符串长度： <code>strlen key</code> </p>
+</li>
+<li><p>字符串追加： <code>append key</code> ，如果key存在，则追加，不存在则与 set 命令功能一样</p>
+</li>
+<li><p>将存储的数字+1： <code>incr key</code> ，如果不是数字则会报错，如果不存在则默认为0，然后+1</p>
+</li>
+<li><ul>
+<li>将存储的数字+num： <code>incrby key num</code> </li>
+</ul>
+</li>
+<li><ul>
+<li>将存储的数字-1：<code>decr key</code></li>
+</ul>
+</li>
+<li><ul>
+<li>将存储的数字减去指定数字num： <code>decrby key num</code>  </li>
+</ul>
+</li>
+<li><p>获取key中字符串的子串： <code>getrange key start end</code> </p>
+</li>
+</ul>
+<h4 id="List-列表"><a href="#List-列表" class="headerlink" title="List 列表"></a>List 列表</h4><ul>
+<li>在列表头部插入元素： <code>lpush key value1 value2 ...</code> </li>
+<li>在列表尾部插入元素： <code>rpush key value1 value2 ...</code></li>
+<li>获取列表指定范围内的元素： <code>lrange key start end</code> </li>
+<li>获取列表长度： <code>llen key</code> </li>
+<li>通过索引获取列表元素： <code>lindex key index</code> ，index=0获取第一个元素，index=-1获取最后一个元素</li>
+<li>通过索引设置元素的值： <code>lset key index value</code> </li>
+<li>移除列表最后一个元素： <code>rpop key</code> </li>
+<li>移除列表第一个元素： <code>lpop key</code> </li>
+<li>移除列表元素： <code>lrem key count value</code> ，根据参数 COUNT 的值，移除列表中与参数 VALUE 相等的元素<ul>
+<li>count &gt; 0 : 从表头开始向表尾搜索，移除与 value 相等的元素，数量为 count 。</li>
+<li>count &lt; 0 : 从表尾开始向表头搜索，移除与 value 相等的元素，数量为 count 的绝对值。</li>
+<li>count = 0 : 移除表中所有与 value 相等的值</li>
+</ul>
+</li>
+</ul>
+<h4 id="Hash-哈希表"><a href="#Hash-哈希表" class="headerlink" title="Hash 哈希表"></a>Hash 哈希表</h4><ul>
+<li>设置单个field-value对到哈希表中 <code>hset key field value</code> </li>
+<li>同时将多个 field-value (字段-值)对设置到哈希表中： <code>hmset key field1 value1 field2 value2 ...</code> </li>
+<li>获取哈希表中指定field的值： <code>hget key field</code> </li>
+<li>获取哈希表中所有field的value集合： <code>hmget key field1 field2 ...</code> </li>
+<li>获取哈希表中所有field， <code>hkeys key</code> </li>
+<li>获取哈希表中所有value， <code>hvals key</code> </li>
+<li>获取表中的所有field-value： <code>hgetall key</code> </li>
+<li>判断哈希表中field是否存在： <code>hexists key field</code> </li>
+<li>删除哈希表中的字段： <code>hdel key field1 field2 ...</code> </li>
+<li>获取哈希表中字段数量： <code>hlen key</code> </li>
+</ul>
+<h4 id="Set-集合"><a href="#Set-集合" class="headerlink" title="Set 集合"></a>Set 集合</h4><ul>
+<li><p>向集合中添加元素， <code>sadd key value1 value2 ...</code> ，value重复则会被忽略  </p>
+</li>
+<li><p>获取集合所有元素， <code>smembers key</code> </p>
+</li>
+<li><p>移除集合元素， <code>srem key value1 value2 ...</code> </p>
+</li>
+<li><p>将集合a的元素移动到集合b中， <code>smove set1 set2 set1_value</code> ，将set1中的set1_value移动到set2中</p>
+</li>
+</ul>
+<h4 id="Zset-有序集合"><a href="#Zset-有序集合" class="headerlink" title="Zset 有序集合"></a>Zset 有序集合</h4><p>与 Set 类似，不重复的集合，但是保值有序，加入元素时会设置score值，越小排序越靠前</p>
+<ul>
+<li><p>添加元素， <code>zadd key score value</code> </p>
+</li>
+<li><p>获取指定区间的元素（从小到大排序）， <code>zrange key start end</code> </p>
+</li>
+<li><p>获取指定区间的元素（从大到小排序）， <code>zrevrange key start end</code> </p>
+</li>
+<li><p>获取在指定score区间内的成员数量， <code>zcount key min_score max_score</code> </p>
+</li>
+<li><p>移除元素， <code>zrem key value</code> </p>
+</li>
+</ul>
+<h2 id="OpenResty"><a href="#OpenResty" class="headerlink" title="OpenResty"></a>OpenResty</h2><h3 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h3><h4 id="1-源码下载"><a href="#1-源码下载" class="headerlink" title="1 源码下载"></a>1 源码下载</h4><ul>
+<li>下载地址 <a href="https://openresty.org/download/openresty-1.15.8.2.tar.gz" target="_blank" rel="noopener">https://openresty.org/download/openresty-1.15.8.2.tar.gz</a></li>
+</ul>
+<p>​          <em>|</em>        <img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016374751.png" alt="img"></p>
+<ul>
+<li>安装命令</li>
+</ul>
+<pre><code>tar -xzvf openresty-VERSION.tar.gz
+cd openresty-VERSION/
+./configure
+make
+sudo make install</code></pre><h4 id="2-配置configure"><a href="#2-配置configure" class="headerlink" title="2 配置configure"></a>2 配置configure</h4><p>执行命令：<code>./configure</code> </p>
+<p>如果有缺失模块的问题，可执行以下命令安装：</p>
+<ul>
+<li><p><code>yum -y install pcre-devel</code> </p>
+</li>
+<li><p><code>yum -y install openssl openssl-devel</code> </p>
+</li>
+</ul>
+<p>配置完成截图</p>
+<p>​          <em>|</em>        <img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016379063.png" alt="img"></p>
+<h4 id="3-编译make"><a href="#3-编译make" class="headerlink" title="3 编译make"></a>3 编译make</h4><p>执行命令： <code>make</code> </p>
+<p>​          <em>|</em>        <img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016381847.png" alt="img"></p>
+<h4 id="4-安装make-install"><a href="#4-安装make-install" class="headerlink" title="4 安装make install"></a>4 安装make install</h4><p>执行命令： <code>make install</code> </p>
+<p>​          <em>|</em>        <img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016384440.png" alt="img"></p>
+<h4 id="5-安装完成"><a href="#5-安装完成" class="headerlink" title="5 安装完成"></a>5 安装完成</h4><ul>
+<li>安装目录 <code>/usr/local/openresty</code> </li>
+</ul>
+<p>​          <em>|</em>        <img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016386882.png" alt="img"></p>
+<ul>
+<li><p>启动： <code>/usr/local/openresty/bin/openresty</code> </p>
+</li>
+<li><p>大功告成</p>
+</li>
+</ul>
+<p>​          <em>|</em>        <img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016391082.png" alt="img"></p>
+<h3 id="执行shell命令"><a href="#执行shell命令" class="headerlink" title="执行shell命令"></a>执行shell命令</h3><h4 id="1-安装-sockproc"><a href="#1-安装-sockproc" class="headerlink" title="1 安装 sockproc"></a>1 安装 sockproc</h4><pre><code># 安装sockproc
+git clone https://github.com/juce/sockproc.git
+cd sockproc/
+gcc -o sockproc ./sockproc.c
+# 创建Unix套接字，提供给lua的shell库连接
+./sockproc /tmp/shell.sock
+chmod 0666 /tmp/shell.sock</code></pre><h4 id="2-安装-lua-resty-shell"><a href="#2-安装-lua-resty-shell" class="headerlink" title="2 安装 lua-resty-shell"></a>2 安装 lua-resty-shell</h4><pre><code>git clone https://github.com/juce/lua-resty-shell
+# 复制库到openresty下
+cp lua-resty-shell/lib/resty/shell.lua /usr/local/openresty/lualib/resty/</code></pre><h4 id="3-修改nginx配置文件"><a href="#3-修改nginx配置文件" class="headerlink" title="3 修改nginx配置文件"></a>3 修改nginx配置文件</h4><ul>
+<li>vi /usr/local/openresty/nginx/conf/nginx.conf ，在 server 节点下加入如下内容：</li>
+</ul>
+<pre><code>location /shell_test {
+  content_by_lua_block {
+    local shell = require(&quot;resty.shell&quot;)
+    local args = {
+     socket = &quot;unix:/tmp/shell.sock&quot;,
+    }
+    local status, out, err = shell.execute(&quot;uname -a&quot;, args)
+    ngx.header.content_type = &quot;text/plain&quot;
+    ngx.say(&quot;Hello from:\n&quot; .. out)
+  }     
+} </code></pre><ul>
+<li><p>重启 openresty - <code>/usr/local/openresty/bin/openresty -s reload</code> </p>
+</li>
+<li><p>访问地址 /shell_test </p>
+</li>
+</ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016394688.png" alt="img"></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls"
+                data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+            <ul id="audio-list" style="display:none">
+                
+                
+                <li title='0' data-url='/note/statics/chengdu.mp3'></li>
+                
+                    
+            </ul>
+            
+            
+            
+        </div>
+        <div class="sidebar">
+            <div class="box animated fadeInRight">
+                <div class="subbox">
+                    <img src="https://res.cloudinary.com/tridiamond/image/upload/v1573019751/TriDiamond_logo_ui_xeublz.jpg" height=300 width=300></img>
+                    <p>颜辉</p>
+                    <span>Think like an artist, develop like an artisan</span>
+                    <dl>
+                        <dd><a href="https://github.com/yanhuigo" target="_blank"><span
+                                    class=" iconfont icon-github"></span></a></dd>
+                        <dd><a href="https://yanhui2018.gitee.io/note"" target="_blank"><span
+                                    class=" iconfont icon-twitter"></span></a></dd>
+                        <dd><a href="https://github.com/yanhuigo" target="_blank"><span
+                                    class=" iconfont icon-stack-overflow"></span></a></dd>
+                    </dl>
+                </div>
+                <ul>
+                    <li><a href="/note/archives">4 <p>文章</p></a></li>
+                    <li><a href="/note/categories">3 <p>分类</p></a></li>
+                    <li><a href="/note/tags">4 <p>标签</p></a></li>
+                </ul>
+            </div>
+            
+            
+            
+            <div class="box sticky animated fadeInRight faster">
+                <div id="toc" class="subbox">
+                    <h4>目录</h4>
+                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux常用命令"><span class="toc-number">1.</span> <span class="toc-text">Linux常用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#文件目录"><span class="toc-number">1.1.</span> <span class="toc-text">文件目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#网络"><span class="toc-number">1.2.</span> <span class="toc-text">网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#系统"><span class="toc-number">1.3.</span> <span class="toc-text">系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#磁盘"><span class="toc-number">1.4.</span> <span class="toc-text">磁盘</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux系统文件目录说明"><span class="toc-number">2.</span> <span class="toc-text">Linux系统文件目录说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#etc-passwd"><span class="toc-number">2.1.</span> <span class="toc-text">&#x2F;etc&#x2F;passwd</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#etc-shadow"><span class="toc-number">2.2.</span> <span class="toc-text">&#x2F;etc&#x2F;shadow</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#帮助文档"><span class="toc-number">3.</span> <span class="toc-text">帮助文档</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#man-自带帮助文档"><span class="toc-number">3.1.</span> <span class="toc-text">man 自带帮助文档</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cman-中文帮助文档"><span class="toc-number">3.2.</span> <span class="toc-text">cman 中文帮助文档</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mysql8安装"><span class="toc-number">4.</span> <span class="toc-text">Mysql8安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载"><span class="toc-number">4.1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装"><span class="toc-number">4.2.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运行"><span class="toc-number">4.3.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重置密码"><span class="toc-number">4.4.</span> <span class="toc-text">重置密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开启远程连接"><span class="toc-number">4.5.</span> <span class="toc-text">开启远程连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#客户端连接"><span class="toc-number">4.6.</span> <span class="toc-text">客户端连接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#定时任务crontab"><span class="toc-number">5.</span> <span class="toc-text">定时任务crontab</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装使用"><span class="toc-number">5.1.</span> <span class="toc-text">安装使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cron格式"><span class="toc-number">5.2.</span> <span class="toc-text">cron格式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis"><span class="toc-number">6.</span> <span class="toc-text">Redis</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-1"><span class="toc-number">6.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置"><span class="toc-number">6.2.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-Key-命令"><span class="toc-number">6.3.</span> <span class="toc-text">Redis Key 命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据类型"><span class="toc-number">6.4.</span> <span class="toc-text">数据类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OpenResty"><span class="toc-number">7.</span> <span class="toc-text">OpenResty</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-2"><span class="toc-number">7.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#执行shell命令"><span class="toc-number">7.2.</span> <span class="toc-text">执行shell命令</span></a></li></ol></li></ol>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+</div>
+
+    </div>
+</div>
+    <div id="back-to-top" class="animated fadeIn faster">
+        <div class="flow"></div>
+        <span class="percentage animated fadeIn faster">0%</span>
+        <span class="iconfont icon-top02 animated fadeIn faster"></span>
+    </div>
+</body>
+<footer>
+    <p class="copyright" id="copyright">
+        &copy; 2020
+        <span class="gradient-text">
+            颜辉
+        </span>.
+        Powered by <a href="http://hexo.io/" title="Hexo" target="_blank" rel="noopener">Hexo</a>
+        Theme
+        <span class="gradient-text">
+            <a href="https://github.com/TriDiamond/hexo-theme-obsidian" title="Obsidian" target="_blank" rel="noopener">Obsidian</a>
+        </span>
+        <small><a href="https://github.com/TriDiamond/hexo-theme-obsidian/blob/master/CHANGELOG.md" title="v1.4.3" target="_blank" rel="noopener">v1.4.3</a></small>
+    </p>
+</footer>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<script>
+  MathJax.Hub.Config({
+    "HTML-CSS": {
+      preferredFont: "TeX",
+      availableFonts: ["STIX", "TeX"],
+      linebreaks: {
+        automatic: true
+      },
+      EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+      inlineMath: [
+        ["$", "$"],
+        ["\\(", "\\)"]
+      ],
+      processEscapes: true,
+      ignoreClass: "tex2jax_ignore|dno",
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      noUndefined: {
+        attributes: {
+          mathcolor: "red",
+          mathbackground: "#FFEEEE",
+          mathsize: "90%"
+        }
+      },
+      Macros: {
+        href: "{}"
+      }
+    },
+    messageStyle: "none"
+  });
+</script>
+<script>
+  function initialMathJax() {
+    MathJax.Hub.Queue(function () {
+      var all = MathJax.Hub.getAllJax(),
+        i;
+      // console.log(all);
+      for (i = 0; i < all.length; i += 1) {
+        console.log(all[i].SourceElement().parentNode)
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  }
+
+  function reprocessMathJax() {
+    if (typeof MathJax !== 'undefined') {
+      MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+    }
+  }
+</script>
+
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/note/js/plugin.js"></script>
+<script src="/note/js/obsidian.js"></script>
+<script src="/note/js/jquery.truncate.js"></script>
+<script src="/note/js/search.js"></script>
+
+
+<script src="//cdn.bootcss.com/typed.js/2.0.10/typed.min.js"></script>
+
+
+<script src="//cdn.bootcss.com/blueimp-md5/2.12.0/js/md5.min.js"></script>
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+
+<script src="https://cdn.bootcss.com/codemirror/5.48.4/codemirror.min.js"></script>
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/javascript/javascript.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/css/css.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/xml/xml.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/htmlmixed/htmlmixed.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/clike/clike.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/php/php.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/shell/shell.min.js"></script>
+
+
+    
+<script src="//cdn.bootcss.com/codemirror/5.48.4/mode/python/python.min.js"></script>
+
+
+
+
+    
+<script src="/note/js/busuanzi.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            if ($('span[id^="busuanzi_"]').length) {
+                initialBusuanzi();
+            }
+        });
+    </script>
+
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.css">
+<link rel="stylesheet" href="//cdn.bootcss.com/photoswipe/4.1.3/default-skin/default-skin.min.css">
+
+
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe.min.js"></script>
+<script src="//cdn.bootcss.com/photoswipe/4.1.3/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="//www.googletagmanager.com/gtag/js?id=UA-149874671-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-149874671-1');
+    </script>
+
+
+
+
+
+<script>
+    function initialTyped () {
+        var typedTextEl = $('.typed-text');
+        if (typedTextEl && typedTextEl.length > 0) {
+            var typed = new Typed('.typed-text', {
+                strings: ["Think like an artist, develop like an artisan", "艺术家思维去思考问题，工匠创造精神去开发"],
+                typeSpeed: 90,
+                loop: true,
+                loopCount: Infinity,
+                backSpeed: 20,
+            });
+        }
+    }
+
+    if ($('.article-header') && $('.article-header').length) {
+        $(document).ready(function () {
+            initialTyped();
+        });
+    }
+</script>
+
+
+
+
+</html>
