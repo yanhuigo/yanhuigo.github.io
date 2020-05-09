@@ -14,11 +14,9 @@
 记录腾讯云Centos7服务器运维中的软件安装过程及问题
 常用开发软件的简单应用
 
-Linux常用命令文件目录
-cd 目录切换
-
-cd .. 上级目录
-cd ~ 当前用户目录，与直接 cd 效果一,"> 
+Linux常用命令文件目录cd 目录切换
+  cd .. 上级目录
+  cd ~ 当前用户目录，与直接 cd 效,"> 
     <meta name="author" content="颜辉"> 
     <link rel="alternative" href="atom.xml" title="颜辉的个人博客" type="application/atom+xml"> 
     <link rel="icon" href="/note/img/favicon.png"> 
@@ -104,13 +102,13 @@ cd ~ 当前用户目录，与直接 cd 效果一,">
                 
                 <span>
                     <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                    21k
+                    20k
                 </span>
                 
                 
                 <span>
                     <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                    19 mins.
+                    18 mins.
                 </span>
                 
                 
@@ -148,71 +146,50 @@ cd ~ 当前用户目录，与直接 cd 效果一,">
 <li>记录腾讯云Centos7服务器运维中的软件安装过程及问题</li>
 <li>常用开发软件的简单应用</li>
 </ul>
-<h2 id="Linux常用命令"><a href="#Linux常用命令" class="headerlink" title="Linux常用命令"></a>Linux常用命令</h2><h3 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h3><ul>
-<li><p><code>cd</code> 目录切换</p>
-<ul>
-<li><code>cd ..</code> 上级目录</li>
-<li><code>cd ~</code> 当前用户目录，与直接 cd 效果一样</li>
-<li><code>cd -</code> 上次操作目录</li>
-</ul>
-</li>
-<li><p><code>mkdir test</code> 新建目录</p>
-<ul>
-<li><code>mv test test2</code> 重命名目录</li>
-<li><code>rm -rf test2</code> 删除目录</li>
-<li><code>cp -R test2 test3</code> 复制test2目录生成test3目录</li>
-<li><code>mkdir -p d1/d2/d3</code> 创建多级目录</li>
-</ul>
-</li>
-<li><p><code>touch a.txt</code> 创建文件</p>
-<ul>
-<li><code>mv a.txt a2.txt</code> 重命名文件</li>
-<li><code>rm -rf a2.txt</code> 删除文件</li>
-<li><code>cat a.txt</code> 查看文件内容</li>
-</ul>
-</li>
-<li><p>ls 查看当前目录下的文件</p>
-<ul>
-<li><code>ls [options] [file...]</code></li>
-<li><code>ls /etc</code> 查看目录 /etc 下的所有文件</li>
-<li>-l 以列表形式查看文件</li>
-<li>-al 查看所有文件，包含隐藏文件</li>
-<li>-lh 查看文件，文件大小友好展示（eg…1k,1m,1g）</li>
-</ul>
-</li>
-<li><p>pwd 查看当前目录</p>
-<ul>
-<li>-L 逻辑路径</li>
-<li>-P 真实路径，可显示软链接的真实路径</li>
-</ul>
-</li>
-<li><p>ln 文件链接</p>
-<ul>
-<li><code>ln [options] source [dest]</code></li>
-<li>软链接：<code>ln -s 目标文件/目录 链接名称</code>；</li>
-<li>硬链接：<code>ln 目标文件 链接文件</code></li>
-<li>-d 目录硬链接</li>
-</ul>
-</li>
-<li><p>find文件查找</p>
-<ul>
-<li><code>find /etc -name &quot;*.cnf&quot;</code> 找出/etc目录下以.cnf结尾的文件</li>
-<li><code>find /etc -ctime 1</code> 找出近1天内文件<strong>状态</strong>发生改变的文件</li>
-<li><code>find /etc -mtime 1</code> 找出近1天内文件<strong>内容</strong>发生改变的文件</li>
-<li><code>find /etc -size +10k</code> 找出大于10k的文件</li>
-<li><code>find /etc -size -10k</code> 找出小于10k的文件</li>
-<li><code>find /etc -empty</code> 找空目录或者大小为0的文件</li>
-</ul>
-</li>
-<li><p>du 显示当前目录下的文件对磁盘空间的使用情况</p>
-<ul>
-<li><code>du [options] [file...]</code></li>
-<li>-h 以友好的方式显示使用磁盘大小</li>
-<li>du -h /etc 展示/etc目录下的文件磁盘使用情况</li>
-</ul>
-</li>
-</ul>
-<h3 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h3><ul>
+<h2 id="Linux常用命令"><a href="#Linux常用命令" class="headerlink" title="Linux常用命令"></a>Linux常用命令</h2><h3 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h3><pre><code>cd 目录切换
+  cd .. 上级目录
+  cd ~ 当前用户目录，与直接 cd 效果一样
+  cd - 上次操作目录
+
+mkdir test 新建目录
+  mv test test2 重命名目录
+  rm -rf test2 删除目录
+  cp -R test2 test3 复制test2目录生成test3目录
+  mkdir -p d1/d2/d3 创建多级目录
+
+touch a.txt 创建文件
+  mv a.txt a2.txt 重命名文件
+  rm -rf a2.txt 删除文件
+  cat a.txt 查看文件内容
+
+ls 查看当前目录下的文件
+  ls [options] [file...]
+  ls /etc 查看目录 /etc 下的所有文件
+  -l 以列表形式查看文件
+  -al 查看所有文件，包含隐藏文件
+  -lh 查看文件，文件大小友好展示（eg...1k,1m,1g）
+
+pwd 查看当前目录
+  -L 逻辑路径
+  -P 真实路径，可显示软链接的真实路径
+
+ln 文件链接
+  ln [options] source [dest]
+  软链接：ln -s 目标文件/目录 链接名称；硬链接：ln 目标文件 链接文件
+  -d 目录硬链接
+
+find文件查找
+  find /etc -name &quot;*.cnf&quot; 找出/etc目录下以.cnf结尾的文件
+  find /etc -ctime 1 找出近1天内文件状态发生改变的文件
+  find /etc -mtime 1 找出近1天内文件内容发生改变的文件
+  find /etc -size +10k 找出大于10k的文件
+  find /etc -size -10k 找出小于10k的文件
+  find /etc -empty 找空目录或者大小为0的文件
+
+du 显示当前目录下的文件对磁盘空间的使用情况
+  du [options] [file...]
+  -h 以友好的方式显示使用磁盘大小
+  du -h /etc 展示/etc目录下的文件磁盘使用情况</code></pre><h3 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h3><ul>
 <li><code>hostname</code> 显示主机名</li>
 <li><code>ping www.baidu.com</code> 向目标机器发送数据包<ul>
 <li>-c 指定发送次数</li>
