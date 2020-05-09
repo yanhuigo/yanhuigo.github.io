@@ -15,8 +15,8 @@
 常用开发软件的简单应用
 
 Linux常用命令文件目录cd 目录切换
-  cd .. 上级目录
-  cd ~ 当前用户目录，与直接 cd 效,"> 
+    cd .. 上级目录
+    cd ~ 当前用户目录，与直接 ,"> 
     <meta name="author" content="颜辉"> 
     <link rel="alternative" href="atom.xml" title="颜辉的个人博客" type="application/atom+xml"> 
     <link rel="icon" href="/note/img/favicon.png"> 
@@ -102,13 +102,13 @@ Linux常用命令文件目录cd 目录切换
                 
                 <span>
                     <b class="iconfont icon-text2"></b> <i>文章字数</i>
-                    20k
+                    18k
                 </span>
                 
                 
                 <span>
                     <b class="iconfont icon-timer__s"></b> <i>阅读约需</i>
-                    18 mins.
+                    17 mins.
                 </span>
                 
                 
@@ -146,329 +146,194 @@ Linux常用命令文件目录cd 目录切换
 <li>记录腾讯云Centos7服务器运维中的软件安装过程及问题</li>
 <li>常用开发软件的简单应用</li>
 </ul>
-<h2 id="Linux常用命令"><a href="#Linux常用命令" class="headerlink" title="Linux常用命令"></a>Linux常用命令</h2><h3 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h3><pre><code class="bash">cd 目录切换
-  cd .. 上级目录
-  cd ~ 当前用户目录，与直接 cd 效果一样
-  cd - 上次操作目录
+<h1 id="Linux常用命令"><a href="#Linux常用命令" class="headerlink" title="Linux常用命令"></a>Linux常用命令</h1><h2 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h2><pre><code class="text">cd 目录切换
+    cd .. 上级目录
+    cd ~ 当前用户目录，与直接 cd 效果一样
+    cd - 上次操作目录
 
 mkdir test 新建目录
-  mv test test2 重命名目录
-  rm -rf test2 删除目录
-  cp -R test2 test3 复制test2目录生成test3目录
-  mkdir -p d1/d2/d3 创建多级目录
+    mv test test2 重命名目录
+    rm -rf test2 删除目录
+    cp -R test2 test3 复制test2目录生成test3目录
+    mkdir -p d1/d2/d3 创建多级目录
 
 touch a.txt 创建文件
-  mv a.txt a2.txt 重命名文件
-  rm -rf a2.txt 删除文件
-  cat a.txt 查看文件内容
+    mv a.txt a2.txt 重命名文件
+    rm -rf a2.txt 删除文件
+    cat a.txt 查看文件内容
 
 ls 查看当前目录下的文件
-  ls [options] [file...]
-  ls /etc 查看目录 /etc 下的所有文件
-  -l 以列表形式查看文件
-  -al 查看所有文件，包含隐藏文件
-  -lh 查看文件，文件大小友好展示（eg...1k,1m,1g）
+    ls [options] [file...]
+    ls /etc 查看目录 /etc 下的所有文件
+    -l 以列表形式查看文件
+    -a 查看所有文件，包含隐藏文件
+    -h 查看文件，文件大小友好展示（eg...1k,1m,1g）
 
 pwd 查看当前目录
-  -L 逻辑路径
-  -P 真实路径，可显示软链接的真实路径
+    -L 逻辑路径
+    -P 真实路径，可显示软链接的真实路径
 
 ln 文件链接
-  ln [options] source [dest]
-  软链接：ln -s 目标文件/目录 链接名称；硬链接：ln 目标文件 链接文件
-  -d 目录硬链接
+    ln [options] source [dest]
+    软链接：ln -s 目标文件/目录 链接名称
+    硬链接：ln 目标文件 链接文件
+    -d 目录硬链接
 
 find文件查找
-  find /etc -name &quot;*.cnf&quot; 找出/etc目录下以.cnf结尾的文件
-  find /etc -ctime 1 找出近1天内文件状态发生改变的文件
-  find /etc -mtime 1 找出近1天内文件内容发生改变的文件
-  find /etc -size +10k 找出大于10k的文件
-  find /etc -size -10k 找出小于10k的文件
-  find /etc -empty 找空目录或者大小为0的文件
+    find /etc -name &quot;*.cnf&quot; 找出/etc目录下以.cnf结尾的文件
+    find /etc -ctime 1 找出近1天内文件状态发生改变的文件
+    find /etc -mtime 1 找出近1天内文件内容发生改变的文件
+    find /etc -size +10k 找出大于10k的文件
+    find /etc -size -10k 找出小于10k的文件
+    find /etc -empty 找空目录或者大小为0的文件
 
 du 显示当前目录下的文件对磁盘空间的使用情况
-  du [options] [file...]
-  -h 以友好的方式显示使用磁盘大小
-  du -h /etc 展示/etc目录下的文件磁盘使用情况</code></pre>
-<h3 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h3><ul>
-<li><code>hostname</code> 显示主机名</li>
-<li><code>ping www.baidu.com</code> 向目标机器发送数据包<ul>
-<li>-c 指定发送次数</li>
-</ul>
-</li>
-<li><code>ifconfig</code> 查看网络配置，与 ip addr 类似</li>
-<li><code>nslookup www.baidu.com</code> 查看域名对应的ip地址</li>
-<li><code>traceroute www.baidu.com</code> 查看到达指定地址经过的路由ip和时间</li>
-</ul>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589017549895.png" alt="Centos7运维笔记/image-1589017549895"></p>
-<h3 id="系统"><a href="#系统" class="headerlink" title="系统"></a>系统</h3><ul>
-<li><p><code>free</code> 查看内存使用情况</p>
-</li>
-<li><ul>
-<li>-m 以M为单位显示</li>
-</ul>
-</li>
-<li><p><code>systemctl</code>系统服务管理，service和chkconfig两个命令的结合</p>
-</li>
-<li><ul>
-<li><code>systemctl start nginx.service</code> 启动nginx服务</li>
-</ul>
-</li>
-<li><ul>
-<li><code>systemctl enable nginx.service</code> 开机自动启动</li>
-</ul>
-</li>
-<li><ul>
-<li><code>systemctl disable nginx.service</code> 关闭开机自动启动</li>
-</ul>
-</li>
-<li><ul>
-<li><code>systemctl status nginx.service</code> 查看当前服务状态</li>
-</ul>
-</li>
-<li><ul>
-<li><code>systemctl restart nginx.service</code> 重启服务</li>
-</ul>
-</li>
-<li><p><code>yum</code> 软件管理命令</p>
-</li>
-<li><ul>
-<li><code>yum install nginx</code> 安装软件</li>
-</ul>
-</li>
-<li><ul>
-<li><code>yum remove nginx</code> 卸载软件</li>
-</ul>
-</li>
-<li><ul>
-<li><code>yum update nginx</code> 更新软件</li>
-</ul>
-</li>
-<li><ul>
-<li><code>yum list</code> 展示所有已安装或者可以安装的程序包</li>
-</ul>
-</li>
-<li><ul>
-<li><code>yum list installed</code> 显示已安装的软件包</li>
-</ul>
-</li>
-<li><ul>
-<li><code>yum list available</code> 显示可用的软件包</li>
-</ul>
-</li>
-<li><ul>
-<li><code>yum list httpd</code> 显示httpd的安装情况</li>
-</ul>
-</li>
-<li><ul>
-<li><code>yum clean package</code> 清除缓存目录下的软件包</li>
-</ul>
-</li>
-<li><ul>
-<li><code>yum search</code> 软件名 在仓库中搜索软件</li>
-</ul>
-</li>
-<li><p>w 显示系统当前登录用户信息</p>
-</li>
-</ul>
-<h3 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h3><ul>
-<li><p><code>df</code> 显示磁盘上可使用的空间</p>
-</li>
-<li><ul>
-<li>-h 友好的方式展示磁盘大小</li>
-</ul>
-</li>
-<li><ul>
-<li>-a 展示全部的文件系统</li>
-</ul>
-</li>
-</ul>
-<h2 id="Linux系统文件目录说明"><a href="#Linux系统文件目录说明" class="headerlink" title="Linux系统文件目录说明"></a>Linux系统文件目录说明</h2><h3 id="etc-passwd"><a href="#etc-passwd" class="headerlink" title="/etc/passwd"></a>/etc/passwd</h3><p><strong>用户信息</strong>，配置文件每一行表示一个用户信息，用“:”分隔用户信息</p>
-<ul>
-<li><p>第一列为账户名称</p>
-</li>
-<li><p>第二列为密码占位符（x表示该账户需要密码才能登录，为空时，账户无须密码即可登录）</p>
-</li>
-<li><p>第三列为账户UID</p>
-</li>
-<li><p>第四列为GID</p>
-</li>
-<li><p>第五列为账户附加基本信息，一般存储账户名全称，联系方式等信息</p>
-</li>
-<li><p>第六列为账户家目录位置</p>
-</li>
-<li><p>第七列为账户登录Shell，/bin/bash为可登录系统Shell，/sbin/nologin表示账户无法登录系统。</p>
-</li>
-</ul>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589017680986.png" alt="img"></p>
-<h3 id="etc-shadow"><a href="#etc-shadow" class="headerlink" title="/etc/shadow"></a>/etc/shadow</h3><p><strong>用户安全信息</strong>，与/etc/passwd中的用户行一一对应，它由pwconv命令根据/etc/passwd中的数据自动产生</p>
-<ul>
-<li><p>第一列为账户名称</p>
-</li>
-<li><p>第二列为密码（账户未设置密码时为!!，设置密码后加密显示）</p>
-</li>
-<li><ul>
-<li>如果格式为 “$<strong>id</strong>$<strong>salt</strong>$<strong>hashed</strong>“，则表示该用户密码正常。其中$id$的id表示密码的加密算法，</li>
-</ul>
-</li>
-<li><ul>
-<li><ul>
-<li>$1$  表示使用MD5算法</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><ul>
-<li><ul>
-<li>$2a$  表示使用Blowfish算法</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><ul>
-<li><ul>
-<li>$2y$  是另一算法长度的Blowfish,</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><ul>
-<li><ul>
-<li>$5$  表示SHA-256算法</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><ul>
-<li><ul>
-<li>$6$  表示SHA-512算法</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><ul>
-<li>如下图,root用户使用的MD5算法，通过以上规则可以用 openssl 验证root密码,</li>
-</ul>
-</li>
-<li><ul>
-<li><ul>
-<li>openssl passwd -1 “root用户密码”</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><ul>
-<li><ul>
-<li>openssl passwd -1 -salt “slat” “root用户密码”，经验证，生成结果与密码列一致</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>第三列为上次修改密码的时间距离1970年01月01日多少天</p>
-</li>
-<li><p>第四列为密码最短有效天数，0表示无限制</p>
-</li>
-<li><p>第五列为密码最长有效天数（默认位99999天，可以理解为永不过期）</p>
-</li>
-<li><p>第六列为密码过期后的宽限天数（密码过期后，预留几天给账号修改密码，此时已无法使用旧密码登录）</p>
-</li>
-<li><p>第八列为账户失效日期（从1970年01月01日起多少天后账户失效）</p>
-</li>
-<li><p>第九列暂时保留未使用。</p>
-</li>
-</ul>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589017678758.png" alt="img"></p>
-<h2 id="帮助文档"><a href="#帮助文档" class="headerlink" title="帮助文档"></a>帮助文档</h2><h3 id="man-自带帮助文档"><a href="#man-自带帮助文档" class="headerlink" title="man 自带帮助文档"></a>man 自带帮助文档</h3><p>linux自带命令帮助文档工具 man ，输入 man ls 即可查看相关命令的帮助文档</p>
+    du [options] [file...]
+    -h 以友好的方式显示使用磁盘大小
+    du -h /etc 展示/etc目录下的文件磁盘使用情况</code></pre>
+<h2 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h2><pre><code class="text">hostname 显示主机名
+ping www.baidu.com 向目标机器发送数据包
+    -c 指定发送次数
+ifconfig 查看网络配置，与 ip addr 类似
+nslookup www.baidu.com 查看域名对应的ip地址
+traceroute www.baidu.com 查看到达指定地址经过的路由ip和时间</code></pre>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589017549895.png" alt="traceroute www.baidu.com"></p>
+<h2 id="系统"><a href="#系统" class="headerlink" title="系统"></a>系统</h2><pre><code class="text">free 查看内存使用情况
+    -m 以M为单位显示
+
+systemctl系统服务管理，service和chkconfig两个命令的结合
+    systemctl start nginx.service 启动nginx服务
+    systemctl enable nginx.service 开机自动启动
+    systemctl disable nginx.service 关闭开机自动启动
+    systemctl status nginx.service 查看当前服务状态
+    systemctl restart nginx.service 重启服务
+
+yum 软件管理命令
+    yum install nginx 安装软件
+    yum remove nginx 卸载软件
+    yum update nginx 更新软件
+    yum list 展示所有已安装或者可以安装的程序包
+    yum list installed 显示已安装的软件包
+    yum list available 显示可用的软件包
+    yum list httpd 显示httpd的安装情况
+    yum clean package 清除缓存目录下的软件包
+    yum search 软件名 在仓库中搜索软件
+
+w 显示系统当前登录用户信息</code></pre>
+<h2 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h2><pre><code class="text">df 显示磁盘上可使用的空间
+    -h 友好的方式展示磁盘大小
+    -a 展示全部的文件系统</code></pre>
+<h1 id="Linux系统文件目录说明"><a href="#Linux系统文件目录说明" class="headerlink" title="Linux系统文件目录说明"></a>Linux系统文件目录说明</h1><h2 id="etc-passwd"><a href="#etc-passwd" class="headerlink" title="/etc/passwd"></a>/etc/passwd</h2><p><strong>用户信息</strong>，配置文件每一行表示一个用户信息，用“:”分隔用户信息</p>
+<pre><code class="text">第一列为账户名称
+第二列为密码占位符（x表示该账户需要密码才能登录，为空时，账户无须密码即可登录）
+第三列为账户UID
+第四列为GID
+第五列为账户附加基本信息，一般存储账户名全称，联系方式等信息
+第六列为账户家目录位置
+第七列为账户登录Shell，/bin/bash为可登录系统Shell，/sbin/nologin表示账户无法登录系统</code></pre>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589017680986.png" alt="/etc/passwd"></p>
+<h2 id="etc-shadow"><a href="#etc-shadow" class="headerlink" title="/etc/shadow"></a>/etc/shadow</h2><p><strong>用户安全信息</strong>，与/etc/passwd中的用户行一一对应，它由pwconv命令根据/etc/passwd中的数据自动产生</p>
+<pre><code class="text">第一列为账户名称
+第二列为密码（账户未设置密码时为!!，设置密码后加密显示）
+    如果格式为 &quot;$**id**$**salt**$**hashed**&quot;，则表示该用户密码正常。其中$id$的id表示密码的加密算法，
+    $1$  表示使用MD5算法
+    $2a$  表示使用Blowfish算法
+    $2y$  是另一算法长度的Blowfish,
+    $5$  表示SHA-256算法
+    $6$  表示SHA-512算法
+
+如下图,root用户使用的MD5算法，通过以上规则可以用 openssl 验证root密码,
+    openssl passwd -1 &quot;root用户密码&quot;
+    openssl passwd -1 -salt &quot;slat&quot; &quot;root用户密码&quot;，经验证，生成结果与密码列一致
+
+第三列为上次修改密码的时间距离1970年01月01日多少天
+第四列为密码最短有效天数，0表示无限制
+第五列为密码最长有效天数（默认位99999天，可以理解为永不过期）
+第六列为密码过期后的宽限天数（密码过期后，预留几天给账号修改密码，此时已无法使用旧密码登录）
+第八列为账户失效日期（从1970年01月01日起多少天后账户失效）
+第九列暂时保留未使用。</code></pre>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589017678758.png" alt="/etc/shadow"></p>
+<h1 id="帮助文档"><a href="#帮助文档" class="headerlink" title="帮助文档"></a>帮助文档</h1><h2 id="man-自带帮助文档"><a href="#man-自带帮助文档" class="headerlink" title="man 自带帮助文档"></a>man 自带帮助文档</h2><p>linux自带命令帮助文档工具 man ，输入 man ls 即可查看相关命令的帮助文档</p>
 <p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-20200509172351834.png" alt="image-20200509172351834"></p>
-<h3 id="cman-中文帮助文档"><a href="#cman-中文帮助文档" class="headerlink" title="cman 中文帮助文档"></a>cman 中文帮助文档</h3><ol>
-<li><p>安装：<code>yum install man-pages-zh-CN</code> </p>
-</li>
-<li><p>设置别名： <code>alias cman=&#39;man -M /usr/share/man/zh_CN&#39;</code> </p>
-</li>
+<h2 id="cman-中文帮助文档"><a href="#cman-中文帮助文档" class="headerlink" title="cman 中文帮助文档"></a>cman 中文帮助文档</h2><ol>
+<li>安装：<code>yum install man-pages-zh-CN</code> </li>
+<li>设置别名： <code>alias cman=&#39;man -M /usr/share/man/zh_CN&#39;</code> </li>
 </ol>
-<h2 id="Mysql8安装"><a href="#Mysql8安装" class="headerlink" title="Mysql8安装"></a>Mysql8安装</h2><h3 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h3><p><code>wget -i -c https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm</code></p>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><ol>
-<li><p><code>yum -y install mysql80-community-release-el7-3.noarch.rpm</code> </p>
-</li>
-<li><p><code>yum -y install mysql-community-server</code> </p>
-</li>
+<h1 id="Mysql8安装"><a href="#Mysql8安装" class="headerlink" title="Mysql8安装"></a>Mysql8安装</h1><h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p><code>wget -i -c https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm</code></p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ol>
+<li><code>yum -y install mysql80-community-release-el7-3.noarch.rpm</code> </li>
+<li><code>yum -y install mysql-community-server</code> </li>
 </ol>
-<h4 id="下载加速"><a href="#下载加速" class="headerlink" title="下载加速"></a>下载加速</h4><p>官方下载速度很慢，慢到你崩溃加怀疑人生</p>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image.png" alt="img"></p>
+<h3 id="下载加速"><a href="#下载加速" class="headerlink" title="下载加速"></a>下载加速</h3><p>官方下载速度很慢，慢到你崩溃加怀疑人生</p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image.png" alt="0"></p>
 <p>此时你可以取消下载，打开 yum 下载缓存目录 <code>/var/cache/yum/x86_64/7/mysql80-community/packages</code> ,</p>
 <p>切换到该目录，不出意外的话，你可以看到刚刚没有下载完成的文件</p>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016296791.png" alt="img"></p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016296791.png" alt="image-1589016296791.png"></p>
 <p>通过以下国内镜像站点可以找到对应的文件</p>
 <ul>
-<li><p><a href="http://uni.mirrors.163.com/mysql/Downloads/MySQL-8.0/" target="_blank" rel="noopener">http://uni.mirrors.163.com/mysql/Downloads/MySQL-8.0/</a></p>
-</li>
-<li><p><a href="http://mirrors.ustc.edu.cn/mysql-ftp/Downloads/MySQL-8.0/" target="_blank" rel="noopener">http://mirrors.ustc.edu.cn/mysql-ftp/Downloads/MySQL-8.0/</a></p>
-</li>
+<li><a href="http://uni.mirrors.163.com/mysql/Downloads/MySQL-8.0/" target="_blank" rel="noopener">http://uni.mirrors.163.com/mysql/Downloads/MySQL-8.0/</a></li>
+<li><a href="http://mirrors.ustc.edu.cn/mysql-ftp/Downloads/MySQL-8.0/" target="_blank" rel="noopener">http://mirrors.ustc.edu.cn/mysql-ftp/Downloads/MySQL-8.0/</a></li>
 </ul>
 <p>找到对应的文件，复制下载地址</p>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016307720.png" alt="img"></p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016307720.png" alt="image-1589016307720.png"></p>
 <p>通过 wget 命令下载文件，然后覆盖掉原有文件即可</p>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016311009.png" alt="img"></p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016311009.png" alt="image-1589016311009.png"></p>
 <p>重新执行安装命令yum -y install mysql-community-server  ，此时则会跳过下载，直接开始安装了。</p>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016324992.png" alt="img"></p>
-<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016324992.png" alt="image-1589016324992.png"></p>
+<h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><ul>
 <li>查看mysql服务状态：<code>systemctl status mysqld</code> </li>
 <li>启动mysql服务：<code>systemctl start mysqld</code> </li>
 <li>通过日志查看root密码：<code>grep &quot;password&quot; /var/log/mysqld.log</code> </li>
 </ul>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016330196.png" alt="img"></p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016330196.png" alt="image-1589016330196.png"></p>
 <ul>
 <li>登陆mysql， <code>mysql -u root -p</code> ，输入启动日志中的密码</li>
 </ul>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016332459.png" alt="img"></p>
-<h3 id="重置密码"><a href="#重置密码" class="headerlink" title="重置密码"></a>重置密码</h3><ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016332459.png" alt="image-1589016332459.png"></p>
+<h2 id="重置密码"><a href="#重置密码" class="headerlink" title="重置密码"></a>重置密码</h2><ul>
 <li>密码必须符合规则，暂且设置成带有大小写，数字，特殊字符的密码</li>
 </ul>
-<pre><code>ALTER USER &#39;root&#39;@&#39;[localhost](http://localhost)&#39; IDENTIFIED BY &#39;123456&#39;; </code></pre><p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016335331.png" alt="img"></p>
+<pre><code>ALTER USER &#39;root&#39;@&#39;[localhost](http://localhost)&#39; IDENTIFIED BY &#39;123456&#39;; </code></pre><p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016335331.png" alt="image-1589016335331.png"></p>
 <ul>
 <li>查看密码规则 </li>
 </ul>
-<pre><code>SHOW VARIABLES LIKE &#39;validate_password%&#39;; </code></pre><p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016337796.png" alt="img"></p>
+<pre><code>SHOW VARIABLES LIKE &#39;validate_password%&#39;; </code></pre><p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016337796.png" alt="image-1589016337796.png"></p>
 <ul>
 <li>设置简单密码，只满足长度最小为1即可</li>
 </ul>
-<pre><code>set global validate_password.policy=0;
+<pre><code class="text">set global validate_password.policy=0;
 set global validate_password.length=1;
-ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;123456&#39;;</code></pre><p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016341920.png" alt="img"></p>
-<h3 id="开启远程连接"><a href="#开启远程连接" class="headerlink" title="开启远程连接"></a>开启远程连接</h3><ul>
-<li><p>直接给 root 用户赋远程访问权限会包语法错误，需要我们新增一个远程访问用户</p>
-<ul>
-<li><p>CREATE USER ‘yanhui’@’%’ IDENTIFIED BY ‘926484’; </p>
-</li>
-<li><p>GRANT ALL ON <em>.</em> TO ‘yanhui’@’%’; </p>
-</li>
+ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;123456&#39;;</code></pre>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016341920.png" alt="image-1589016341920.png"></p>
+<h2 id="开启远程连接"><a href="#开启远程连接" class="headerlink" title="开启远程连接"></a>开启远程连接</h2><ul>
+<li>直接给 root 用户赋远程访问权限会包语法错误，需要我们新增一个远程访问用户<ul>
+<li>CREATE USER ‘yanhui’@’%’ IDENTIFIED BY ‘926484’; </li>
+<li>GRANT ALL ON <em>.</em> TO ‘yanhui’@’%’; </li>
 </ul>
 </li>
 </ul>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016345758.png" alt="img"></p>
-<h3 id="客户端连接"><a href="#客户端连接" class="headerlink" title="客户端连接"></a>客户端连接</h3><p>使用sqlyog连接时报错：plugin caching_sha2_password …</p>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016351856.png" alt="img"></p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016345758.png" alt="image-1589016345758.png"></p>
+<h2 id="客户端连接"><a href="#客户端连接" class="headerlink" title="客户端连接"></a>客户端连接</h2><p>使用sqlyog连接时报错：plugin caching_sha2_password …</p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016351856.png" alt="image-1589016351856.png"></p>
 <p>此时需要修改默认的密码策略</p>
 <p><code>ALTER USER &#39;yanhui&#39;@&#39;%&#39; IDENTIFIED WITH mysql_native_password BY &#39;123456&#39;;</code> </p>
 <p>修改后再次测试，连接成功！！！</p>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016355883.png" alt="img"></p>
-<h2 id="定时任务crontab"><a href="#定时任务crontab" class="headerlink" title="定时任务crontab"></a>定时任务crontab</h2><h3 id="安装使用"><a href="#安装使用" class="headerlink" title="安装使用"></a>安装使用</h3><p>centos7上的定时任务默认采用  crond.service 服务实现</p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016355883.png" alt="image-1589016355883.png"></p>
+<h1 id="定时任务crontab"><a href="#定时任务crontab" class="headerlink" title="定时任务crontab"></a>定时任务crontab</h1><h2 id="安装使用"><a href="#安装使用" class="headerlink" title="安装使用"></a>安装使用</h2><p>centos7上的定时任务默认采用  crond.service 服务实现</p>
 <ul>
-<li><p>服务安装 yum install crontabs </p>
-</li>
-<li><p>查看服务状态 systemctl status crond.service </p>
-</li>
+<li>服务安装 yum install crontabs </li>
+<li>查看服务状态 systemctl status crond.service </li>
 </ul>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016358973.png" alt="img"></p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016358973.png" alt="image-1589016358973.png"></p>
 <ul>
 <li>查看当前定时任务列表 crontab -l </li>
 </ul>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016365291.png" alt="img"></p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016365291.png" alt="image-1589016365291.png"></p>
 <ul>
 <li>编辑定时任务 crontab -e ，新增一条定时任务记录 :wq  保持即可，</li>
 </ul>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016367754.png" alt="img"></p>
-<h3 id="cron格式"><a href="#cron格式" class="headerlink" title="cron格式"></a>cron格式</h3><pre><code>*　　*　　*　　*　　*　　command分　 时　 日　 月　 周　 命令
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016367754.png" alt="image-1589016367754.png"></p>
+<h2 id="cron格式"><a href="#cron格式" class="headerlink" title="cron格式"></a>cron格式</h2><pre><code>*　　*　　*　　*　　*　　command分　 时　 日　 月　 周　 命令
 第1列表示分钟1～59 每分钟用 /1表示
 第2列表示小时1～23（0表示0点）
 第3列表示日期1～31
@@ -476,60 +341,35 @@ ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;123456&#39;;</c
 第5列标识号星期0～6（0表示星期天）
 第6列要运行的命令
 - 每天凌晨2点30执行脚本push.auto.sh
-30 02 * * * cd /root/gitee/tcloud &amp;&amp; ./push.auto.sh &gt; /root/gitee/tcloud/crontab.log 2&gt;&amp;1 &amp;</code></pre><h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><h3 id="Redis-Key-命令"><a href="#Redis-Key-命令" class="headerlink" title="Redis Key 命令"></a>Redis Key 命令</h3><ul>
-<li><p>获取数据类型： <code>type key</code> </p>
-</li>
-<li><p>删除指定的key： <code>del key</code> </p>
-</li>
-<li><p>查询指定key是否存在： <code>exists key1 key2 ...</code> ，返回存在的数量，不存在则返回0</p>
-</li>
-<li><p>获取key的过期时间： <code>ttl key</code> ，以秒为单位返回过期时间</p>
-</li>
-<li><p>获取匹配指定模式的key： <code>keys pattern</code> ，例如 <code>keys *</code> ，查看所有key；<code>keys abc*</code> ，查询所有以abc开头的key</p>
-</li>
-<li><p>从数据库中随机返回一个key： <code>random</code> </p>
-</li>
-<li><p>移除key的过期时间： <code>persits key</code> ，移除后key将不会过期</p>
-</li>
-<li><p>修改key名称： <code>rename key_name_old key_name_new</code> </p>
-</li>
+30 02 * * * cd /root/gitee/tcloud &amp;&amp; ./push.auto.sh &gt; /root/gitee/tcloud/crontab.log 2&gt;&amp;1 &amp;</code></pre><h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><h2 id="Redis-Key-命令"><a href="#Redis-Key-命令" class="headerlink" title="Redis Key 命令"></a>Redis Key 命令</h2><ul>
+<li>获取数据类型： <code>type key</code> </li>
+<li>删除指定的key： <code>del key</code> </li>
+<li>查询指定key是否存在： <code>exists key1 key2 ...</code> ，返回存在的数量，不存在则返回0</li>
+<li>获取key的过期时间： <code>ttl key</code> ，以秒为单位返回过期时间</li>
+<li>获取匹配指定模式的key： <code>keys pattern</code> ，例如 <code>keys *</code> ，查看所有key；<code>keys abc*</code> ，查询所有以abc开头的key</li>
+<li>从数据库中随机返回一个key： <code>random</code> </li>
+<li>移除key的过期时间： <code>persits key</code> ，移除后key将不会过期</li>
+<li>修改key名称： <code>rename key_name_old key_name_new</code> </li>
 </ul>
-<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><p>参考文档：<a href="https://www.redis.net.cn/order/" target="_blank" rel="noopener">https://www.redis.net.cn/order/</a></p>
-<h4 id="String-字符串"><a href="#String-字符串" class="headerlink" title="String 字符串"></a>String 字符串</h4><ul>
-<li><p>设置： <code>set key value</code> </p>
-</li>
-<li><p>设置多个key-value： <code>set key1 value1 key2 value2 ...</code> </p>
-</li>
-<li><p>设置值及过期时间： <code>setex key seconds value</code> ，以秒为单位设置过期时间； psetex 以毫秒为单位</p>
-</li>
-<li><p>获取： <code>get key</code> </p>
-</li>
-<li><p>获取多个key： <code>mget key1 key2 key3 ...</code> </p>
-</li>
-<li><p>返回key的旧值，并设置新值： <code>getset key newValue</code> </p>
-</li>
-<li><p>获取字符串长度： <code>strlen key</code> </p>
-</li>
-<li><p>字符串追加： <code>append key</code> ，如果key存在，则追加，不存在则与 set 命令功能一样</p>
-</li>
-<li><p>将存储的数字+1： <code>incr key</code> ，如果不是数字则会报错，如果不存在则默认为0，然后+1</p>
-</li>
-<li><ul>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>参考文档：<a href="https://www.redis.net.cn/order/" target="_blank" rel="noopener">https://www.redis.net.cn/order/</a></p>
+<h3 id="String-字符串"><a href="#String-字符串" class="headerlink" title="String 字符串"></a>String 字符串</h3><ul>
+<li>设置： <code>set key value</code> </li>
+<li>设置多个key-value： <code>set key1 value1 key2 value2 ...</code> </li>
+<li>设置值及过期时间： <code>setex key seconds value</code> ，以秒为单位设置过期时间； psetex 以毫秒为单位</li>
+<li>获取： <code>get key</code> </li>
+<li>获取多个key： <code>mget key1 key2 key3 ...</code> </li>
+<li>返回key的旧值，并设置新值： <code>getset key newValue</code> </li>
+<li>获取字符串长度： <code>strlen key</code> </li>
+<li>字符串追加： <code>append key</code> ，如果key存在，则追加，不存在则与 set 命令功能一样</li>
+<li>将存储的数字+1： <code>incr key</code> ，如果不是数字则会报错，如果不存在则默认为0，然后+1<ul>
 <li>将存储的数字+num： <code>incrby key num</code> </li>
-</ul>
-</li>
-<li><ul>
 <li>将存储的数字-1：<code>decr key</code></li>
-</ul>
-</li>
-<li><ul>
 <li>将存储的数字减去指定数字num： <code>decrby key num</code>  </li>
 </ul>
 </li>
-<li><p>获取key中字符串的子串： <code>getrange key start end</code> </p>
-</li>
+<li>获取key中字符串的子串： <code>getrange key start end</code> </li>
 </ul>
-<h4 id="List-列表"><a href="#List-列表" class="headerlink" title="List 列表"></a>List 列表</h4><ul>
+<h3 id="List-列表"><a href="#List-列表" class="headerlink" title="List 列表"></a>List 列表</h3><ul>
 <li>在列表头部插入元素： <code>lpush key value1 value2 ...</code> </li>
 <li>在列表尾部插入元素： <code>rpush key value1 value2 ...</code></li>
 <li>获取列表指定范围内的元素： <code>lrange key start end</code> </li>
@@ -545,7 +385,7 @@ ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;123456&#39;;</c
 </ul>
 </li>
 </ul>
-<h4 id="Hash-哈希表"><a href="#Hash-哈希表" class="headerlink" title="Hash 哈希表"></a>Hash 哈希表</h4><ul>
+<h3 id="Hash-哈希表"><a href="#Hash-哈希表" class="headerlink" title="Hash 哈希表"></a>Hash 哈希表</h3><ul>
 <li>设置单个field-value对到哈希表中 <code>hset key field value</code> </li>
 <li>同时将多个 field-value (字段-值)对设置到哈希表中： <code>hmset key field1 value1 field2 value2 ...</code> </li>
 <li>获取哈希表中指定field的值： <code>hget key field</code> </li>
@@ -557,77 +397,67 @@ ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;123456&#39;;</c
 <li>删除哈希表中的字段： <code>hdel key field1 field2 ...</code> </li>
 <li>获取哈希表中字段数量： <code>hlen key</code> </li>
 </ul>
-<h4 id="Set-集合"><a href="#Set-集合" class="headerlink" title="Set 集合"></a>Set 集合</h4><ul>
-<li><p>向集合中添加元素， <code>sadd key value1 value2 ...</code> ，value重复则会被忽略  </p>
-</li>
-<li><p>获取集合所有元素， <code>smembers key</code> </p>
-</li>
-<li><p>移除集合元素， <code>srem key value1 value2 ...</code> </p>
-</li>
-<li><p>将集合a的元素移动到集合b中， <code>smove set1 set2 set1_value</code> ，将set1中的set1_value移动到set2中</p>
-</li>
+<h3 id="Set-集合"><a href="#Set-集合" class="headerlink" title="Set 集合"></a>Set 集合</h3><ul>
+<li>向集合中添加元素， <code>sadd key value1 value2 ...</code> ，value重复则会被忽略  </li>
+<li>获取集合所有元素， <code>smembers key</code> </li>
+<li>移除集合元素， <code>srem key value1 value2 ...</code> </li>
+<li>将集合a的元素移动到集合b中， <code>smove set1 set2 set1_value</code> ，将set1中的set1_value移动到set2中</li>
 </ul>
-<h4 id="Zset-有序集合"><a href="#Zset-有序集合" class="headerlink" title="Zset 有序集合"></a>Zset 有序集合</h4><p>与 Set 类似，不重复的集合，但是保值有序，加入元素时会设置score值，越小排序越靠前</p>
+<h3 id="Zset-有序集合"><a href="#Zset-有序集合" class="headerlink" title="Zset 有序集合"></a>Zset 有序集合</h3><p>与 Set 类似，不重复的集合，但是保值有序，加入元素时会设置score值，越小排序越靠前</p>
 <ul>
-<li><p>添加元素， <code>zadd key score value</code> </p>
-</li>
-<li><p>获取指定区间的元素（从小到大排序）， <code>zrange key start end</code> </p>
-</li>
-<li><p>获取指定区间的元素（从大到小排序）， <code>zrevrange key start end</code> </p>
-</li>
-<li><p>获取在指定score区间内的成员数量， <code>zcount key min_score max_score</code> </p>
-</li>
-<li><p>移除元素， <code>zrem key value</code> </p>
-</li>
+<li>添加元素， <code>zadd key score value</code> </li>
+<li>获取指定区间的元素（从小到大排序）， <code>zrange key start end</code> </li>
+<li>获取指定区间的元素（从大到小排序）， <code>zrevrange key start end</code> </li>
+<li>获取在指定score区间内的成员数量， <code>zcount key min_score max_score</code> </li>
+<li>移除元素， <code>zrem key value</code> </li>
 </ul>
-<h2 id="OpenResty"><a href="#OpenResty" class="headerlink" title="OpenResty"></a>OpenResty</h2><h3 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h3><h4 id="1-源码下载"><a href="#1-源码下载" class="headerlink" title="1 源码下载"></a>1 源码下载</h4><ul>
+<h1 id="OpenResty"><a href="#OpenResty" class="headerlink" title="OpenResty"></a>OpenResty</h1><h2 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h2><h3 id="源码下载"><a href="#源码下载" class="headerlink" title="源码下载"></a>源码下载</h3><ul>
 <li>下载地址 <a href="https://openresty.org/download/openresty-1.15.8.2.tar.gz" target="_blank" rel="noopener">https://openresty.org/download/openresty-1.15.8.2.tar.gz</a></li>
 </ul>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016374751.png" alt="img"></p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016374751.png" alt="image-1589016374751.png"></p>
 <ul>
 <li>安装命令</li>
 </ul>
-<pre><code>tar -xzvf openresty-VERSION.tar.gz
+<pre><code class="bash">tar -xzvf openresty-VERSION.tar.gz
 cd openresty-VERSION/
 ./configure
 make
-sudo make install</code></pre><h4 id="2-配置configure"><a href="#2-配置configure" class="headerlink" title="2 配置configure"></a>2 配置configure</h4><p>执行命令：<code>./configure</code> </p>
+sudo make install</code></pre>
+<h3 id="配置configure"><a href="#配置configure" class="headerlink" title="配置configure"></a>配置configure</h3><p>执行命令：<code>./configure</code> </p>
 <p>如果有缺失模块的问题，可执行以下命令安装：</p>
 <ul>
-<li><p><code>yum -y install pcre-devel</code> </p>
-</li>
-<li><p><code>yum -y install openssl openssl-devel</code> </p>
-</li>
+<li><code>yum -y install pcre-devel</code> </li>
+<li><code>yum -y install openssl openssl-devel</code> </li>
 </ul>
 <p>配置完成截图</p>
-<p>​          <em>|</em>        <img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016379063.png" alt="img"></p>
-<h4 id="3-编译make"><a href="#3-编译make" class="headerlink" title="3 编译make"></a>3 编译make</h4><p>执行命令： <code>make</code> </p>
-<p>​          <em>|</em>        <img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016381847.png" alt="img"></p>
-<h4 id="4-安装make-install"><a href="#4-安装make-install" class="headerlink" title="4 安装make install"></a>4 安装make install</h4><p>执行命令： <code>make install</code> </p>
-<p>​          <em>|</em>        <img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016384440.png" alt="img"></p>
-<h4 id="5-安装完成"><a href="#5-安装完成" class="headerlink" title="5 安装完成"></a>5 安装完成</h4><ul>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016379063.png" alt="image-1589016379063.png"></p>
+<h3 id="编译make"><a href="#编译make" class="headerlink" title="编译make"></a>编译make</h3><p>执行命令： <code>make</code> </p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016381847.png" alt="image-1589016381847.png"></p>
+<h3 id="安装make-install"><a href="#安装make-install" class="headerlink" title="安装make install"></a>安装make install</h3><p>执行命令： <code>make install</code> </p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016384440.png" alt="image-1589016384440.png"></p>
+<h3 id="安装完成"><a href="#安装完成" class="headerlink" title="安装完成"></a>安装完成</h3><ul>
 <li>安装目录 <code>/usr/local/openresty</code> </li>
 </ul>
-<p>​          <em>|</em>        <img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016386882.png" alt="img"></p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016386882.png" alt="image-1589016386882.png"></p>
 <ul>
-<li><p>启动： <code>/usr/local/openresty/bin/openresty</code> </p>
-</li>
-<li><p>大功告成</p>
-</li>
+<li>启动： <code>/usr/local/openresty/bin/openresty</code> </li>
+<li>大功告成</li>
 </ul>
-<p>​          <em>|</em>        <img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016391082.png" alt="img"></p>
-<h3 id="执行shell命令"><a href="#执行shell命令" class="headerlink" title="执行shell命令"></a>执行shell命令</h3><h4 id="1-安装-sockproc"><a href="#1-安装-sockproc" class="headerlink" title="1 安装 sockproc"></a>1 安装 sockproc</h4><pre><code># 安装sockproc
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016391082.png" alt="image-1589016391082.png"></p>
+<h2 id="执行shell命令"><a href="#执行shell命令" class="headerlink" title="执行shell命令"></a>执行shell命令</h2><h3 id="安装-sockproc"><a href="#安装-sockproc" class="headerlink" title="安装 sockproc"></a>安装 sockproc</h3><pre><code class="bash"># 安装sockproc
 git clone https://github.com/juce/sockproc.git
 cd sockproc/
 gcc -o sockproc ./sockproc.c
 # 创建Unix套接字，提供给lua的shell库连接
 ./sockproc /tmp/shell.sock
-chmod 0666 /tmp/shell.sock</code></pre><h4 id="2-安装-lua-resty-shell"><a href="#2-安装-lua-resty-shell" class="headerlink" title="2 安装 lua-resty-shell"></a>2 安装 lua-resty-shell</h4><pre><code>git clone https://github.com/juce/lua-resty-shell
+chmod 0666 /tmp/shell.sock</code></pre>
+<h3 id="安装-lua-resty-shell"><a href="#安装-lua-resty-shell" class="headerlink" title="安装 lua-resty-shell"></a>安装 lua-resty-shell</h3><pre><code class="bash">git clone https://github.com/juce/lua-resty-shell
 # 复制库到openresty下
-cp lua-resty-shell/lib/resty/shell.lua /usr/local/openresty/lualib/resty/</code></pre><h4 id="3-修改nginx配置文件"><a href="#3-修改nginx配置文件" class="headerlink" title="3 修改nginx配置文件"></a>3 修改nginx配置文件</h4><ul>
-<li>vi /usr/local/openresty/nginx/conf/nginx.conf ，在 server 节点下加入如下内容：</li>
+cp lua-resty-shell/lib/resty/shell.lua /usr/local/openresty/lualib/resty/</code></pre>
+<h3 id="修改nginx配置文件"><a href="#修改nginx配置文件" class="headerlink" title="修改nginx配置文件"></a>修改nginx配置文件</h3><ul>
+<li><code>vi /usr/local/openresty/nginx/conf/nginx.conf</code> ，在 server 节点下加入如下内容：</li>
 </ul>
-<pre><code>location /shell_test {
+<pre><code class="bash">location /shell_test {
   content_by_lua_block {
     local shell = require(&quot;resty.shell&quot;)
     local args = {
@@ -637,13 +467,12 @@ cp lua-resty-shell/lib/resty/shell.lua /usr/local/openresty/lualib/resty/</code>
     ngx.header.content_type = &quot;text/plain&quot;
     ngx.say(&quot;Hello from:\n&quot; .. out)
   }     
-} </code></pre><ul>
-<li><p>重启 openresty - <code>/usr/local/openresty/bin/openresty -s reload</code> </p>
-</li>
-<li><p>访问地址 /shell_test </p>
-</li>
+} </code></pre>
+<ul>
+<li>重启 openresty - <code>/usr/local/openresty/bin/openresty -s reload</code> </li>
+<li>访问地址 /shell_test </li>
 </ul>
-<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016394688.png" alt="img"></p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016394688.png" alt="image-1589016394688.png"></p>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls"
@@ -689,7 +518,7 @@ cp lua-resty-shell/lib/resty/shell.lua /usr/local/openresty/lualib/resty/</code>
             <div class="box sticky animated fadeInRight faster">
                 <div id="toc" class="subbox">
                     <h4>目录</h4>
-                    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux常用命令"><span class="toc-number">1.</span> <span class="toc-text">Linux常用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#文件目录"><span class="toc-number">1.1.</span> <span class="toc-text">文件目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#网络"><span class="toc-number">1.2.</span> <span class="toc-text">网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#系统"><span class="toc-number">1.3.</span> <span class="toc-text">系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#磁盘"><span class="toc-number">1.4.</span> <span class="toc-text">磁盘</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux系统文件目录说明"><span class="toc-number">2.</span> <span class="toc-text">Linux系统文件目录说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#etc-passwd"><span class="toc-number">2.1.</span> <span class="toc-text">&#x2F;etc&#x2F;passwd</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#etc-shadow"><span class="toc-number">2.2.</span> <span class="toc-text">&#x2F;etc&#x2F;shadow</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#帮助文档"><span class="toc-number">3.</span> <span class="toc-text">帮助文档</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#man-自带帮助文档"><span class="toc-number">3.1.</span> <span class="toc-text">man 自带帮助文档</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cman-中文帮助文档"><span class="toc-number">3.2.</span> <span class="toc-text">cman 中文帮助文档</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mysql8安装"><span class="toc-number">4.</span> <span class="toc-text">Mysql8安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载"><span class="toc-number">4.1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装"><span class="toc-number">4.2.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#运行"><span class="toc-number">4.3.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#重置密码"><span class="toc-number">4.4.</span> <span class="toc-text">重置密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开启远程连接"><span class="toc-number">4.5.</span> <span class="toc-text">开启远程连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#客户端连接"><span class="toc-number">4.6.</span> <span class="toc-text">客户端连接</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#定时任务crontab"><span class="toc-number">5.</span> <span class="toc-text">定时任务crontab</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装使用"><span class="toc-number">5.1.</span> <span class="toc-text">安装使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cron格式"><span class="toc-number">5.2.</span> <span class="toc-text">cron格式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis"><span class="toc-number">6.</span> <span class="toc-text">Redis</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-1"><span class="toc-number">6.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置"><span class="toc-number">6.2.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Redis-Key-命令"><span class="toc-number">6.3.</span> <span class="toc-text">Redis Key 命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据类型"><span class="toc-number">6.4.</span> <span class="toc-text">数据类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OpenResty"><span class="toc-number">7.</span> <span class="toc-text">OpenResty</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-2"><span class="toc-number">7.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#执行shell命令"><span class="toc-number">7.2.</span> <span class="toc-text">执行shell命令</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux常用命令"><span class="toc-number">1.</span> <span class="toc-text">Linux常用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#文件目录"><span class="toc-number">1.1.</span> <span class="toc-text">文件目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#网络"><span class="toc-number">1.2.</span> <span class="toc-text">网络</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#系统"><span class="toc-number">1.3.</span> <span class="toc-text">系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#磁盘"><span class="toc-number">1.4.</span> <span class="toc-text">磁盘</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux系统文件目录说明"><span class="toc-number">2.</span> <span class="toc-text">Linux系统文件目录说明</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#etc-passwd"><span class="toc-number">2.1.</span> <span class="toc-text">&#x2F;etc&#x2F;passwd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#etc-shadow"><span class="toc-number">2.2.</span> <span class="toc-text">&#x2F;etc&#x2F;shadow</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#帮助文档"><span class="toc-number">3.</span> <span class="toc-text">帮助文档</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#man-自带帮助文档"><span class="toc-number">3.1.</span> <span class="toc-text">man 自带帮助文档</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cman-中文帮助文档"><span class="toc-number">3.2.</span> <span class="toc-text">cman 中文帮助文档</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Mysql8安装"><span class="toc-number">4.</span> <span class="toc-text">Mysql8安装</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#下载"><span class="toc-number">4.1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装"><span class="toc-number">4.2.</span> <span class="toc-text">安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#下载加速"><span class="toc-number">4.2.1.</span> <span class="toc-text">下载加速</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#运行"><span class="toc-number">4.3.</span> <span class="toc-text">运行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#重置密码"><span class="toc-number">4.4.</span> <span class="toc-text">重置密码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#开启远程连接"><span class="toc-number">4.5.</span> <span class="toc-text">开启远程连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#客户端连接"><span class="toc-number">4.6.</span> <span class="toc-text">客户端连接</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#定时任务crontab"><span class="toc-number">5.</span> <span class="toc-text">定时任务crontab</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装使用"><span class="toc-number">5.1.</span> <span class="toc-text">安装使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cron格式"><span class="toc-number">5.2.</span> <span class="toc-text">cron格式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis"><span class="toc-number">6.</span> <span class="toc-text">Redis</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-1"><span class="toc-number">6.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置"><span class="toc-number">6.2.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Redis-Key-命令"><span class="toc-number">6.3.</span> <span class="toc-text">Redis Key 命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数据类型"><span class="toc-number">6.4.</span> <span class="toc-text">数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#String-字符串"><span class="toc-number">6.4.1.</span> <span class="toc-text">String 字符串</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#List-列表"><span class="toc-number">6.4.2.</span> <span class="toc-text">List 列表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hash-哈希表"><span class="toc-number">6.4.3.</span> <span class="toc-text">Hash 哈希表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Set-集合"><span class="toc-number">6.4.4.</span> <span class="toc-text">Set 集合</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Zset-有序集合"><span class="toc-number">6.4.5.</span> <span class="toc-text">Zset 有序集合</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#OpenResty"><span class="toc-number">7.</span> <span class="toc-text">OpenResty</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-2"><span class="toc-number">7.1.</span> <span class="toc-text">安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#源码下载"><span class="toc-number">7.1.1.</span> <span class="toc-text">源码下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置configure"><span class="toc-number">7.1.2.</span> <span class="toc-text">配置configure</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编译make"><span class="toc-number">7.1.3.</span> <span class="toc-text">编译make</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装make-install"><span class="toc-number">7.1.4.</span> <span class="toc-text">安装make install</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装完成"><span class="toc-number">7.1.5.</span> <span class="toc-text">安装完成</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#执行shell命令"><span class="toc-number">7.2.</span> <span class="toc-text">执行shell命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-sockproc"><span class="toc-number">7.2.1.</span> <span class="toc-text">安装 sockproc</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#安装-lua-resty-shell"><span class="toc-number">7.2.2.</span> <span class="toc-text">安装 lua-resty-shell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改nginx配置文件"><span class="toc-number">7.2.3.</span> <span class="toc-text">修改nginx配置文件</span></a></li></ol></li></ol></li></ol>
                 </div>
             </div>
             
