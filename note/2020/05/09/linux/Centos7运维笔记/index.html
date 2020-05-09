@@ -17,12 +17,9 @@
 Linux常用命令文件目录
 cd 目录切换
 
-
 cd .. 上级目录
 
-
-
-cd ~ 当前用户目录，与直接 cd,"> 
+cd ~ 当前用户目录，与直接 cd 效果,"> 
     <meta name="author" content="颜辉"> 
     <link rel="alternative" href="atom.xml" title="颜辉的个人博客" type="application/atom+xml"> 
     <link rel="icon" href="/note/img/favicon.png"> 
@@ -154,136 +151,91 @@ cd ~ 当前用户目录，与直接 cd,">
 </ul>
 <h2 id="Linux常用命令"><a href="#Linux常用命令" class="headerlink" title="Linux常用命令"></a>Linux常用命令</h2><h3 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h3><ul>
 <li><p><code>cd</code> 目录切换</p>
+<ul>
+<li><p><code>cd ..</code> 上级目录</p>
 </li>
-<li><ul>
-<li><code>cd ..</code> 上级目录</li>
-</ul>
+<li><p><code>cd ~</code> 当前用户目录，与直接 cd 效果一样</p>
 </li>
-<li><ul>
-<li><code>cd ~</code> 当前用户目录，与直接 cd 效果一样</li>
-</ul>
+<li><p><code>cd -</code> 上次操作目录</p>
 </li>
-<li><ul>
-<li><code>cd -</code> 上次操作目录</li>
 </ul>
 </li>
 <li><p><code>mkdir test</code> 新建目录</p>
+<ul>
+<li><p><code>mv test test2</code> 重命名目录</p>
 </li>
-<li><ul>
-<li><code>mv test test2</code> 重命名目录</li>
-</ul>
+<li><p><code>rm -rf test2</code> 删除目录</p>
 </li>
-<li><ul>
-<li><code>rm -rf test2</code> 删除目录</li>
-</ul>
+<li><p><code>cp -R test2 test3</code> 复制test2目录生成test3目录</p>
 </li>
-<li><ul>
-<li><code>cp -R test2 test3</code> 复制test2目录生成test3目录</li>
-</ul>
+<li><p><code>mkdir -p d1/d2/d3</code> 创建多级目录</p>
 </li>
-<li><ul>
-<li><code>mkdir -p d1/d2/d3</code> 创建多级目录</li>
 </ul>
 </li>
 <li><p><code>touch a.txt</code> 创建文件</p>
+<ul>
+<li><p><code>mv a.txt a2.txt</code> 重命名文件</p>
 </li>
-<li><ul>
-<li><code>mv a.txt a2.txt</code> 重命名文件</li>
-</ul>
+<li><p><code>rm -rf a2.txt</code> 删除文件</p>
 </li>
-<li><ul>
-<li><code>rm -rf a2.txt</code> 删除文件</li>
-</ul>
+<li><p><code>cat a.txt</code> 查看文件内容</p>
 </li>
-<li><ul>
-<li><code>cat a.txt</code> 查看文件内容</li>
 </ul>
 </li>
 <li><p>ls 查看当前目录下的文件</p>
+<ul>
+<li><p><code>ls [options] [file...]</code></p>
 </li>
-<li><ul>
-<li><code>ls [options] [file...]</code></li>
-</ul>
+<li><p><code>ls /etc</code> 查看目录 /etc 下的所有文件</p>
 </li>
-<li><ul>
-<li><code>ls /etc</code> 查看目录 /etc 下的所有文件</li>
-</ul>
+<li><p>-l 以列表形式查看文件</p>
 </li>
-<li><ul>
-<li>-l 以列表形式查看文件</li>
-</ul>
+<li><p>-al 查看所有文件，包含隐藏文件</p>
 </li>
-<li><ul>
-<li>-al 查看所有文件，包含隐藏文件</li>
-</ul>
+<li><p>-lh 查看文件，文件大小友好展示（eg…1k,1m,1g）</p>
 </li>
-<li><ul>
-<li>-lh 查看文件，文件大小友好展示（eg…1k,1m,1g）</li>
 </ul>
 </li>
 <li><p>pwd 查看当前目录</p>
+<ul>
+<li><p>-L 逻辑路径</p>
 </li>
-<li><ul>
-<li>-L 逻辑路径</li>
-</ul>
+<li><p>-P 真实路径，可显示软链接的真实路径</p>
 </li>
-<li><ul>
-<li>-P 真实路径，可显示软链接的真实路径</li>
 </ul>
 </li>
 <li><p>ln 文件链接</p>
-</li>
-<li><ul>
+<ul>
 <li><code>ln [options] source [dest]</code></li>
-</ul>
-</li>
-<li><ul>
 <li>软链接：<code>ln -s 目标文件/目录 链接名称</code>；</li>
 <li>硬链接：<code>ln 目标文件 链接文件</code></li>
-</ul>
-</li>
-<li><ul>
 <li>-d 目录硬链接</li>
 </ul>
 </li>
 <li><p>find文件查找</p>
+<ul>
+<li><p><code>find /etc -name &quot;*.cnf&quot;</code> 找出/etc目录下以.cnf结尾的文件</p>
 </li>
-<li><ul>
-<li><code>find /etc -name &quot;*.cnf&quot;</code> 找出/etc目录下以.cnf结尾的文件</li>
-</ul>
+<li><p><code>find /etc -ctime 1</code> 找出近1天内文件<strong>状态</strong>发生改变的文件</p>
 </li>
-<li><ul>
-<li><code>find /etc -ctime 1</code> 找出近1天内文件<strong>状态</strong>发生改变的文件</li>
-</ul>
+<li><p><code>find /etc -mtime 1</code> 找出近1天内文件<strong>内容</strong>发生改变的文件</p>
 </li>
-<li><ul>
-<li><code>find /etc -mtime 1</code> 找出近1天内文件<strong>内容</strong>发生改变的文件</li>
-</ul>
+<li><p><code>find /etc -size +10k</code> 找出大于10k的文件</p>
 </li>
-<li><ul>
-<li><code>find /etc -size +10k</code> 找出大于10k的文件</li>
-</ul>
+<li><p><code>find /etc -size -10k</code> 找出小于10k的文件</p>
 </li>
-<li><ul>
-<li><code>find /etc -size -10k</code> 找出小于10k的文件</li>
-</ul>
+<li><p><code>find /etc -empty</code> 找空目录或者大小为0的文件</p>
 </li>
-<li><ul>
-<li><code>find /etc -empty</code> 找空目录或者大小为0的文件</li>
 </ul>
 </li>
 <li><p>du 显示当前目录下的文件对磁盘空间的使用情况</p>
+<ul>
+<li><p><code>du [options] [file...]</code></p>
 </li>
-<li><ul>
-<li><code>du [options] [file...]</code></li>
-</ul>
+<li><p>-h 以友好的方式显示使用磁盘大小</p>
 </li>
-<li><ul>
-<li>-h 以友好的方式显示使用磁盘大小</li>
-</ul>
+<li><p>du -h /etc 展示/etc目录下的文件磁盘使用情况</p>
 </li>
-<li><ul>
-<li>du -h /etc 展示/etc目录下的文件磁盘使用情况</li>
 </ul>
 </li>
 </ul>
@@ -291,8 +243,7 @@ cd ~ 当前用户目录，与直接 cd,">
 <li><p><code>hostname</code> 显示主机名</p>
 </li>
 <li><p><code>ping www.baidu.com</code> 向目标机器发送数据包</p>
-</li>
-<li><ul>
+<ul>
 <li>-c 指定发送次数</li>
 </ul>
 </li>
@@ -686,7 +637,7 @@ ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;123456&#39;;</c
 <h2 id="OpenResty"><a href="#OpenResty" class="headerlink" title="OpenResty"></a>OpenResty</h2><h3 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h3><h4 id="1-源码下载"><a href="#1-源码下载" class="headerlink" title="1 源码下载"></a>1 源码下载</h4><ul>
 <li>下载地址 <a href="https://openresty.org/download/openresty-1.15.8.2.tar.gz" target="_blank" rel="noopener">https://openresty.org/download/openresty-1.15.8.2.tar.gz</a></li>
 </ul>
-<p>​          <em>|</em>        <img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016374751.png" alt="img"></p>
+<p><img src="/note/2020/05/09/linux/Centos7%E8%BF%90%E7%BB%B4%E7%AC%94%E8%AE%B0/image-1589016374751.png" alt="img"></p>
 <ul>
 <li>安装命令</li>
 </ul>
