@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>SonarLint代码检查问题总结 | 颜辉 ☆ JCoder | 愿你成为自己喜欢的模样，不抱怨，不将就，有自由，有光芒。 &lt;br /&gt; 人生若只如初见，何事秋风悲画扇。</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="sonar,lint">
+    <meta name="description" content="IDEA安装sonar lint                                                                                             image-20200526110544840                   执行检查 检查指定包下的问题，选中包，右键选择 SonarLint-&gt;Analyze wit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SonarLint代码检查问题总结">
+<meta property="og:url" content="http://yanhui2018.gitee.io/2020/05/27/java/SonarLint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="颜辉 ☆ JCoder">
+<meta property="og:description" content="IDEA安装sonar lint                                                                                             image-20200526110544840                   执行检查 检查指定包下的问题，选中包，右键选择 SonarLint-&gt;Analyze wit">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://yanhui2018.gitee.io/note/2020/05/27/java/SonarLint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20200526110544840.png">
+<meta property="og:image" content="http://yanhui2018.gitee.io/note/2020/05/27/java/SonarLint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20200526110753666.png">
+<meta property="og:image" content="http://yanhui2018.gitee.io/note/2020/05/27/java/SonarLint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20200526111022430.png">
+<meta property="og:image" content="http://yanhui2018.gitee.io/note/2020/05/27/java/SonarLint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20200526141230418.png">
+<meta property="og:image" content="http://yanhui2018.gitee.io/note/2020/05/27/java/SonarLint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20200526141359450.png">
+<meta property="article:published_time" content="2020-05-27T08:54:05.533Z">
+<meta property="article:modified_time" content="2020-05-27T08:54:05.533Z">
+<meta property="article:author" content="颜辉">
+<meta property="article:tag" content="sonar">
+<meta property="article:tag" content="lint">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yanhui2018.gitee.io/note/2020/05/27/java/SonarLint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20200526110544840.png">
+    
+    <link rel="shortcut icon" href="/note/img/avatar.jpg">
+    <link rel="stylesheet" href="/note/css/style.css?v=1.7.2">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/note/img/brand.jpg)">
+      <div class="brand">
+        <a href="/note/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/note/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">颜辉</h5>
+          <a href="mailto:wyd2014yan@163.com" title="wyd2014yan@163.com" class="mail">wyd2014yan@163.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/note/"  >
+                <i class="icon icon-lg icon-home"></i>
+                Home
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/note/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/note/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/note/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://gitee.com/yanhui2018" target="_blank" >
+                <i class="icon icon-lg icon-git"></i>
+                Gitee
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/yanhuigo" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/note/../pages/" target="_blank" >
+                <i class="icon icon-lg icon-bookmark"></i>
+                Bookmark
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <a href="/note" class="header-icon waves-effect waves-circle waves-light">
+            <i class="icon icon-lg icon-home"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SonarLint代码检查问题总结</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">SonarLint代码检查问题总结</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2020-05-27T08:54:05.533Z" itemprop="datePublished" class="page-time">
+  2020-05-27
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/note/categories/java/">java</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#IDEA安装sonar-lint"><span class="post-toc-number">1.</span> <span class="post-toc-text">IDEA安装sonar lint</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#执行检查"><span class="post-toc-number">2.</span> <span class="post-toc-text">执行检查</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#常见问题"><span class="post-toc-number">3.</span> <span class="post-toc-text">常见问题</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#弱类型"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">弱类型</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#泛型对象定义方式不对"><span class="post-toc-number">3.1.1.</span> <span class="post-toc-text">泛型对象定义方式不对</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#资源对象没关闭"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">资源对象没关闭</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#未使用字符串常量"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">未使用字符串常量</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#未使用非同步替代类"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">未使用非同步替代类</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#规范总结"><span class="post-toc-number">4.</span> <span class="post-toc-text">规范总结</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-java/SonarLint代码检查问题总结"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SonarLint代码检查问题总结</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2020-05-27 16:54:05" datetime="2020-05-27T08:54:05.533Z"  itemprop="datePublished">2020-05-27</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/note/categories/java/">java</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="IDEA安装sonar-lint"><a href="#IDEA安装sonar-lint" class="headerlink" title="IDEA安装sonar lint"></a><code>IDEA</code>安装<code>sonar lint</code></h2><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/note/2020/05/27/java/SonarLint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20200526110544840.png" alt="image-20200526110544840" title>
+                </div>
+                <div class="image-caption">image-20200526110544840</div>
+            </figure>
+
+
+
+
+
+<h2 id="执行检查"><a href="#执行检查" class="headerlink" title="执行检查"></a>执行检查</h2><ul>
+<li><strong>检查指定包下的问题</strong>，选中包，右键选择 <code>SonarLint</code>-&gt;<code>Analyze with SonarLint</code>（快捷键：<code>Ctrl+Shift+S</code>），分析完成后即可在<code>SonarLint</code>面板上看到问题列表</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/note/2020/05/27/java/SonarLint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20200526110753666.png" alt="image-20200526110753666" title>
+                </div>
+                <div class="image-caption">image-20200526110753666</div>
+            </figure>
+
+
+
+<ul>
+<li><strong>检查单个文件类的问题</strong>，在打开文件窗口右键选择<code>Analyze with SonarLint</code></li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/note/2020/05/27/java/SonarLint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20200526111022430.png" alt="image-20200526111022430" title>
+                </div>
+                <div class="image-caption">image-20200526111022430</div>
+            </figure>
+
+
+
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="弱类型"><a href="#弱类型" class="headerlink" title="弱类型"></a>弱类型</h3><ul>
+<li>在有定义泛型的类和方法时，没有传类型</li>
+</ul>
+<pre><code>Raw types should not be used
+
+Generic types shouldn&#39;t be used raw (without type parameters) in variable declarations or return values. Doing so bypasses generic type checking, and defers the catch of unsafe code to runtime.</code></pre><h4 id="泛型对象定义方式不对"><a href="#泛型对象定义方式不对" class="headerlink" title="泛型对象定义方式不对"></a>泛型对象定义方式不对</h4><ul>
+<li><p>使用了错误的方式定义泛型，导致无法正确推倒泛型</p>
+</li>
+<li><p>错误方式，引用的参数类型一定要加，不然无法推断类型，构造对象的地方可以不加，使用<code>new BaseResponse&lt;&gt;()</code>即可</p>
+</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/note/2020/05/27/java/SonarLint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20200526141230418.png" alt="image-20200526141230418" title>
+                </div>
+                <div class="image-caption">image-20200526141230418</div>
+            </figure>
+
+<ul>
+<li>正确方式</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/note/2020/05/27/java/SonarLint%E4%BB%A3%E7%A0%81%E6%A3%80%E6%9F%A5%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/image-20200526141359450.png" alt="image-20200526141359450" title>
+                </div>
+                <div class="image-caption">image-20200526141359450</div>
+            </figure>
+
+
+
+<h3 id="资源对象没关闭"><a href="#资源对象没关闭" class="headerlink" title="资源对象没关闭"></a>资源对象没关闭</h3><ul>
+<li>在使用完资源对象（实现了<code>Closeable</code>接口）后没有关闭</li>
+</ul>
+<pre><code>Resources should be closed
+
+Connections, streams, files, and other classes that implement the Closeable interface or its super-interface, AutoCloseable, needs to be closed after use. Further, that close call must be made in a finally block otherwise an exception could keep the call from being made. Preferably, when class implements AutoCloseable, resource should be created using &quot;try-with-resources&quot; pattern and will be closed automatically.
+Failure to properly close resources will result in a resource leak which could bring first the application and then perhaps the box it&#39;s on to their knees.</code></pre><ul>
+<li>JDK1.7后可使用 <code>try(初始化资源对象){...}catch(){...}</code>语法自动关闭资源</li>
+</ul>
+<pre><code class="java">
+try(
+    // 资源对象
+    FileWriter fw = new FileWriter(&quot;aa.txt&quot;)
+) {
+    fw.write(&quot;bbbbbbbbbbbbbb&quot;);
+} catch(Exception ex) {
+    ex.printStackTrace();
+}</code></pre>
+<h3 id="未使用字符串常量"><a href="#未使用字符串常量" class="headerlink" title="未使用字符串常量"></a>未使用字符串常量</h3><ul>
+<li>对多次重复出现的字符串没有统一定义常量</li>
+</ul>
+<pre><code>String literals should not be duplicated
+
+Duplicated string literals make the process of refactoring error-prone, since you must be sure to update all occurrences.
+On the other hand, constants can be referenced from many places, but only need to be updated in a single place.</code></pre><h3 id="未使用非同步替代类"><a href="#未使用非同步替代类" class="headerlink" title="未使用非同步替代类"></a>未使用非同步替代类</h3><ul>
+<li>在不需要保证同步和线程安全的情况下，尽量使用非同步替代类，减少开销</li>
+</ul>
+<pre><code>Early classes of the Java API, such as Vector, Hashtable and StringBuffer, were synchronized to make them thread-safe. Unfortunately, synchronization has a big negative impact on performance, even when using these collections from a single thread.
+
+It is better to use their new unsynchronized replacements:
+
+ArrayList or LinkedList instead of Vector
+Deque instead of Stack
+HashMap instead of Hashtable
+StringBuilder instead of StringBuffer</code></pre><h2 id="规范总结"><a href="#规范总结" class="headerlink" title="规范总结"></a>规范总结</h2>
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2020-05-27T08:54:05.533Z" itemprop="dateUpdated">2020-05-27 16:54:05</time>
+</span><br>
+
+
+        
+        <br/> 颜辉 ☆ JCoder <br/> 愿你成为自己喜欢的模样，不抱怨，不将就，有自由，有光芒。 <br /> 人生若只如初见，何事秋风悲画扇。
+        
+    </div>
+    
+    <footer>
+        <a href="http://yanhui2018.gitee.io">
+            <img src="/note/img/avatar.jpg" alt="颜辉">
+            颜辉
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/note/tags/lint/" rel="tag">lint</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/note/tags/sonar/" rel="tag">sonar</a></li></ul>
+
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/note/2020/05/25/java/Lombok/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Lombok</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/note/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/note/img/wechat.jpg" data-alipay="/note/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        <!-- 
+ -->
+        <p>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>颜辉 &copy; 2020</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="/note/js/waves.min.js?v=1.7.2"></script>
+<script>
+var BLOG = { ROOT: '/note/', SHARE: false, REWARD: true };
+
+
+</script>
+
+<script src="/note/js/main.min.js?v=1.7.2"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/note/js/search.min.js?v=1.7.2" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
