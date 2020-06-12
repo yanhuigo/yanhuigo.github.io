@@ -14,7 +14,7 @@
     
     
     
-    <title>POI | 颜辉 ☆ JCoder | 愿你成为自己喜欢的模样，不抱怨，不将就，有自由，有光芒。 &lt;br /&gt; 人生若只如初见，何事秋风悲画扇。</title>
+    <title>POI | 颜辉 ☆ JCoder | 满招损，谦受益。 &lt;br /&gt; 愿你成为自己喜欢的模样，不抱怨，不将就，有自由，有光芒。</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
     <meta name="theme-color" content="#3F51B5">
@@ -653,7 +653,7 @@ public void setBigDropDownList() throws IOException {
 
 
         
-        <br/> 颜辉 ☆ JCoder <br/> 愿你成为自己喜欢的模样，不抱怨，不将就，有自由，有光芒。 <br /> 人生若只如初见，何事秋风悲画扇。
+        <br/> 颜辉 ☆ JCoder <br/> 满招损，谦受益。 <br /> 愿你成为自己喜欢的模样，不抱怨，不将就，有自由，有光芒。
         
     </div>
     
@@ -717,6 +717,30 @@ public void setBigDropDownList() throws IOException {
 
 
 
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'false' == 'true',
+            verify: 'false' == 'true',
+            appId: "yTSJzVRadUn0shC7AFq6APOx-gzGzoHsz",
+            appKey: "LnCKpRJOTMmJSrL4nJzw1cDn",
+            avatar: "mm",
+            placeholder: "三人行，必有我师焉。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
 
 
 
