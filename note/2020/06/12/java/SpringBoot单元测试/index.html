@@ -21,18 +21,20 @@
     
     
     <meta name="keywords" content="junit,springboot">
-    <meta name="description" content="集成测试 依赖完整的应用上下文  以HTTP请求为入口，测试整个交易流程  下面将会以一个分页查询的交易展开测试   交易描述 入库申请单的分页查询 针对该查询业务编写单元测试                                                                                               image-20200612152">
+    <meta name="description" content="[TOC] 引入junit5 dependencies节点引入依赖  &lt;!--junit5--&gt; &lt;dependency&gt;     &lt;groupId&gt;org.junit.jupiter&lt;&#x2F;groupId&gt;     &lt;artifactId&gt;junit-jupiter-api&lt;&#x2F;artifactId&gt;     &lt;versio">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SpringBoot单元测试">
 <meta property="og:url" content="http://yanhui2018.gitee.io/2020/06/12/java/SpringBoot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/index.html">
 <meta property="og:site_name" content="颜辉 ☆ JCoder">
-<meta property="og:description" content="集成测试 依赖完整的应用上下文  以HTTP请求为入口，测试整个交易流程  下面将会以一个分页查询的交易展开测试   交易描述 入库申请单的分页查询 针对该查询业务编写单元测试                                                                                               image-20200612152">
+<meta property="og:description" content="[TOC] 引入junit5 dependencies节点引入依赖  &lt;!--junit5--&gt; &lt;dependency&gt;     &lt;groupId&gt;org.junit.jupiter&lt;&#x2F;groupId&gt;     &lt;artifactId&gt;junit-jupiter-api&lt;&#x2F;artifactId&gt;     &lt;versio">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://yanhui2018.gitee.io/note/2020/06/12/java/SpringBoot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/image-20200612152059485.png">
 <meta property="og:image" content="http://yanhui2018.gitee.io/note/2020/06/12/java/SpringBoot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/image-20200612153310731.png">
-<meta property="og:image" content="http://yanhui2018.gitee.io/note/2020/06/12/java/SpringBoot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/image-20200612153246882.png">
+<meta property="og:image" content="http://yanhui2018.gitee.io/note/2020/06/12/java/SpringBoot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/image-20200615152559448.png">
+<meta property="og:image" content="http://yanhui2018.gitee.io/note/2020/06/12/java/SpringBoot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/image-20200615152145731.png">
+<meta property="og:image" content="http://yanhui2018.gitee.io/note/2020/06/12/java/SpringBoot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/image-20200615152825748.png">
 <meta property="article:published_time" content="2020-06-11T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-06-12T09:19:55.302Z">
+<meta property="article:modified_time" content="2020-06-15T07:37:42.531Z">
 <meta property="article:author" content="颜辉">
 <meta property="article:tag" content="junit">
 <meta property="article:tag" content="springboot">
@@ -176,7 +178,7 @@
     <aside class="post-widget">
         <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
             <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#集成测试"><span class="post-toc-number">1.</span> <span class="post-toc-text">集成测试</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#交易描述"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">交易描述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#新建测试文件"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">新建测试文件</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#测试类编写"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">测试类编写</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#注解说明"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">注解说明</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#让测试类运行在spring上下文"><span class="post-toc-number">1.3.2.</span> <span class="post-toc-text">让测试类运行在spring上下文</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#初始化工作"><span class="post-toc-number">1.3.3.</span> <span class="post-toc-text">初始化工作</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#测试方法定义"><span class="post-toc-number">1.3.4.</span> <span class="post-toc-text">测试方法定义</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#编写业务测试"><span class="post-toc-number">1.3.5.</span> <span class="post-toc-text">编写业务测试</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#流程说明"><span class="post-toc-number">1.3.5.1.</span> <span class="post-toc-text">流程说明</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#注意事项"><span class="post-toc-number">1.3.5.2.</span> <span class="post-toc-text">注意事项</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#完整代码"><span class="post-toc-number">1.3.5.3.</span> <span class="post-toc-text">完整代码</span></a></li></ol></li></ol></li></ol></li></ol>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#引入junit5"><span class="post-toc-number">1.</span> <span class="post-toc-text">引入junit5</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#集成测试"><span class="post-toc-number">2.</span> <span class="post-toc-text">集成测试</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#交易描述"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">交易描述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#新建测试文件"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">新建测试文件</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#命名规范"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">命名规范</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#测试类编写"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">测试类编写</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#注解说明"><span class="post-toc-number">2.4.1.</span> <span class="post-toc-text">注解说明</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#让测试类运行在spring上下文"><span class="post-toc-number">2.4.2.</span> <span class="post-toc-text">让测试类运行在spring上下文</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#初始化工作"><span class="post-toc-number">2.4.3.</span> <span class="post-toc-text">初始化工作</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#测试方法定义"><span class="post-toc-number">2.4.4.</span> <span class="post-toc-text">测试方法定义</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#编写业务测试"><span class="post-toc-number">2.4.5.</span> <span class="post-toc-text">编写业务测试</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#流程说明"><span class="post-toc-number">2.4.5.1.</span> <span class="post-toc-text">流程说明</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#注意事项"><span class="post-toc-number">2.4.5.2.</span> <span class="post-toc-text">注意事项</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#完整代码"><span class="post-toc-number">2.4.5.3.</span> <span class="post-toc-text">完整代码</span></a></li></ol></li></ol></li></ol></li></ol>
         </nav>
     </aside>
 
@@ -198,12 +200,44 @@
 
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
-            <h1 id="集成测试"><a href="#集成测试" class="headerlink" title="集成测试"></a>集成测试</h1><ul>
+            <p>[TOC]</p>
+<h1 id="引入junit5"><a href="#引入junit5" class="headerlink" title="引入junit5"></a>引入<code>junit5</code></h1><ul>
+<li><code>dependencies</code>节点引入依赖</li>
+</ul>
+<pre><code class="xml">&lt;!--junit5--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
+    &lt;artifactId&gt;junit-jupiter-api&lt;/artifactId&gt;
+    &lt;version&gt;5.3.2&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.junit.vintage&lt;/groupId&gt;
+    &lt;artifactId&gt;junit-vintage-engine&lt;/artifactId&gt;
+    &lt;version&gt;5.3.2&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+<ul>
+<li><code>build-&gt;plugins</code>节点引入插件</li>
+</ul>
+<pre><code class="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.19&lt;/version&gt;
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.junit.platform&lt;/groupId&gt;
+            &lt;artifactId&gt;junit-platform-surefire-provider&lt;/artifactId&gt;
+            &lt;version&gt;1.1.0&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/plugin&gt;</code></pre>
+<h1 id="集成测试"><a href="#集成测试" class="headerlink" title="集成测试"></a>集成测试</h1><ul>
 <li><p>依赖完整的应用上下文</p>
 </li>
 <li><p>以HTTP请求为入口，测试整个交易流程</p>
 </li>
-<li><p>下面将会以一个分页查询的交易展开测试</p>
+<li><p>下面将会以一个库存分页查询的交易展开测试</p>
 </li>
 </ul>
 <h2 id="交易描述"><a href="#交易描述" class="headerlink" title="交易描述"></a>交易描述</h2><ul>
@@ -232,41 +266,61 @@
             </figure>
 
 <ul>
-<li>在<code>test</code>文件夹建立对应的<code>resources</code>文件夹，用于存放测试需要的<code>sql</code>脚本和<code>json</code>文件</li>
+<li>在<code>test</code>文件夹建立对应的<code>resources</code>文件夹，用于存放测试需要的资源文件</li>
 </ul>
 <figure class="image-bubble">
                 <div class="img-lightbox">
                     <div class="overlay"></div>
-                    <img src="/note/2020/06/12/java/SpringBoot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/image-20200612153246882.png" alt="image-20200612153246882" title>
+                    <img src="/note/2020/06/12/java/SpringBoot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/image-20200615152559448.png" alt="image-20200615152559448" title>
                 </div>
-                <div class="image-caption">image-20200612153246882</div>
+                <div class="image-caption">image-20200615152559448</div>
             </figure>
 
-
-
-<h2 id="测试类编写"><a href="#测试类编写" class="headerlink" title="测试类编写"></a>测试类编写</h2><h3 id="注解说明"><a href="#注解说明" class="headerlink" title="注解说明"></a>注解说明</h3><ul>
-<li><code>@RunWith(SpringRunner.class)</code><ul>
-<li>注解在测试类上</li>
-<li>让测试在<code>spring</code>上下文环境下运行</li>
+<h2 id="命名规范"><a href="#命名规范" class="headerlink" title="命名规范"></a>命名规范</h2><ol>
+<li>针对每个单独的业务建立对应的测试包和测试资源文件夹，例如库存相关的业务都在<code>stock</code>包下，则针对库存的单元测试我们需要建立如下文件夹：<ul>
+<li><code>test\java\com.ccbft.antigoods.stock</code>，测试类文件所在包</li>
+<li><code>test\resources\stock</code>，资源文件所在位置（请求和预期的json文件，测试数据初始化脚本文件…）</li>
 </ul>
 </li>
-</ul>
+<li>一个<code>Controller</code>类或者一个<code>Service</code>类建立一个对应的测试类</li>
+<li>一个测试类对应一个单独的资源文件夹，文件夹名与测试的控制器类名一致（首字母小写）</li>
+</ol>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/note/2020/06/12/java/SpringBoot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/image-20200615152145731.png" alt="image-20200615152145731" title>
+                </div>
+                <div class="image-caption">image-20200615152145731</div>
+            </figure>
+
+<ol start="4">
+<li>测试类命名必须符合如下格式：<code>测试业务所在类+Test</code>，例如我们需要测试<code>GdsStockRequisitionController</code>控制器相关的业务，则建立测试类<code>GdsStockRequisitionControllerTest</code></li>
+<li>每个测试方法都有对应的请求json（文件命名格式：<code>测试方法名+Expected.json</code>），预期响应json（文件命名格式：<code>测试方法名+Request.json</code>），数据初始化脚本（格式：<code>测试方法名+Init.sql</code>）</li>
+</ol>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/note/2020/06/12/java/SpringBoot%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95/image-20200615152825748.png" alt="image-20200615152825748" title>
+                </div>
+                <div class="image-caption">image-20200615152825748</div>
+            </figure>
+
+<ol start="6">
+<li>当一个业务请求(例如:分页查询listByPage)需要进行不同入参的测试时，则会有多个测试方法（不建议在一个测试方法里把多个场景的测试都包含进去，保证测试方法的任务单一），建议多个方法名以不同数字结尾区分(例如:listByPageTest1，listByPageTest2 …依此类推)，每个方法需要注释清楚参数区别和应用场景</li>
+</ol>
+<h2 id="测试类编写"><a href="#测试类编写" class="headerlink" title="测试类编写"></a>测试类编写</h2><h3 id="注解说明"><a href="#注解说明" class="headerlink" title="注解说明"></a>注解说明</h3><ul>
+<li><p><code>@SpringBootTest</code></p>
 <ul>
-<li><code>@SpringBootTest</code><ul>
 <li>注解在测试类上</li>
 <li>告诉<code>spring</code>基于测试环境运行</li>
 </ul>
 </li>
-</ul>
-<ul>
-<li><p><code>@ActiveProfiles(&quot;local&quot;)</code></p>
+<li><p><code>@AutoConfigureMockMvc</code></p>
 <ul>
 <li>注解在测试类上</li>
-<li>指定测试运行时激活的配置文件</li>
+<li>自动配置MockMvc，再测试类中直接注入</li>
 </ul>
 </li>
-</ul>
-<ul>
 <li><p><code>@Test</code></p>
 <ul>
 <li>注解在测试方法上</li>
@@ -274,58 +328,55 @@
 <li>结合<code>MockMvc</code>发起HTTP请求，验证响应内容，完成交易测试预期</li>
 </ul>
 </li>
-</ul>
+<li><p><code>@Transactional</code></p>
 <ul>
-<li><code>@Transactional</code><ul>
 <li>注解在测试方法上</li>
 <li>保证方法内的数据库操作在同一个事务中</li>
 <li>整个测试方法完成后，默认会回滚事务，保证单元测试不污染数据</li>
 </ul>
 </li>
-</ul>
+<li><p><code>@SqlGroup</code></p>
 <ul>
-<li><code>@SqlGroup</code><ul>
 <li>注解在测试方法上</li>
 <li>定义一组sql文件，在方法执行前运行</li>
 </ul>
 </li>
-</ul>
+<li><p><code>@BeforeEach</code> 与 <code>@BeforeAll</code></p>
 <ul>
-<li><code>@Before</code> 与 <code>@BeforeClass</code><ul>
 <li>注解在测试初始化相关的方法上</li>
 <li><code>@Before</code> 注解的方法在测试类的每个测试方法调用前都会执行一次</li>
 <li><code>@BeforeClass</code> 注解的方法在所有测试类方法执行前只会运行一次</li>
 </ul>
 </li>
+<li><p><code>@AfterEach</code> 与 <code>@AfterAll</code></p>
+<ul>
+<li>注解在测试完成后相关的方法上</li>
+<li><code>@AfterEach</code> 每个测试方法调用完成后都会执行一次</li>
+<li><code>@AfterAll</code> 所有测试方法执行完成后运行一次</li>
+</ul>
+</li>
+<li><p><code>@Disabled</code></p>
+<ul>
+<li>注解在禁用的测试方法上</li>
+</ul>
+</li>
 </ul>
 <h3 id="让测试类运行在spring上下文"><a href="#让测试类运行在spring上下文" class="headerlink" title="让测试类运行在spring上下文"></a>让测试类运行在spring上下文</h3><p>给测试类添加如下注解：</p>
-<pre><code class="java">@RunWith(SpringRunner.class)
-@SpringBootTest
+<pre><code class="java">@SpringBootTest
+@ExtendWith(SpringExtension.class)
 public class GdsStockRequisitionControllerTest {}</code></pre>
 <h3 id="初始化工作"><a href="#初始化工作" class="headerlink" title="初始化工作"></a>初始化工作</h3><p>在进行测试前，我们需要做一些测试类的准备工作</p>
 <ul>
-<li>多租户标识</li>
+<li>mock对象构建<ul>
+<li>在测试类加入<code>@AutoConfigureMockMvc</code>注解</li>
+<li>注入<code>@Autowired private MockMvc mockMvc;</code></li>
 </ul>
-<pre><code class="java">@BeforeClass
-public static void buildMockMvcStatic() {
-    log.info(&quot;设置多租户标识&quot;);
-    // 设置多租户标识
-    DataSwapArea.buildNewSwapArea();
-    DataSwapArea.setValue(&quot;MultiTenancyId&quot;, &quot;BJ001&quot;);
-}</code></pre>
-<ul>
-<li>mock对象构建</li>
+</li>
 </ul>
-<pre><code class="java">@Before
-public void buildMockMvc() {
-    log.info(&quot;开始测试方法准备工作...&quot;);
-    // 构建mock对象，用于模拟网络HTTP请求
-    mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
-}</code></pre>
 <h3 id="测试方法定义"><a href="#测试方法定义" class="headerlink" title="测试方法定义"></a>测试方法定义</h3><p>针对具体的交易编写对应的测试方法，例如我们编写分页查询申请单(<code>listByPage</code>)的测试方法，则新建如下方法</p>
 <pre><code class="java">@Test
 @Transactional
-@SqlGroup({@Sql(&quot;classpath:stock/sql/addRequisition.sql&quot;)})
+@SqlGroup({@Sql(&quot;classpath:stock/gdsStockRequisitionController/listByPageTestInit.sql&quot;)})
 public void listByPageTest() throws Exception {}</code></pre>
 <ul>
 <li><p>我们做数据查询和删除时，都需要有初始化数据，可通过<code>@SqlGroup</code>注解在测试方法上定义</p>
@@ -341,9 +392,15 @@ public void listByPageTest() throws Exception {}</code></pre>
 <li>获取定义的请求json文件内容</li>
 <li>执行<code>mockMvc</code>发起http请求</li>
 <li>解析http响应json</li>
+<li>结果断言<ul>
+<li>判断HTTP响应码</li>
 <li>对比响应json与预期json是否匹配</li>
+</ul>
+</li>
 </ol>
 <h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li><p>每个HTTP请求都需要带上多租户标识，设置HTTP请求头<code>MultiTenancyId</code></p>
+</li>
 <li><p>如果接口需要获取登录用户，可在<code>http</code>请求头中加入<code>UserId</code>报文头</p>
 </li>
 <li><p>请把http请求和预期的json统一定义在文件中，不要直接定义在java代码里</p>
@@ -371,28 +428,30 @@ public void listByPageTest() throws Exception {}</code></pre>
 </ul>
 <pre><code class="java">package com.ccbft.antigoods.stock;
 
-import com.ccb.alg.core.swaparea.DataSwapArea;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.apache.http.HttpStatus;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 
@@ -401,30 +460,39 @@ import java.nio.charset.StandardCharsets;
  * &lt;p&gt;
  * {@link com.ccbft.antigoods.stock.controller.GdsStockRequisitionController}
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles(&quot;local&quot;)
+@AutoConfigureMockMvc // 自动配置注入MockMvc
+@ExtendWith(SpringExtension.class)
 @Slf4j
-public class GdsStockRequisitionControllerTest {
-
-    private static MockMvc mockMvc;
+class GdsStockRequisitionControllerTest {
 
     @Autowired
-    private WebApplicationContext wac;
+    private MockMvc mockMvc;
 
-    @BeforeClass
-    public static void buildMockMvcStatic() {
-        log.info(&quot;设置多租户标识&quot;);
-        // 设置多租户标识
-        DataSwapArea.buildNewSwapArea();
-        DataSwapArea.setValue(&quot;MultiTenancyId&quot;, &quot;BJ001&quot;);
+    @BeforeAll
+    static void beforeAll() {
+        // 在当前类的所有测试方法运行前执行
     }
 
-    @Before
-    public void buildMockMvc() {
-        log.info(&quot;开始测试方法准备工作...&quot;);
-        // 构建mock对象，用于模拟网络HTTP请求
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+    @AfterAll
+    static void afterAll() {
+        // 在当前类的所有测试方法运行完成后执行
+    }
+
+    @BeforeEach
+    void beforeEach() {
+        // 每个测试方法运行之前执行
+    }
+
+    @AfterEach
+    void afterEach() {
+        // 每个测试方法运行之后执行
+    }
+
+    @Disabled
+    @Test
+    void noUseTest() {
+        // 禁用该测试方法
     }
 
     /**
@@ -434,35 +502,38 @@ public class GdsStockRequisitionControllerTest {
      */
     @Test
     @Transactional // 事务注解默认回滚所有操作，不论成功失败，防止单元测试对数据的污染
-    @SqlGroup({@Sql(&quot;classpath:stock/sql/addRequisition.sql&quot;)}) // 初始化申请单数据
-    public void listByPageTest() throws Exception {
-        String requestJson = FileUtils.readFileToString(ResourceUtils.getFile(&quot;classpath:stock/json/getRequisitionRequest.json&quot;), StandardCharsets.UTF_8.toString());
+    @SqlGroup({@Sql(&quot;classpath:stock/gdsStockRequisitionController/listByPageTestInit.sql&quot;)})
+    // 初始化申请单数据
+    void listByPageTest() throws Exception {
+        String requestJson = FileUtils.readFileToString(ResourceUtils.getFile(&quot;classpath:stock/gdsStockRequisitionController/listByPageTestRequest.json&quot;), StandardCharsets.UTF_8.toString());
         MvcResult result = mockMvc.perform(
                 MockMvcRequestBuilders
                         // 请求地址
                         .post(&quot;/stock/gds-stock-requisition/listByPage&quot;)
                         // 请求的json内容
                         .content(requestJson)
+                        // 设置多租户标识
+                        .header(&quot;MultiTenancyId&quot;, &quot;BJ001&quot;)
                         // 设置登录用户ID
                         .header(&quot;UserId&quot;, &quot;bj_admin1&quot;)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andReturn();
         String resultJson = result.getResponse().getContentAsString();
-        String expectedJson = FileUtils.readFileToString(ResourceUtils.getFile(&quot;classpath:stock/json/successResponse.json&quot;), StandardCharsets.UTF_8.toString());
+        String expectedJson = FileUtils.readFileToString(ResourceUtils.getFile(&quot;classpath:stock/gdsStockRequisitionController/listByPageTestExpected.json&quot;), StandardCharsets.UTF_8.toString());
         log.info(&quot;响应内容：{}&quot;, resultJson);
         log.info(&quot;预期内容：{}&quot;, expectedJson);
+        Assertions.assertEquals(HttpStatus.SC_OK, result.getResponse().getStatus());
         JSONAssert.assertEquals(expectedJson, resultJson, false);
     }
-}
-</code></pre>
+}</code></pre>
 <ul>
-<li><code>addRequisition.sql</code></li>
+<li><code>listByPageTestInit.sql</code></li>
 </ul>
 <p>测试初始化脚本</p>
 <pre><code class="sql">INSERT INTO `gds_stock_requisition` VALUES (&#39;test_requisition_1&#39;, &#39;BJ001&#39;, &#39;0&#39;, &#39;0101&#39;, &#39;bj_admin&#39;, &#39;门头沟管理员&#39;, &#39;12345678901&#39;, &#39;2020-4-26 12:57:31&#39;, &#39;物资测试8个,&#39;, NULL, &#39;1&#39;, NULL);
 INSERT INTO `gds_stock_details` VALUES (&#39;test_details_1&#39;, &#39;BJ001&#39;, &#39;test_requisition_1&#39;, &#39;0&#39;, &#39;420100&#39;, &#39;武汉市&#39;, &#39;1&#39;, &#39;GCM0001&#39;, &#39;物资测试&#39;, &#39;0&#39;, NULL, &#39;个&#39;, 8, 8, &#39;2&#39;, &#39;2020-4-26 13:51:07&#39;, &#39;3&#39;, &#39;救灾物资&#39;, &#39;01&#39;, &#39;1&#39;, &#39;GdsStock_tobb7n21kq&#39;, NULL, NULL);</code></pre>
 <ul>
-<li><code>getRequisitionRequest.json</code></li>
+<li><code>listByPageTestRequest.json</code></li>
 </ul>
 <p>模拟HTTP请求的json</p>
 <pre><code class="json">{
@@ -481,7 +552,7 @@ INSERT INTO `gds_stock_details` VALUES (&#39;test_details_1&#39;, &#39;BJ001&#39
   }
 }</code></pre>
 <ul>
-<li><code>successResponse.json</code></li>
+<li><code>listByPageTestExpected.json</code></li>
 </ul>
 <p>预期响应对比的json</p>
 <pre><code class="json">{
@@ -495,7 +566,7 @@ INSERT INTO `gds_stock_details` VALUES (&#39;test_details_1&#39;, &#39;BJ001&#39
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2020-06-12T09:19:55.302Z" itemprop="dateUpdated">2020-06-12 17:19:55</time>
+    最后更新时间：<time datetime="2020-06-15T07:37:42.531Z" itemprop="dateUpdated">2020-06-15 15:37:42</time>
 </span><br>
 
 
