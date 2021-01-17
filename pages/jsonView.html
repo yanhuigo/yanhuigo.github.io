@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="../imgs/logo.jpg"/>
+    <base href="https://yanhui1993.gitee.io/" />
+    <title>Json View</title>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script src="/cdn/react/react.production.min.js"></script>
+<script src="/cdn/react/react-dom.production.min.js"></script>
+<script src="/cdn/react/react-json-view.js"></script>
+<script src="/cdn/react/babel.min.js"></script>
+
+<link rel="stylesheet" href="/cdn/bootstrap/bootstrap.min.css"/>
+<link href="/cdn/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script type="text/babel">
+
+    function MyJsonView() {
+
+        let [jsonContent, setJsonContent] = React.useState('{}');
+        let [dataJson, setDataJson] = React.useState({});
+
+        React.useEffect(() => {
+            setDataJson(JSON.parse(jsonContent));
+        }, [])
+
+        function loadJsonFile() {
+            setDataJson(JSON.parse(jsonContent));
+        }
+
+        function updateResult(updated_src) {
+            setJsonContent(JSON.stringify(updated_src, null, 4))
+        }
+
+        return (
+            <div>
+                <nav className="navbar navbar-dark bg-dark">
+                    <a className="navbar-brand" href="/">
+                        <i className="fa fa-code text-light link">&nbsp;&nbsp;JsonView</i>
+                    </a>
+                </nav>
+                <div className="mt-3 container-md">
+                    <div className="alert alert-info" role="alert">
+                        1、输入json文本，点击按钮生成json树
+                        <br/>
+                        2、支持节点内容复制
+                        <br/>
+                        3、支持节点新增、修改、删除，异动对应的json会同步更新输入框
+                    </div>
+                    <div className={"mb-1"}>
+                        <div className="form-group">
+                            <label htmlFor="exampleFormControlTextarea1">请输入JSON文本：</label>
+                            <textarea value={jsonContent} onChange={event => setJsonContent(event.target.value)}
+                                      className="form-control" id="exampleFormControlTextarea1" rows="5"/>
+                        </div>
+                    </div>
+                    <div className="mb-3 d-flex justify-content-center">
+                        <button type="button" className="btn btn-primary" onClick={() => {
+                            loadJsonFile();
+                        }}>渲染JSON树
+                        </button>
+                    </div>
+                    <div>
+                        <reactJsonView.default src={dataJson}
+                                               onSelect={(e) => {
+                                                   console.log(e)
+                                               }}
+                                               onAdd={({updated_src}) => {
+                                                   updateResult(updated_src);
+                                               }}
+                                               onDelete={({updated_src}) => {
+                                                   updateResult(updated_src);
+                                               }}
+                                               onEdit={({updated_src}) => {
+                                                   updateResult(updated_src);
+                                               }}/>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    ReactDOM.render(
+        <MyJsonView/>,
+        document.getElementById('root')
+    );
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,shrink-to-fit=no">
+    <base href="https://yanhui1993.gitee.io/" />
+    <title>Markdown笔记查看</title>
+    <style type="text/css">
+        *{
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+<link rel="stylesheet" href="/cdn/editormd/css/editormd.preview.css"/>
+
+<nav class="navbar navbar-dark bg-dark fixed-top pt-4">
+    <div class="align-items-center">
+        <a class="navbar-brand" href="#">
+            😀 Markdown Preview
+        </a>
+    </div>
+</nav>
+
+<div id="md-view" style="margin-top: 4rem">
+    <!-- Server-side output Markdown text -->
+    <textarea id="txt" style="display:none;"></textarea>
+</div>
+<script src="/cdn/bootstrap/jquery.slim.min.js"></script>
+<script src="/cdn/editormd/editormd.js"></script>
+<script src="/cdn/editormd/lib/marked.min.js"></script>
+<script src="/cdn/editormd/lib/prettify.min.js"></script>
+
+<link rel="stylesheet" href="/cdn/bootstrap/bootstrap.min.css"/>
+<script type="text/javascript">
+    function nativeCall(data) {
+        $("#txt").html(decodeURIComponent(data));
+        editormd.markdownToHTML("md-view", {});
+    }
+</script>
+</body>
+
+</html>
