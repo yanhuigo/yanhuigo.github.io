@@ -6,8 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0,shrink-to-fit=no">
     <title>Markdown笔记查看</title>
     <style type="text/css">
-        *{
+        * {
             font-size: 16px;
+        }
+
+        #md-view {
+            height: calc(100vh - 4.5rem);
+            margin-top: 4.5rem;
+        }
+        .title-icon{
+            vertical-align: sub;
         }
     </style>
 </head>
@@ -19,12 +27,13 @@
 <nav class="navbar navbar-dark bg-dark fixed-top pt-4">
     <div class="align-items-center">
         <a class="navbar-brand" href="#">
-            😀 Markdown Preview
+            <ion-icon class="title-icon" size="large" name="logo-markdown"></ion-icon>
+            <span id="title" style="font-size: 32px">Markdown Preview</span>
         </a>
     </div>
 </nav>
 
-<div id="md-view" style="margin-top: 4rem">
+<div id="md-view">
     <!-- Server-side output Markdown text -->
     <textarea id="txt" style="display:none;"></textarea>
 </div>
@@ -32,12 +41,14 @@
 <script src="/cdn/editormd/editormd.js"></script>
 <script src="/cdn/editormd/lib/marked.min.js"></script>
 <script src="/cdn/editormd/lib/prettify.min.js"></script>
-
+<script src="/cdn/ionicons/ionicons.js"></script>
 <link rel="stylesheet" href="/cdn/bootstrap/bootstrap.min.css"/>
 <script type="text/javascript">
     function nativeCall(data) {
         $("#txt").html(decodeURIComponent(data));
         editormd.markdownToHTML("md-view", {});
+        let text = document.querySelector("h1").innerText;
+        $("#title").text(text);
     }
 </script>
 </body>
