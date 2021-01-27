@@ -30,6 +30,7 @@ let common = (function () {
     axios.interceptors.response.use(function (response) {
         return response.data;
     }, function (error) {
+        // 如果登录过  则拿 refresh token 换新的token
         return Promise.reject(error);
     });
 

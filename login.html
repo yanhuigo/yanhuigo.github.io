@@ -10,14 +10,42 @@
 
 <div id="root">
 
-    <div>用户名：<input type="text" v-model="username"/></div>
-    <div>密码 <input type="password" v-model="password"/></div>
-    <div>
-        <button @click="oauth">login</button>
-    </div>
+    <section class="signin">
+        <div class="container">
+
+            <div class="sign-content">
+                <h2>sign in</h2>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="signin-form">
+                            <form @submit.prevent="oauth">
+                                <div class="form-group">
+                                    <label for="signin_name">Username</label>
+                                    <input v-model="username" type="text" class="form-control" id="signin_name"
+                                           placeholder="enter your username">
+                                </div><!--/.form-group -->
+                                <div class="form-group">
+                                    <label for="signin_pwd">Password</label>
+                                    <input v-model="password" type="password" class="form-control" id="signin_pwd"
+                                           placeholder="Password">
+                                </div>
+                                <div v-show="loginErr" class="alert alert-danger">用户名或密码错误</div>
+                                <button type="submit" class="btn btn-primary" data-toggle="modal"
+                                        data-target=".signin_modal">
+                                    sign in
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
 
 </div>
-
+<link rel="stylesheet" href="cdn/bootstrap/bootstrap.min.css"/>
 <script src="cdn/vue/vue.min.js"></script>
 <script src="cdn/axios.min.js"></script>
 <script src="cdn/common.js"></script>
@@ -27,7 +55,7 @@
     new Vue({
         el: "#root",
         data() {
-            return {username: "", password: ""}
+            return {username: "", password: "", loginErr: false}
         },
         methods: {
 
@@ -47,6 +75,9 @@
                     common.initFileTree().then(() => {
                         this.navPage();
                     })
+                }).catch(err => {
+                    console.log(err);
+                    this.loginErr = true;
                 });
             },
 
