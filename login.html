@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="imgs/logo.jpg"/>
+    <title>Login Page</title>
+</head>
+<body>
+
+<div id="root">
+
+    <div>用户名：<input type="text" v-model="username"/></div>
+    <div>密码 <input type="password" v-model="password"/></div>
+    <div>
+        <button @click="oauth">login</button>
+    </div>
+
+</div>
+
+<script src="cdn/vue/vue.min.js"></script>
+<script src="cdn/axios.min.js"></script>
+<script src="cdn/common.js"></script>
+<script>
+
+    const storage_login = "login-state";
+    new Vue({
+        el: "#root",
+        data() {
+            return {username: "", password: ""}
+        },
+        methods: {
+
+            oauth() {
+                if (this.username.trim() === "" || this.password.trim() === "") {
+                    return;
+                }
+                axios.post('https://gitee.com/oauth/token', {
+                    grant_type: "password",
+                    username: this.username,
+                    password: this.password,
+                    client_id: common.config.client_id,
+                    client_secret: common.config.client_secret,
+                    scope: "projects",
+                }).then(data => {
+                    localStorage.setItem(storage_login, JSON.stringify(data));
+                    common.initFileTree().then(() => {
+                        this.navPage();
+                    })
+                });
+            },
+
+            loginValid() {
+                let loginStorageData = localStorage.getItem(storage_login);
+                if (loginStorageData) {
+                    this.navPage();
+                }
+            },
+
+            navPage() {
+                window.location.href = "/index.html";
+            }
+        },
+        mounted() {
+            this.loginValid();
+        }
+    })
+
+</script>
+</body>
+</html>
