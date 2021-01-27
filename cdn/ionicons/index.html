@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="../logo.jpg"/>
+    <title>lonicons</title>
+</head>
+<body>
+
+<div id="root" class="container">
+    <h2 class="p-3 text-center">lonicons 图标</h2>
+
+    <div class="alert alert-secondary text-light bg-dark font-weight-bold" role="alert">
+        使用方法：
+        <br/>
+        &ltscript src="/cdn/ionicons/ionicons.js"&gt&lt/script&gt
+        <br/>
+        &ltion-icon size="large|small" name="图标名"&gt&lt/ion-icon&gt
+    </div>
+
+    <div class="d-flex my-2">
+        <div class="flex-grow-1 mr-1">
+            <input class="form-control" type="text" v-model="searchTxt" placeholder="输入关键字回车，搜索图标..."
+                   @keyup.enter="search"/>
+        </div>
+        <button type="button" class="btn btn-outline-info" @click="search">查询</button>
+    </div>
+    <div class="alert alert-success" role="alert">
+        <span class="mr-2">默认显示前 <b>100</b> 个图标，总共 <b>{{total}}</b> 个图标</span>
+        <button type="button" class="btn btn-outline-success" @click="searchAll">查看所有</button>
+    </div>
+
+    <div style="display: flex;flex-wrap: wrap;">
+        <div class="d-flex m-2 align-items-center bg-light p-2 rounded" v-for="icon in icons">
+            <ion-icon size="large" :name="icon.name"></ion-icon>
+            <span class="ml-1">{{icon.name}}</span>
+        </div>
+    </div>
+</div>
+
+<script src="../vue/vue.min.js"></script>
+<script src="./ionicons.js"></script>
+
+<script>
+
+    let iconDataList = [];
+    new Vue({
+        el: "#root",
+        data() {
+            return {icons: [], searchTxt: "", total: 0}
+        },
+        methods: {
+            search() {
+                if (this.searchTxt === "") {
+                    this.icons = iconDataList.slice(0, 100);
+                    return;
+                }
+                this.icons = iconDataList.filter(icon => (icon.name.toUpperCase().indexOf(this.searchTxt.toUpperCase()) !== -1)).slice(0, 30);
+            },
+            searchAll() {
+                this.searchTxt = "";
+                this.icons = iconDataList;
+            }
+        },
+        mounted() {
+            fetch("./ionicons.json").then(res => res.json()).then(data => {
+                iconDataList = data.icons;
+                this.total = iconDataList.length;
+                this.icons = iconDataList.slice(0, 100);
+            })
+        }
+    })
+
+</script>
+
+<link rel="stylesheet" href="../bootstrap/bootstrap.min.css"/>
+
+</body>
+</html>

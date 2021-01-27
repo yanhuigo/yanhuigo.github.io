@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/jpeg" sizes="80x80" href="imgs/logo.jpg"/>
-    <title>Chrome书签</title>
+    <title>站点导航</title>
     <style type="text/css">
         .custom-control-input, .custom-control-label {
             cursor: pointer;
@@ -29,77 +29,17 @@
 
 <div id="root" class="container-fluid overflow-hidden" style="padding: 0">
     <nav class="navbar navbar-dark bg-dark yh-nav">
-        <div class="align-items-center">
-            <i class="fa fa-2x fa-chrome text-light link mr-2 title-align-sub"></i>
-            <a class="navbar-brand" href="#">
-                Chrome Bookmarks
-            </a>
-        </div>
-        <div class="form-inline my-2 my-lg-0">
-            <i class="fa fa-2x fa-refresh text-light link mr-2" :class="loading ? 'fa-spin' : ''"
-               @click="refreshData"></i>
-        </div>
+        <!--    <div class="align-items-center">
+                <i class="fa fa-2x fa-chrome text-light link mr-2 title-align-sub"></i>
+                <a class="navbar-brand" href="#">
+                    Chrome Bookmarks
+                </a>
+            </div>
+            <div class="form-inline my-2 my-lg-0">
+                <i class="fa fa-2x fa-refresh text-light link mr-2" :class="loading ? 'fa-spin' : ''"
+                   @click="refreshData"></i>
+            </div>-->
     </nav>
-
-    <div class="mx-2 mt-3" style="overflow: hidden">
-        <input v-model="searchTxt" class="form-control mr-sm-2" type="search" placeholder="搜索书签..." aria-label="Search"
-               @keyup.enter="search"/>
-        <div class="alert alert-success mt-3" role="alert">
-            <span class="font-weight-bold">分类：</span>
-            <div class="custom-control custom-radio custom-control-inline m-1 mr-2"
-                 v-for="type in bmTypeList">
-                <input @click="typeClick(type)" v-model="checkedType" :value="type" type="radio" :id="'id_'+type"
-                       name="bmType"
-                       class="custom-control-input"/>
-                <label class="custom-control-label" :for="'id_'+type">{{type}}</label>
-            </div>
-        </div>
-
-        <div class="alert alert-info" role="alert" v-show="bmTagList && bmTagList.length>0">
-            <span class="font-weight-bold">标签：</span>
-            <div class="custom-control custom-radio custom-control-inline m-1 mr-2" v-for="tag in bmTagList">
-                <input @click="tagClick(tag)" v-model="checkedTag" :value="tag.name" type="radio" :id="'id_'+tag.name"
-                       name="bmTag"
-                       class="custom-control-input">
-                <label class="custom-control-label" :for="'id_'+tag.name">{{tag.name}}</label>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="p-2 d-flex flex-row flex-wrap justify-content-center link">
-        <a v-for="bm in bmList" target="_blank" :href="bm.c" :title="bm.b+'\n'+bm.c"
-           class="overflow-hidden bg-light m-2 p-3 list-group-item-action col-12 col-md-6 col-lg-3 mt-2 link">
-            <div class="d-flex w-100 justify-content-between text-nowrap">
-                <span class="mb-1 h6">{{bm.b}}</span>
-            </div>
-            <small>
-                <span class="badge badge-success">{{bm.type}}</span>
-                <span class="badge badge-info">{{bm.tag}}</span>
-            </small>
-            <label class="mb-1 text-info text-nowrap">{{bm.c}}</label>
-        </a>
-    </div>
-
-    <div tabindex="-1" class="modal d-block shadow bg-light" v-if="!hasInitAPI">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">请输入应用访问KEY</h5>
-                </div>
-                <div class="modal-body">
-                    <input ref="ref_inp_key" @keypress.enter="validAPIKey" v-model="apiKey" class="form-control"
-                           type="password" placeholder="输入应用访问KEY"/>
-                    <div class="invalid-feedback d-block" v-if="hasInitError">
-                        应用KEY校验失败
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @click="validAPIKey">确认</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
 </div>
 
@@ -109,181 +49,158 @@
 <link href="/cdn/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 <script>
 
-    let bmTypeList = [];//分类集合
-    let bmTagList = [];//标签集合  分类下的多级子分类
-    let bmList = [];
+    const Base64 = {
 
-    function recursionBookmark(bm, type, tag) {
-        if (bm.a) { // 子分类文件夹
-            for (let cbm of bm.a) {
-                if (cbm.a) {
-                    bmTagList.push({name: cbm.b, type});
-                    recursionBookmark(cbm, type, cbm.b);
-                } else {
-                    recursionBookmark(cbm, type, tag);
+        // private property
+        _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+        // public method for encoding
+        encode: function (input) {
+            var output = "";
+            var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+            var i = 0;
+
+            input = Base64._utf8_encode(input);
+
+            while (i < input.length) {
+
+                chr1 = input.charCodeAt(i++);
+                chr2 = input.charCodeAt(i++);
+                chr3 = input.charCodeAt(i++);
+
+                enc1 = chr1 >> 2;
+                enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+                enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+                enc4 = chr3 & 63;
+
+                if (isNaN(chr2)) {
+                    enc3 = enc4 = 64;
+                } else if (isNaN(chr3)) {
+                    enc4 = 64;
                 }
-            }
-        } else if (bm.c) {//书签
-            type && (bm.type = type);
-            tag && (bm.tag = tag);
-            bmList.push(bm);
-        }
-    }
 
+                output = output +
+                    this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
+                    this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+
+            }
+
+            return output;
+        },
+
+        // public method for decoding
+        decode: function (input) {
+            var output = "";
+            var chr1, chr2, chr3;
+            var enc1, enc2, enc3, enc4;
+            var i = 0;
+
+            input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+            while (i < input.length) {
+
+                enc1 = this._keyStr.indexOf(input.charAt(i++));
+                enc2 = this._keyStr.indexOf(input.charAt(i++));
+                enc3 = this._keyStr.indexOf(input.charAt(i++));
+                enc4 = this._keyStr.indexOf(input.charAt(i++));
+
+                chr1 = (enc1 << 2) | (enc2 >> 4);
+                chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+                chr3 = ((enc3 & 3) << 6) | enc4;
+
+                output = output + String.fromCharCode(chr1);
+
+                if (enc3 != 64) {
+                    output = output + String.fromCharCode(chr2);
+                }
+                if (enc4 != 64) {
+                    output = output + String.fromCharCode(chr3);
+                }
+
+            }
+
+            output = Base64._utf8_decode(output);
+
+            return output;
+
+        },
+
+        // private method for UTF-8 encoding
+        _utf8_encode: function (string) {
+            string = string.replace(/\r\n/g, "\n");
+            var utftext = "";
+
+            for (var n = 0; n < string.length; n++) {
+
+                var c = string.charCodeAt(n);
+
+                if (c < 128) {
+                    utftext += String.fromCharCode(c);
+                } else if ((c > 127) && (c < 2048)) {
+                    utftext += String.fromCharCode((c >> 6) | 192);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                } else {
+                    utftext += String.fromCharCode((c >> 12) | 224);
+                    utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                    utftext += String.fromCharCode((c & 63) | 128);
+                }
+
+            }
+
+            return utftext;
+        },
+
+        // private method for UTF-8 decoding
+        _utf8_decode: function (utftext) {
+            var string = "";
+            var i = 0;
+            var c = c1 = c2 = 0;
+
+            while (i < utftext.length) {
+
+                c = utftext.charCodeAt(i);
+
+                if (c < 128) {
+                    string += String.fromCharCode(c);
+                    i++;
+                } else if ((c > 191) && (c < 224)) {
+                    c2 = utftext.charCodeAt(i + 1);
+                    string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+                    i += 2;
+                } else {
+                    c2 = utftext.charCodeAt(i + 1);
+                    c3 = utftext.charCodeAt(i + 2);
+                    string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+                    i += 3;
+                }
+
+            }
+
+            return string;
+        }
+
+    }
+    const api_prefix = `https://gitee.com/api/v5/repos/yanhui2018/note.public`;
+    let token = `5abe8ab67784c03a6f6808be77115cab`;
     new Vue({
         el: "#root",
         data() {
-            return {
-                bmTypeList: [],
-                bmTagList: [],
-                bmList: [],
-                checkedType: "",
-                checkedTag: "",
-                searchTxt: "",
-                loading: false,
-                hasInitAPI: true,
-                hasInitError: false,
-                apiKey: ""
-            }
+            return {}
         },
-        watch: {
-            checkedType(val) {
-                this.checkedTag = "";
-                this.bmTagList = bmTagList.filter(n => n.type === val);
-                this.bmList = bmList.filter(n => n.type === val);
-            }
-        },
-        methods: {
-            search() {
-                this.bmList = bmList.filter(
-                    n => n.b.toUpperCase().indexOf(this.searchTxt.toUpperCase()) !== -1 ||
-                        n.c.toUpperCase().indexOf(this.searchTxt.toUpperCase()) !== -1
-                );
-                this.checkedTag = "";
-                this.searchTxt = "";
-            },
-            typeClick(type) {
-                this.bmList = bmList.filter(n => n.type === type);
-            },
-            tagClick(tag) {
-                let checkedTag = tag.name;
-                if (tag.name === this.checkedTag) {
-                    this.checkedTag = "";
-                    checkedTag = "";
-                }
-
-                if (checkedTag === "") {
-                    this.bmList = bmList.filter(n => n.type === this.checkedType);
-                    return;
-                }
-
-                this.bmList = bmList.filter(bm => {
-                    if (!bm.tag) {
-                        return false;
-                    }
-                    return bm.tag === checkedTag;
-                });
-            },
-            refreshData() {
-                let result = confirm("确认重新下载书签数据？");
-                if (result) {
-                    this.loading = true;
-                    localStorage.removeItem("bmJsonData");
-                    this.checkedType = "";
-                    this.checkedTag = "";
-                    bmList = [];
-                    bmTypeList = [];
-                    bmTagList = [];
-                    this.bmTypeList = [];
-                    this.bmTagList = [];
-                    this.bmList = [];
-                    this.loadData();
-                    setTimeout(() => {
-                        this.loading = false;
-                    }, 3000)
-                }
-                return false;
-            },
-            loadData(refreshCache) {
-                return new Promise((resolve, reject) => {
-                    let cache = localStorage.getItem("bmJsonData");
-                    if (!refreshCache && cache) {
-                        this.bmDataHandle(cache);
-                        return;
-                    }
-                    const query = Bmob.Query('dataJsonTable');
-                    query.equalTo("key", "==", "chrome.bookmark");
-                    query.find().then(data => {
-                        if (data.length === 1) {
-                            let bmJsonData = data[0].jsondata;
-                            localStorage.setItem("bmJsonData", bmJsonData);
-                            this.bmDataHandle(bmJsonData);
-                            resolve();
-                        }
-                    }).catch(e => {
-                        reject(e);
-                    });
-                })
-            },
-
-            bmDataHandle(bmJsonData) {
-                let bmRoot = JSON.parse(bmJsonData);
-                // 书签栏书签集合 a = children b=title c=url
-                let rootBmList = bmRoot.a;
-                for (let bm of rootBmList) {
-                    // 如果有子节点  则代表分类
-                    if (bm.a) {
-                        recursionBookmark(bm, bm.b, null);
-                        bmTypeList.push(bm.b);
-                    } else {
-                        recursionBookmark(bm, null, null);
-                    }
-                }
-                console.log("bmTypeList", bmTypeList);
-                console.log("bmTagList", bmTagList);
-                console.log("bmList", bmList);
-                this.checkedType = bmTypeList[0];
-                this.bmTypeList = bmTypeList;
-                this.bmTagList = bmTagList;
-                this.bmList = bmList;
-                this.loading = false;
-            },
-
-            validAPIKey() {
-                Bmob.initialize("025e7938678e2ec8", this.apiKey);
-                this.loadData(true).then(() => {
-                    this.hasInitAPI = true;
-                    localStorage.setItem("apiKey", window.btoa(this.apiKey));
-                }).catch(e => {
-                    console.log("校验失败", e)
-                    this.hasInitError = true;
-                });
-            },
-
-            initAPI() {
-                return new Promise((resolve, reject) => {
-                    let apiKey = localStorage.getItem("apiKey");
-                    if (apiKey) {
-                        // 要求输入API KEY
-                        Bmob.initialize("025e7938678e2ec8", window.atob(apiKey));
-                        resolve();
-                    } else {
-                        this.hasInitAPI = false;
-                        this.$nextTick(() => {
-                            this.$refs['ref_inp_key'].focus();
-                        })
-                        reject("未识别身份");
-                    }
-                })
-
-            }
-        },
+        methods: {},
         mounted() {
-            this.initAPI().then(() => {
-                this.loadData();
-            }).catch(e => {
-                console.log(e)
-            });
+            // 获取项目下的文件树
+            fetch(`${api_prefix}/git/trees/master?access_token=${token}&recursive=1`).then(data => data.json()).then(data => {
+                console.log("file tree ", data)
+                let {tree} = data;
+                let file = tree[0];
+                let {path, sha} = file;
+                // 获取指定文件的内容
+                fetch(`${api_prefix}/git/blobs/${sha}?access_token==${token}`).then(data => data.json()).then(file => {
+                    console.log(`${path}`, file);
+                    console.log(Base64.decode(file.content))
+                })
+            })
         }
     })
 
