@@ -38,6 +38,9 @@
         <div class="form-inline my-2 my-lg-0">
             <i class="fa fa-2x fa-refresh text-light link mr-2" :class="loading ? 'fa-spin' : ''"
                @click="refreshData"></i>
+
+            <i class="fa fa-2x fa-sign-out text-light link ml-3" @click="logout"></i>
+
         </div>
     </nav>
 
@@ -132,6 +135,13 @@
             }
         },
         methods: {
+            logout() {
+                let result = confirm("确认登出？");
+                if (result) {
+                    localStorage.clear();
+                    window.location.href = "/login.html"
+                }
+            },
             search() {
                 this.bmList = bmList.filter(
                     n => n.b.toUpperCase().indexOf(this.searchTxt.toUpperCase()) !== -1 ||
