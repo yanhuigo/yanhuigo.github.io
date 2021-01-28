@@ -6,763 +6,114 @@
     <link rel="icon" type="image/jpeg" sizes="80x80" href="logo.jpg"/>
     <title>CDN Index Page</title>
     <style type="text/css">
+        .yh-content > div {
+            max-height: 500px;
+            overflow-y: auto;
+        }
     </style>
 </head>
 <body>
-<h1 style="text-align: center">CDN Index Page</h1>
-
 
 <div id="app">
-    <h2>Templates</h2>
-    <ul>
-        <li v-for="tpl in templates">
-            <a target="_blank" :href="'templates/'+tpl">{{'templates/' + tpl}}</a>
-        </li>
-    </ul>
 
-    <h2>JSLibs</h2>
-    <ul>
-        <li v-for="jsLib in jsLibs">
-            <a target="_blank" :href="jsLib.link">{{jsLib.name}}</a>
-        </li>
-    </ul>
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="align-items-center">
+            <a class="navbar-brand" href="#">
+                CDN Index
+            </a>
+        </div>
+        <div class="form-inline my-2 my-lg-0">
+            <button @click="refresh" type="button" class="btn btn-link">
+                <i class="fa fa-2x fa-refresh text-light link mr-2"></i>
+            </button>
+        </div>
+    </nav>
 
-    <h2>Icons</h2>
-    <ul>
-        <li v-for="icon in icons">
-            <a target="_blank" :href="icon.link">{{icon.name}}</a>
-        </li>
-    </ul>
+    <div class="p-3 d-md-flex justify-content-around flex-wrap yh-content">
+
+        <div class="card h-100 my-3">
+            <div class="card-header">Templates</div>
+            <div class="card-body">
+                <ul>
+                    <li v-for="tpl in cfg.templates">
+                        <a target="_blank" :href="'templates/'+tpl">{{'templates/' + tpl}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card h-100 my-3">
+            <div class="card-header">JSLibs</div>
+            <div class="card-body">
+                <ul>
+                    <li v-for="jsLib in cfg.jsLibs">
+                        <a target="_blank" :href="jsLib.link">{{jsLib.name}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card h-100 my-3">
+            <div class="card-header">Icons</div>
+            <div class="card-body">
+                <ul>
+                    <li v-for="icon in cfg.icons">
+                        <a target="_blank" :href="icon.link">{{icon.name}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card h-100 my-3">
+            <div class="card-header">CDN Files Tree</div>
+            <div class="card-body">
+                <pre v-html="fileTree"></pre>
+            </div>
+        </div>
+    </div>
 
 </div>
 
-<h2>All CDN Files Tree</h2>
-<pre style="background-color: black;color: wheat">
-<code>
-查看树形结构命令 ==> tree /F
-
-│────────────────────────CDN───────────────────────────────│
-│
-├─vue
-│   vue-router.js
-│   vue.min.js
-│
-├─react
-│      babel.min.js
-│      react-dom.production.min.js
-│      react-json-view.js
-│      react.production.min.js
-│
-├─bootstrap
-│  │  bootstrap.min.css
-│  │  bootstrap.min.js
-│  │  jquery.slim.min.js
-│  │  popper.min.js
-│  │
-│  └─icons
-│      │  bootstrap-icons.css
-│      │  bootstrap-icons.json
-│      │  index.html
-│      │
-│      └─fonts
-│              bootstrap-icons.woff
-│              bootstrap-icons.woff2
-│
-├─templates
-│      react.html
-│      vue-router.html
-│      vue.html
-│
-├─Bmob-2.2.5.min.js
-│
-├─font-awesome-4.7.0
-│  ├─css
-│  │      font-awesome.css
-│  │      font-awesome.min.css
-│  │
-│  └─fonts
-│          fontawesome-webfont.eot
-│          fontawesome-webfont.svg
-│          fontawesome-webfont.ttf
-│          fontawesome-webfont.woff
-│          fontawesome-webfont.woff2
-│          FontAwesome.otf
-├─ionicons
-│    index.html
-│    ionicons.js
-│    ionicons.json
-│
-│
-├─editormd
-│  │  editormd.js
-│  │  editormd.min.js
-│  │
-│  ├─css
-│  │      editormd.css
-│  │      editormd.logo.css
-│  │      editormd.logo.min.css
-│  │      editormd.min.css
-│  │      editormd.preview.css
-│  │      editormd.preview.min.css
-│  │
-│  ├─fonts
-│  │      editormd-logo.eot
-│  │      editormd-logo.svg
-│  │      editormd-logo.ttf
-│  │      editormd-logo.woff
-│  │      fontawesome-webfont.eot
-│  │      fontawesome-webfont.svg
-│  │      fontawesome-webfont.ttf
-│  │      fontawesome-webfont.woff
-│  │      fontawesome-webfont.woff2
-│  │      FontAwesome.otf
-│  │
-│  ├─images
-│  │  │  loading.gif
-│  │  │  loading@2x.gif
-│  │  │  loading@3x.gif
-│  │  │
-│  │  └─logos
-│  │          editormd-favicon-16x16.ico
-│  │          editormd-favicon-24x24.ico
-│  │          editormd-favicon-32x32.ico
-│  │          editormd-favicon-48x48.ico
-│  │          editormd-favicon-64x64.ico
-│  │          editormd-logo-114x114.png
-│  │          editormd-logo-120x120.png
-│  │          editormd-logo-144x144.png
-│  │          editormd-logo-16x16.png
-│  │          editormd-logo-180x180.png
-│  │          editormd-logo-240x240.png
-│  │          editormd-logo-24x24.png
-│  │          editormd-logo-320x320.png
-│  │          editormd-logo-32x32.png
-│  │          editormd-logo-48x48.png
-│  │          editormd-logo-57x57.png
-│  │          editormd-logo-64x64.png
-│  │          editormd-logo-72x72.png
-│  │          editormd-logo-96x96.png
-│  │          vi.png
-│  │
-│  ├─lib
-│  │  │  flowchart.min.js
-│  │  │  jquery.flowchart.min.js
-│  │  │  marked.min.js
-│  │  │  prettify.min.js
-│  │  │  raphael.min.js
-│  │  │  sequence-diagram.min.js
-│  │  │  underscore.min.js
-│  │  │
-│  │  └─codemirror
-│  │      │  addons.min.js
-│  │      │  AUTHORS
-│  │      │  bower.json
-│  │      │  codemirror.min.css
-│  │      │  codemirror.min.js
-│  │      │  LICENSE
-│  │      │  modes.min.js
-│  │      │  package.json
-│  │      │  README.md
-│  │      │
-│  │      ├─addon
-│  │      │  ├─comment
-│  │      │  │      comment.js
-│  │      │  │      continuecomment.js
-│  │      │  │
-│  │      │  ├─dialog
-│  │      │  │      dialog.css
-│  │      │  │      dialog.js
-│  │      │  │
-│  │      │  ├─display
-│  │      │  │      fullscreen.css
-│  │      │  │      fullscreen.js
-│  │      │  │      panel.js
-│  │      │  │      placeholder.js
-│  │      │  │      rulers.js
-│  │      │  │
-│  │      │  ├─edit
-│  │      │  │      closebrackets.js
-│  │      │  │      closetag.js
-│  │      │  │      continuelist.js
-│  │      │  │      matchbrackets.js
-│  │      │  │      matchtags.js
-│  │      │  │      trailingspace.js
-│  │      │  │
-│  │      │  ├─fold
-│  │      │  │      brace-fold.js
-│  │      │  │      comment-fold.js
-│  │      │  │      foldcode.js
-│  │      │  │      foldgutter.css
-│  │      │  │      foldgutter.js
-│  │      │  │      indent-fold.js
-│  │      │  │      markdown-fold.js
-│  │      │  │      xml-fold.js
-│  │      │  │
-│  │      │  ├─hint
-│  │      │  │      anyword-hint.js
-│  │      │  │      css-hint.js
-│  │      │  │      html-hint.js
-│  │      │  │      javascript-hint.js
-│  │      │  │      show-hint.css
-│  │      │  │      show-hint.js
-│  │      │  │      sql-hint.js
-│  │      │  │      xml-hint.js
-│  │      │  │
-│  │      │  ├─lint
-│  │      │  │      coffeescript-lint.js
-│  │      │  │      css-lint.js
-│  │      │  │      javascript-lint.js
-│  │      │  │      json-lint.js
-│  │      │  │      lint.css
-│  │      │  │      lint.js
-│  │      │  │      yaml-lint.js
-│  │      │  │
-│  │      │  ├─merge
-│  │      │  │      merge.css
-│  │      │  │      merge.js
-│  │      │  │
-│  │      │  ├─mode
-│  │      │  │      loadmode.js
-│  │      │  │      multiplex.js
-│  │      │  │      multiplex_test.js
-│  │      │  │      overlay.js
-│  │      │  │      simple.js
-│  │      │  │
-│  │      │  ├─runmode
-│  │      │  │      colorize.js
-│  │      │  │      runmode-standalone.js
-│  │      │  │      runmode.js
-│  │      │  │      runmode.node.js
-│  │      │  │
-│  │      │  ├─scroll
-│  │      │  │      annotatescrollbar.js
-│  │      │  │      scrollpastend.js
-│  │      │  │      simplescrollbars.css
-│  │      │  │      simplescrollbars.js
-│  │      │  │
-│  │      │  ├─search
-│  │      │  │      match-highlighter.js
-│  │      │  │      matchesonscrollbar.css
-│  │      │  │      matchesonscrollbar.js
-│  │      │  │      search.js
-│  │      │  │      searchcursor.js
-│  │      │  │
-│  │      │  ├─selection
-│  │      │  │      active-line.js
-│  │      │  │      mark-selection.js
-│  │      │  │      selection-pointer.js
-│  │      │  │
-│  │      │  ├─tern
-│  │      │  │      tern.css
-│  │      │  │      tern.js
-│  │      │  │      worker.js
-│  │      │  │
-│  │      │  └─wrap
-│  │      │          hardwrap.js
-│  │      │
-│  │      ├─lib
-│  │      │      codemirror.css
-│  │      │      codemirror.js
-│  │      │
-│  │      ├─mode
-│  │      │  │  index.html
-│  │      │  │  meta.js
-│  │      │  │
-│  │      │  ├─apl
-│  │      │  │      apl.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─asterisk
-│  │      │  │      asterisk.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─clike
-│  │      │  │      clike.js
-│  │      │  │      index.html
-│  │      │  │      scala.html
-│  │      │  │
-│  │      │  ├─clojure
-│  │      │  │      clojure.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─cobol
-│  │      │  │      cobol.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─coffeescript
-│  │      │  │      coffeescript.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─commonlisp
-│  │      │  │      commonlisp.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─css
-│  │      │  │      css.js
-│  │      │  │      index.html
-│  │      │  │      less.html
-│  │      │  │      less_test.js
-│  │      │  │      scss.html
-│  │      │  │      scss_test.js
-│  │      │  │      test.js
-│  │      │  │
-│  │      │  ├─cypher
-│  │      │  │      cypher.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─d
-│  │      │  │      d.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─dart
-│  │      │  │      dart.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─diff
-│  │      │  │      diff.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─django
-│  │      │  │      django.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─dockerfile
-│  │      │  │      dockerfile.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─dtd
-│  │      │  │      dtd.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─dylan
-│  │      │  │      dylan.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─ebnf
-│  │      │  │      ebnf.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─ecl
-│  │      │  │      ecl.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─eiffel
-│  │      │  │      eiffel.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─erlang
-│  │      │  │      erlang.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─forth
-│  │      │  │      forth.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─fortran
-│  │      │  │      fortran.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─gas
-│  │      │  │      gas.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─gfm
-│  │      │  │      gfm.js
-│  │      │  │      index.html
-│  │      │  │      test.js
-│  │      │  │
-│  │      │  ├─gherkin
-│  │      │  │      gherkin.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─go
-│  │      │  │      go.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─groovy
-│  │      │  │      groovy.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─haml
-│  │      │  │      haml.js
-│  │      │  │      index.html
-│  │      │  │      test.js
-│  │      │  │
-│  │      │  ├─haskell
-│  │      │  │      haskell.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─haxe
-│  │      │  │      haxe.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─htmlembedded
-│  │      │  │      htmlembedded.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─htmlmixed
-│  │      │  │      htmlmixed.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─http
-│  │      │  │      http.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─idl
-│  │      │  │      idl.js
-│  │      │  │      index.html
-│  │      │  │
-│  │      │  ├─jade
-│  │      │  │      index.html
-│  │      │  │      jade.js
-│  │      │  │
-│  │      │  ├─javascript
-│  │      │  │      index.html
-│  │      │  │      javascript.js
-│  │      │  │      json-ld.html
-│  │      │  │      test.js
-│  │      │  │      typescript.html
-│  │      │  │
-│  │      │  ├─jinja2
-│  │      │  │      index.html
-│  │      │  │      jinja2.js
-│  │      │  │
-│  │      │  ├─julia
-│  │      │  │      index.html
-│  │      │  │      julia.js
-│  │      │  │
-│  │      │  ├─kotlin
-│  │      │  │      index.html
-│  │      │  │      kotlin.js
-│  │      │  │
-│  │      │  ├─livescript
-│  │      │  │      index.html
-│  │      │  │      livescript.js
-│  │      │  │
-│  │      │  ├─lua
-│  │      │  │      index.html
-│  │      │  │      lua.js
-│  │      │  │
-│  │      │  ├─markdown
-│  │      │  │      index.html
-│  │      │  │      markdown.js
-│  │      │  │      test.js
-│  │      │  │
-│  │      │  ├─mirc
-│  │      │  │      index.html
-│  │      │  │      mirc.js
-│  │      │  │
-│  │      │  ├─mllike
-│  │      │  │      index.html
-│  │      │  │      mllike.js
-│  │      │  │
-│  │      │  ├─modelica
-│  │      │  │      index.html
-│  │      │  │      modelica.js
-│  │      │  │
-│  │      │  ├─nginx
-│  │      │  │      index.html
-│  │      │  │      nginx.js
-│  │      │  │
-│  │      │  ├─ntriples
-│  │      │  │      index.html
-│  │      │  │      ntriples.js
-│  │      │  │
-│  │      │  ├─octave
-│  │      │  │      index.html
-│  │      │  │      octave.js
-│  │      │  │
-│  │      │  ├─pascal
-│  │      │  │      index.html
-│  │      │  │      pascal.js
-│  │      │  │
-│  │      │  ├─pegjs
-│  │      │  │      index.html
-│  │      │  │      pegjs.js
-│  │      │  │
-│  │      │  ├─perl
-│  │      │  │      index.html
-│  │      │  │      perl.js
-│  │      │  │
-│  │      │  ├─php
-│  │      │  │      index.html
-│  │      │  │      php.js
-│  │      │  │      test.js
-│  │      │  │
-│  │      │  ├─pig
-│  │      │  │      index.html
-│  │      │  │      pig.js
-│  │      │  │
-│  │      │  ├─properties
-│  │      │  │      index.html
-│  │      │  │      properties.js
-│  │      │  │
-│  │      │  ├─puppet
-│  │      │  │      index.html
-│  │      │  │      puppet.js
-│  │      │  │
-│  │      │  ├─python
-│  │      │  │      index.html
-│  │      │  │      python.js
-│  │      │  │
-│  │      │  ├─q
-│  │      │  │      index.html
-│  │      │  │      q.js
-│  │      │  │
-│  │      │  ├─r
-│  │      │  │      index.html
-│  │      │  │      r.js
-│  │      │  │
-│  │      │  ├─rpm
-│  │      │  │  │  index.html
-│  │      │  │  │  rpm.js
-│  │      │  │  │
-│  │      │  │  └─changes
-│  │      │  │          index.html
-│  │      │  │
-│  │      │  ├─rst
-│  │      │  │      index.html
-│  │      │  │      rst.js
-│  │      │  │
-│  │      │  ├─ruby
-│  │      │  │      index.html
-│  │      │  │      ruby.js
-│  │      │  │      test.js
-│  │      │  │
-│  │      │  ├─rust
-│  │      │  │      index.html
-│  │      │  │      rust.js
-│  │      │  │
-│  │      │  ├─sass
-│  │      │  │      index.html
-│  │      │  │      sass.js
-│  │      │  │
-│  │      │  ├─scheme
-│  │      │  │      index.html
-│  │      │  │      scheme.js
-│  │      │  │
-│  │      │  ├─shell
-│  │      │  │      index.html
-│  │      │  │      shell.js
-│  │      │  │      test.js
-│  │      │  │
-│  │      │  ├─sieve
-│  │      │  │      index.html
-│  │      │  │      sieve.js
-│  │      │  │
-│  │      │  ├─slim
-│  │      │  │      index.html
-│  │      │  │      slim.js
-│  │      │  │      test.js
-│  │      │  │
-│  │      │  ├─smalltalk
-│  │      │  │      index.html
-│  │      │  │      smalltalk.js
-│  │      │  │
-│  │      │  ├─smarty
-│  │      │  │      index.html
-│  │      │  │      smarty.js
-│  │      │  │
-│  │      │  ├─smartymixed
-│  │      │  │      index.html
-│  │      │  │      smartymixed.js
-│  │      │  │
-│  │      │  ├─solr
-│  │      │  │      index.html
-│  │      │  │      solr.js
-│  │      │  │
-│  │      │  ├─soy
-│  │      │  │      index.html
-│  │      │  │      soy.js
-│  │      │  │
-│  │      │  ├─sparql
-│  │      │  │      index.html
-│  │      │  │      sparql.js
-│  │      │  │
-│  │      │  ├─spreadsheet
-│  │      │  │      index.html
-│  │      │  │      spreadsheet.js
-│  │      │  │
-│  │      │  ├─sql
-│  │      │  │      index.html
-│  │      │  │      sql.js
-│  │      │  │
-│  │      │  ├─stex
-│  │      │  │      index.html
-│  │      │  │      stex.js
-│  │      │  │      test.js
-│  │      │  │
-│  │      │  ├─stylus
-│  │      │  │      index.html
-│  │      │  │      stylus.js
-│  │      │  │
-│  │      │  ├─tcl
-│  │      │  │      index.html
-│  │      │  │      tcl.js
-│  │      │  │
-│  │      │  ├─textile
-│  │      │  │      index.html
-│  │      │  │      test.js
-│  │      │  │      textile.js
-│  │      │  │
-│  │      │  ├─tiddlywiki
-│  │      │  │      index.html
-│  │      │  │      tiddlywiki.css
-│  │      │  │      tiddlywiki.js
-│  │      │  │
-│  │      │  ├─tiki
-│  │      │  │      index.html
-│  │      │  │      tiki.css
-│  │      │  │      tiki.js
-│  │      │  │
-│  │      │  ├─toml
-│  │      │  │      index.html
-│  │      │  │      toml.js
-│  │      │  │
-│  │      │  ├─tornado
-│  │      │  │      index.html
-│  │      │  │      tornado.js
-│  │      │  │
-│  │      │  ├─turtle
-│  │      │  │      index.html
-│  │      │  │      turtle.js
-│  │      │  │
-│  │      │  ├─vb
-│  │      │  │      index.html
-│  │      │  │      vb.js
-│  │      │  │
-│  │      │  ├─vbscript
-│  │      │  │      index.html
-│  │      │  │      vbscript.js
-│  │      │  │
-│  │      │  ├─velocity
-│  │      │  │      index.html
-│  │      │  │      velocity.js
-│  │      │  │
-│  │      │  ├─verilog
-│  │      │  │      index.html
-│  │      │  │      test.js
-│  │      │  │      verilog.js
-│  │      │  │
-│  │      │  ├─xml
-│  │      │  │      index.html
-│  │      │  │      test.js
-│  │      │  │      xml.js
-│  │      │  │
-│  │      │  ├─xquery
-│  │      │  │      index.html
-│  │      │  │      test.js
-│  │      │  │      xquery.js
-│  │      │  │
-│  │      │  ├─yaml
-│  │      │  │      index.html
-│  │      │  │      yaml.js
-│  │      │  │
-│  │      │  └─z80
-│  │      │          index.html
-│  │      │          z80.js
-│  │      │
-│  │      └─theme
-│  │              3024-day.css
-│  │              3024-night.css
-│  │              ambiance-mobile.css
-│  │              ambiance.css
-│  │              base16-dark.css
-│  │              base16-light.css
-│  │              blackboard.css
-│  │              cobalt.css
-│  │              colorforth.css
-│  │              eclipse.css
-│  │              elegant.css
-│  │              erlang-dark.css
-│  │              lesser-dark.css
-│  │              mbo.css
-│  │              mdn-like.css
-│  │              midnight.css
-│  │              monokai.css
-│  │              neat.css
-│  │              neo.css
-│  │              night.css
-│  │              paraiso-dark.css
-│  │              paraiso-light.css
-│  │              pastel-on-dark.css
-│  │              rubyblue.css
-│  │              solarized.css
-│  │              the-matrix.css
-│  │              tomorrow-night-bright.css
-│  │              tomorrow-night-eighties.css
-│  │              twilight.css
-│  │              vibrant-ink.css
-│  │              xq-dark.css
-│  │              xq-light.css
-│  │              zenburn.css
-│  │
-│  └─plugins
-│      │  plugin-template.js
-│      │
-│      ├─code-block-dialog
-│      │      code-block-dialog.js
-│      │
-│      ├─emoji-dialog
-│      │      emoji-dialog.js
-│      │      emoji.json
-│      │
-│      ├─goto-line-dialog
-│      │      goto-line-dialog.js
-│      │
-│      ├─help-dialog
-│      │      help-dialog.js
-│      │      help.md
-│      │
-│      ├─html-entities-dialog
-│      │      html-entities-dialog.js
-│      │      html-entities.json
-│      │
-│      ├─image-dialog
-│      │      image-dialog.js
-│      │
-│      ├─link-dialog
-│      │      link-dialog.js
-│      │
-│      ├─preformatted-text-dialog
-│      │      preformatted-text-dialog.js
-│      │
-│      ├─reference-link-dialog
-│      │      reference-link-dialog.js
-│      │
-│      ├─table-dialog
-│      │      table-dialog.js
-│      │
-│      └─test-plugin
-│              test-plugin.js
-│
-</code>
-</pre>
-
 <script src="vue/vue.min.js"></script>
+<script src="axios.min.js"></script>
+<script src="common.js"></script>
+<link href="font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link href="bootswatch/bootstrap.sketchy.min.css" rel="stylesheet">
 <script>
 
     new Vue({
         el: "#app",
         data() {
             return {
-                templates: ["vue.html", "react.html", "vue-router.html"],
-                jsLibs: [
-                    {name: "Vue", link: "vue/vue.min.js"},
-                    {name: "Vue-Router", link: "vue/vue-router.js"},
-                    {name: "Babel", link: "react/babel.min.js"},
-                    {name: "React", link: "react/react.production.min.js"},
-                    {name: "React-Dom", link: "react/react-dom.production.min.js"},
-                ],
-                icons: [
-                    {name: "Ionicons", link: "ionicons/index.html"},
-                    {name: "Font-Awesome-4.7.0", link: "font-awesome-4.7.0/index.html"},
-                    {name: "Material Design Icons", link: "mdi/preview.html"},
-                ],
+                cfg: {},
+                fileTree: ""
             }
         },
+        methods: {
+            refresh() {
+                let result = confirm("确认重新加载？");
+                if (result) {
+                    this.cfg = {};
+                    this.fileTree = "";
+                    this.loadCfg(true);
+                    this.loadFileTree(true);
+                }
+            },
+            loadCfg(refresh = false) {
+                common.getContent("json/cdn.cfg.json", refresh).then(cfgJson => {
+                    console.log(cfgJson);
+                    this.cfg = JSON.parse(cfgJson);
+                });
+            },
+            loadFileTree(refresh = false) {
+                common.getContent("json/cdn.fileTree.txt", refresh).then(data => {
+                    this.fileTree = data;
+                });
+            },
+        },
         mounted() {
-            console.log("vue app mounted...");
+            this.loadCfg();
+            this.loadFileTree();
         }
     })
 
