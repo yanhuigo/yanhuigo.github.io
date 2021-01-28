@@ -182,19 +182,10 @@
                 return false;
             },
             loadData(refreshCache) {
-                if (refreshCache) {
-                    common.initFileTree(true).then(() => {
-                        common.getContent("json/chrome.bookmark.json", true).then(data => {
-                            this.bmDataHandle(data);
-                        })
-                    })
-                } else {
-                    common.getContent("json/chrome.bookmark.json", false).then(data => {
-                        this.bmDataHandle(data);
-                    })
-                }
+                common.getContent("json/chrome.bookmark.json", refreshCache).then(data => {
+                    this.bmDataHandle(data);
+                });
             },
-
             bmDataHandle(bmJsonData) {
                 let bmRoot = JSON.parse(bmJsonData);
                 // 书签栏书签集合 a = children b=title c=url

@@ -69,9 +69,7 @@
                     scope: "projects",
                 }).then(data => {
                     localStorage.setItem(storage_login, JSON.stringify(data));
-                    common.initFileTree().then(() => {
-                        this.navPage();
-                    })
+                    this.navPage();
                 }).catch((err) => {
                     this.loginErrMsg = err;
                     this.loginErr = true;

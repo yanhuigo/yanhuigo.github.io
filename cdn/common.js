@@ -2,16 +2,6 @@ let common = (function () {
 
     const storage_login = "login-state";
     const storage_fileList = "fileList";
-
-    let loginStorageData = localStorage.getItem(storage_login);
-    if ("/login.html" !== window.location.pathname && !loginStorageData) {
-        window.location.href = "/login.html";
-        return;
-    }
-
-    let fileTree = JSON.parse(localStorage.getItem("fileList"));
-
-
     const config = {
         client_id: "f5250ed1c6f0a51423ca06aa4faf5c10d64ce8b411c425256d22fec16a531665",
         client_secret: "00a0f31357ce04fe3619eab7149d7c1b4daade23677a898b8f14bb647bc25fb3",
@@ -19,50 +9,120 @@ let common = (function () {
         project: "webdata"
     }
 
-    // Add a request interceptor
-    axios.interceptors.request.use(function (config) {
-        return config;
-    }, function (error) {
-        return Promise.reject(error);
-    });
+    axiosInit();
 
-    // Add a response interceptor
-    axios.interceptors.response.use(function (response) {
-        return response.data;
-    }, function (error) {
-        // 如果登录过  则拿 refresh token 换新的token
-        return Promise.reject(error);
-    });
+    if ("/login.html" === window.location.pathname) return {config};
 
+    let loginStorageData = localStorage.getItem(storage_login);
+    if ("/login.html" !== window.location.pathname && !loginStorageData) {
+        window.location.href = "/login.html";
+        return;
+    }
+
+    let {access_token} = JSON.parse(loginStorageData);
+
+    // 保存文件路径和sha的对应关系
+    let fileTree = {};
+    let fileListStorageData = localStorage.getItem(storage_fileList);
+    if (fileListStorageData) {
+        fileTree = JSON.parse(fileListStorageData);
+    } else {
+        initFileTree().then(() => {
+            console.log("初始化文件列表完成...")
+        });
+    }
+
+    function tip(msg) {
+        alert(msg);
+    }
+
+
+    // 获取指定路径的文件内容
     async function getContent(filePath, refresh = false) {
-        let sha = fileTree[filePath];
-        let cacheContent = localStorage.getItem(sha);
+        let cacheContent = localStorage.getItem(filePath);
         if (!refresh && cacheContent) {
             return Base64.decode(cacheContent);
         }
-        let loginStorageData = localStorage.getItem(storage_login);
-        let {access_token} = JSON.parse(loginStorageData);
-        let data = await axios.get(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/git/blobs/${sha}?access_token=${access_token}`);
-        localStorage.setItem(sha, data.content);
+        let data = await axios.get(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}?access_token=${access_token}`);
+        localStorage.setItem(filePath, data.content);
         return Base64.decode(data.content);
     }
 
-    async function initFileTree(refresh = false) {
-        let fileTreeCache = localStorage.getItem(storage_fileList);
-        if (refresh || !fileTreeCache) {
-            let loginStorageData = localStorage.getItem(storage_login);
-            let {access_token} = JSON.parse(loginStorageData);
-            // 获取项目下的文件树
-            let data = await axios.get(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/git/trees/master?access_token=${access_token}&recursive=1`);
-            let fileList = data.tree;
-            let newFileTree = {};
-            for (let file of fileList) {
-                newFileTree[file.path] = file.sha;
-            }
-            localStorage.setItem(storage_fileList, JSON.stringify(newFileTree));
+    // 更新文件
+    async function updateFile(filePath, content) {
+        let sha = fileTree[filePath];
+        if (!sha) {
+            tip(`未匹配匹配文件 ${filePath}`);
+            return;
         }
+        let data = Base64.encode(content);
+        axios.put(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}`, {
+            access_token,
+            content: data,
+            sha,
+            message: `open api update ${window.location.pathname}`
+        }).then((data) => {
+            tip("更新成功！");
+            initFileTree();
+        }).catch((err) => {
+            console.error(err);
+            tip("更新异常！");
+        })
     }
 
+    // 新增文件
+    async function newFile(filePath, content) {
+        if (!filePath || !content) {
+            return;
+        }
+        let data = Base64.encode(content);
+        axios.post(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}`, {
+            access_token,
+            content: data,
+            message: `open api new ${window.location.pathname}`
+        }).then((data) => {
+            tip("新增成功！");
+            initFileTree();
+        }).catch((err) => {
+            console.error(err);
+            tip("新增异常！");
+        })
+    }
+
+    // 获取整个项目的文件列表
+    async function initFileTree() {
+        // 获取项目下的文件树
+        let data = await axios.get(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/git/trees/master?access_token=${access_token}&recursive=1`);
+        let fileList = data.tree;
+        let newFileTree = {};
+        for (let file of fileList) {
+            newFileTree[file.path] = file.sha;
+        }
+        fileTree = newFileTree;
+        localStorage.setItem(storage_fileList, JSON.stringify(newFileTree));
+    }
+
+    function axiosInit() {
+        axios.interceptors.request.use(function (config) {
+            return config;
+        }, function (error) {
+            return Promise.reject(error);
+        });
+
+        axios.interceptors.response.use(function (response) {
+            if (response.status === 200) {
+                return response.data;
+            }
+            return response;
+        }, function (error) {
+            if (error.response.status === 401) {
+                localStorage.removeItem(storage_login);
+                window.location.href = "/login.html";
+            } else {
+                return Promise.reject(error);
+            }
+        });
+    }
 
     const Base64 = {
 
@@ -199,8 +259,9 @@ let common = (function () {
     return {
         config,
         fileTree,
-        initFileTree,
         getContent,
+        updateFile,
+        newFile,
         base64: Base64
     }
 
