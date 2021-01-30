@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monaco-Editor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="../imgs/logo.jpg"/>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div id="container" style="width: 100%; height: 100vh;"></div>
+<div id="root">
+    <div class="alert alert-secondary d-flex justify-content-start align-items-center fixed-bottom m-2 p-2"
+         role="alert">
+        <span class="font-weight-bold border border-info rounded p-1">Monaco-Editor编辑器</span>
+
+        <span class="ml-3">正在编辑文件：</span>
+        <select class="custom-select" style="width: 200px" v-model="selectedFile" @change="loadFile(false)">
+            <option v-for="file in fileList" :value="file">{{file}}</option>
+        </select>
+        <code class="ml-3 text-secondary font-italic">F1 打开编辑器导航 ; ctrl+s 保存文件</code>
+    </div>
+</div>
+<script src="../cdn/vue/vue.min.js"></script>
+<script src="../cdn/axios.min.js"></script>
+<script src="../cdn/common.js"></script>
+<script src="../cdn/monaco-editor/min/vs/loader.js"></script>
+<link rel="stylesheet" href="/cdn/bootstrap/bootstrap.min.css"/>
+
+<script>
+    let editor;
+    require.config({paths: {vs: '../cdn/monaco-editor/min/vs'}});
+    let themeIsDark = true;
+    let tip = common.tip;
+
+    let app = new Vue({
+        el: "#root",
+        data() {
+            return {
+                selectedFile: "test/test.json",
+                fileList: [],
+                editor: null
+            }
+        },
+        methods: {
+            initFileList() {
+                for (let key in common.fileTree) {
+                    this.fileList.push(key);
+                }
+            },
+            loadFile(sync = false) {
+                common.getContent(this.selectedFile, sync).then(data => {
+                    let suffix = this.selectedFile.substr(this.selectedFile.lastIndexOf(".") + 1);
+                    switch (suffix) {
+                        case "md":
+                            suffix = "markdown";
+                            break;
+                        default:
+                            break;
+                    }
+                    monaco.editor.setModelLanguage(editor.getModel(), suffix);
+                    editor.setValue(data);
+                    if (sync) tip("文件加载完成!", `已重新加载文件 => ${this.selectedFile}`);
+                });
+            },
+            update() {
+                let value = editor.getValue();
+                common.updateFile(this.selectedFile, value);
+            },
+        },
+        mounted() {
+            this.initFileList();
+            initEditor();
+        }
+    });
+
+    function actionInit() {
+
+        let actions = [
+            {
+                name: "保存文件", keys: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S], call: () => {
+                    app.update();
+                },
+            },
+            {
+                name: "重新加载文件", call: () => {
+                    app.loadFile(true);
+                }
+            },
+            {
+                name: "切换主题", call: () => {
+                    editor.updateOptions({theme: themeIsDark ? "vs" : "vs-dark"});
+                    themeIsDark = !themeIsDark;
+                }
+            },
+            {
+                name: "清空缓存", call: () => {
+                    if (!confirm("确认清空所有缓存？")) return;
+                    for (let key in localStorage) {
+                        if (localStorage.hasOwnProperty(key) && "login-state" !== key) {
+                            localStorage.removeItem(key);
+                            window.location.reload();
+                        }
+                    }
+                }
+            }
+        ];
+
+        let index = 0;
+        for (let action of actions) {
+            editor.addAction({
+                id: `yh-editor-${++index}`,
+                label: action.name,
+                // ctrl+p触发
+                // monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_P,
+                // 按住ctrl 再分别按下 k m 后触发
+                // monaco.KeyMod.chord(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_K, monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_M)
+                keybindings: action.keys ? action.keys : [],
+                precondition: null,
+                keybindingContext: null,
+                contextMenuGroupId: 'yh-editor',
+                contextMenuOrder: 1.5,
+                run: action.call
+            });
+        }
+
+    }
+
+    function initEditor() {
+        require(['vs/editor/editor.main'], function () {
+            editor = monaco.editor.create(document.getElementById('container'), {
+                value: '',
+                language: "markdown",
+                theme: "vs-dark"
+            });
+            actionInit();
+            app.loadFile();
+        });
+    }
+
+</script>
+</body>
+</html>

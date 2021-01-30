@@ -110,10 +110,13 @@ let common = (function () {
         let fileList = data.tree;
         let newFileTree = {};
         for (let file of fileList) {
-            newFileTree[file.path] = file.sha;
+            if (file.type === "blob") {
+                newFileTree[file.path] = file.sha;
+            }
         }
         fileTree = newFileTree;
         localStorage.setItem(storage_fileList, JSON.stringify(newFileTree));
+        return fileTree;
     }
 
     function axiosInit() {
