@@ -277,7 +277,8 @@ let common = (function () {
         updateFile,
         newFile,
         base64: Base64,
-        tip
+        tip,
+        initFileTree
     }
 
 })();
