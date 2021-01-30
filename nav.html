@@ -42,7 +42,8 @@
 
         <div class="alert alert-secondary" role="alert">
             <span class="font-weight-bold">站内导航：</span>
-            <button @click="window.open(link.url)" v-for="link in innerLinks" type="button" class="btn btn-outline-info p-1 mx-2">
+            <button @click="window.open(link.url)" v-for="link in innerLinks" type="button"
+                    class="btn btn-outline-info p-1 mx-2">
                 {{link.name}}
             </button>
         </div>
@@ -129,6 +130,7 @@
                 loading: false,
                 innerLinks: [
                     {name: "CDN", url: "/cdn"},
+                    {name: "EditorMd", url: "/editor.html"},
                     {name: "JsonView", url: "/pages/jsonView.html"},
                 ]
             }

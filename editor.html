@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="imgs/logo.jpg"/>
+    <title>EditorMd</title>
+</head>
+<body>
+
+<div id="root">
+    <div class="m-3">
+
+        <div class="row ml-1">
+            <div class="input-group mb-3" style="width: 98%">
+                <div class="input-group-prepend">
+                    <span class="input-group-text font-italic font-weight-bold">请选择编辑的文件</span>
+                </div>
+                <select class="custom-select flex-grow-1" id="inputGroupSelect01" v-model="selectedFile"
+                        @change="loadFile(false)">
+                    <option v-for="file in fileList" :value="file">{{file}}</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div id="test-editor">
+                <textarea style="display:none;"></textarea>
+            </div>
+        </div>
+
+        <div class="alert alert-secondary font-weight-bold d-flex justify-content-between fixed-bottom m-2 p-2"
+             role="alert">
+            <div>
+                <button type="button" class="btn btn-sm btn-outline-primary ml-2" @click="update">Update</button>
+                <button type="button" class="btn btn-sm btn-outline-primary ml-2" @click="syncFile">Sync</button>
+            </div>
+            <div class="mt-1">
+                <span v-if="selectedFile === ''" class="text-danger">未选择文件</span>
+                <span v-else>
+                    <span class="mx-1 text-success">已选择文件</span>
+                    <span class="text-primary">{{selectedFile}}</span>
+                </span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="cdn/vue/vue.min.js"></script>
+<script src="cdn/axios.min.js"></script>
+<script src="cdn/bootstrap/jquery.slim.min.js"></script>
+<script src="cdn/editormd/editormd.min.js"></script>
+<script src="cdn/common.js"></script>
+<link rel="stylesheet" href="cdn/editormd/css/editormd.css"/>
+<link rel="stylesheet" href="cdn/bootstrap/bootstrap.min.css"/>
+<script>
+
+    let tip = common.tip;
+
+    let app = new Vue({
+        el: "#root",
+        data() {
+            return {
+                selectedFile: "json/test.json",
+                fileList: [],
+                editor: null
+            }
+        },
+        methods: {
+            initFileList() {
+                for (let key in common.fileTree) {
+                    if (key && key.indexOf(".") !== -1) {
+                        this.fileList.push(key);
+                    }
+                }
+            },
+            loadFile(sync = false) {
+                common.getContent(this.selectedFile, sync).then(data => {
+                    this.editor.setValue(data);
+                    if (sync) tip("文件加载完成!", `已重新加载文件 => ${this.selectedFile}`);
+                });
+            },
+            update() {
+                if (this.selectedFile === "") {
+                    tip("请选选择文件！");
+                    return;
+                }
+                let value = this.editor.getValue();
+                common.updateFile(this.selectedFile, value);
+            },
+            syncFile() {
+                if (this.selectedFile === "") {
+                    tip("请选选择文件！");
+                    return;
+                }
+                this.loadFile(true);
+            },
+            listenEvent() {
+                $(window).keydown(function (event) {
+                    if (event.keyCode === 83 && event.ctrlKey) {
+                        app.update();
+                        event.preventDefault();
+                    }
+                });
+            }
+        },
+        mounted() {
+            this.initFileList();
+            this.editor = editormd("test-editor", {
+                width: "98%",
+                autoHeight: true,
+                path: "cdn/editormd/lib/",
+                watch: false,
+                toolbarIcons: "simple",
+                onload: () => {
+                    this.loadFile();
+                },
+            });
+            this.listenEvent();
+        }
+    });
+
+    console.log(app);
+
+</script>
+</body>
+</html>

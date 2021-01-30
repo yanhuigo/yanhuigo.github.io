@@ -32,8 +32,21 @@ let common = (function () {
         });
     }
 
-    function tip(msg) {
-        alert(msg);
+    function tip(msg, detail = "") {
+        if (window.Notification) {
+            Notification.requestPermission(function (status) {
+                let n = new Notification(msg, {
+                    body: detail,
+                    dir: "rtl",
+                    icon: "https://yanhui1993.gitee.io/imgs/logo.jpg"
+                });
+                n.onshow = function () {
+                    setTimeout(n.close.bind(n), 3000);
+                }
+            });
+        } else {
+            alert(msg);
+        }
     }
 
 
@@ -61,8 +74,9 @@ let common = (function () {
             content: data,
             sha,
             message: `open api update ${window.location.pathname}`
-        }).then((data) => {
+        }).then(() => {
             tip("更新成功！");
+            localStorage.setItem(filePath, data);
             initFileTree();
         }).catch((err) => {
             console.error(err);
@@ -262,7 +276,8 @@ let common = (function () {
         getContent,
         updateFile,
         newFile,
-        base64: Base64
+        base64: Base64,
+        tip
     }
 
 })();
