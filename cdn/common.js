@@ -9,9 +9,9 @@ let common = (function () {
         project: "webdata"
     }
 
-    axiosInit();
-
     if ("/login.html" === window.location.pathname) return {config};
+
+    axiosInit();
 
     let loginStorageData = localStorage.getItem(storage_login);
     if ("/login.html" !== window.location.pathname && !loginStorageData) {

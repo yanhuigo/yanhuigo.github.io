@@ -213,9 +213,11 @@
                     client_id: common.config.client_id,
                     client_secret: common.config.client_secret,
                     scope: "projects",
-                }).then(data => {
-                    localStorage.setItem(storage_login, JSON.stringify(data));
-                    this.navPage();
+                }).then(response => {
+                    if (response.status === 200) {
+                        localStorage.setItem(storage_login, JSON.stringify(response.data));
+                        this.navPage();
+                    }
                 }).catch((err) => {
                     this.loginErrMsg = err;
                     this.loginErr = true;
@@ -227,7 +229,17 @@
             loginValid() {
                 let loginStorageData = localStorage.getItem(storage_login);
                 if (loginStorageData) {
-                    this.navPage();
+                    let {created_at, expires_in, refresh_token} = JSON.parse(loginStorageData);
+                    if (Math.floor(Date.now() / 1000) - created_at > expires_in) {
+                        axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`).then(response => {
+                            if (response.status === 200) {
+                                localStorage.setItem(storage_login, JSON.stringify(response.data));
+                                this.navPage();
+                            }
+                        });
+                    } else {
+                        this.navPage();
+                    }
                 }
             },
 
