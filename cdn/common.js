@@ -372,46 +372,51 @@ let initAsyncFunc = async function (initCfg) {
         Vue.component('yanhui-header', {
             data() {
                 return {
-                    links: appCfg.navLinks.concat([
-                        {
-                            title: "API操作", children: [
-                                {
-                                    title: "更新应用配置", call: () => {
-                                        if (confirm("确认清空应用配置并刷新页面？")) {
-                                            localStorage.removeItem(configFilePath);
-                                            window.location.reload();
-                                        }
-                                    }
-                                },
-                                {
-                                    title: "清空所有缓存", call: () => {
-                                        if (confirm("确认清空所有缓存并刷新页面？")) {
-                                            for (let key in localStorage) {
-                                                if (localStorage.hasOwnProperty(key) && key !== storage_login) {
-                                                    localStorage.removeItem(key);
-                                                }
-                                            }
-                                            window.location.reload();
-                                        }
-                                    }
-                                },
-                                {
-                                    title: "同步文件树", call: () => {
-                                        confirm("确认同步文件树？") && initFileTree().then(() => {
-                                            tip("同步文件树完成！");
-                                        });
-                                    }
-                                }
-                            ]
-                        },
-                    ])
+                    links: []
                 }
             },
             methods: {},
             mounted() {
-                console.log("yh header mounted");
+                let commonOperations = [
+                    {
+                        title: "OpenApi", children: [
+                            {
+                                title: "更新应用配置", call: () => {
+                                    if (confirm("确认清空应用配置并刷新页面？")) {
+                                        localStorage.removeItem(configFilePath);
+                                        window.location.reload();
+                                    }
+                                }
+                            },
+                            {
+                                title: "清空所有缓存", call: () => {
+                                    if (confirm("确认清空所有缓存并刷新页面？")) {
+                                        for (let key in localStorage) {
+                                            if (localStorage.hasOwnProperty(key) && key !== storage_login) {
+                                                localStorage.removeItem(key);
+                                            }
+                                        }
+                                        window.location.reload();
+                                    }
+                                }
+                            },
+                            {
+                                title: "同步文件树", call: () => {
+                                    confirm("确认同步文件树？") && initFileTree().then(() => {
+                                        tip("同步文件树完成！");
+                                    });
+                                }
+                            }
+                        ]
+                    },
+                ];
+                this.links = appCfg.navLinks.concat(commonOperations);
+                this.operations && this.links.push({
+                    title: "Action",
+                    children: this.operations ? this.operations : []
+                });
             },
-            props: ['title', "icon"],
+            props: ['title', "icon", "operations"],
             template: `
                 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                     <i class="fa fa-2x text-light link mr-2 title-align-sub" :class="icon?'fa-'+icon:'fa-paper-plane-o'"></i>
@@ -435,7 +440,6 @@ let initAsyncFunc = async function (initCfg) {
                                 </template>
                             </div>
                         </template>
-                        
                       </li>
                     </ul>
                   </div>

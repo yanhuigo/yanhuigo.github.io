@@ -9,7 +9,7 @@
 
 <div id="root">
 
-    <yanhui-header title="Markdown编辑器" icon="file-code-o"></yanhui-header>
+    <yanhui-header title="Markdown编辑器" icon="file-code-o" :operations="operations"></yanhui-header>
 
     <div class="m-3">
 
@@ -31,7 +31,7 @@
             </div>
         </div>
 
-        <div class="alert alert-secondary d-flex justify-content-between align-items-center fixed-bottom m-2 p-2"
+        <!--<div class="alert alert-secondary d-flex justify-content-between align-items-center fixed-bottom m-2 p-2"
              role="alert">
             <div>
                 <span class="text-info">😀 Ctrl+S 保存文件喔~~</span>
@@ -46,7 +46,7 @@
                     <span class="text-primary">{{selectedFile}}</span>
                 </span>
             </div>
-        </div>
+        </div>-->
 
     </div>
 </div>
@@ -67,7 +67,24 @@
                 return {
                     selectedFile: "test/test.md",
                     fileList: [],
-                    editor: null
+                    editor: null,
+                    operations: [
+                        {
+                            title: "更新文件", call: () => {
+                                this.update();
+                            }
+                        },
+                        {
+                            title: "同步文件", call: () => {
+                                this.syncFile();
+                            }
+                        },
+                        {
+                            title: "同步文件树", call: () => {
+                                this.syncFileTree();
+                            }
+                        }
+                    ]
                 }
             },
             methods: {
@@ -120,7 +137,7 @@
                 this.editor = editormd("test-editor", {
                     mode: "gfm",
                     width: "98%",
-                    height: "calc(100vh - 230px)",
+                    height: "calc(100vh - 250px)",
                     path: "../cdn/editormd/lib/",
                     watch: true,
                     tocm: true,
