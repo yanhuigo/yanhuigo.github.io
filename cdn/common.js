@@ -411,18 +411,19 @@ let initAsyncFunc = async function (initCfg) {
             mounted() {
                 console.log("yh header mounted");
             },
-            props: ['title'],
+            props: ['title', "icon"],
             template: `
                 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                  <a class="navbar-brand" href="#">{{title}}</a>
-                  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                  </button>
+                    <i class="fa fa-2x text-light link mr-2 title-align-sub" :class="icon?'fa-'+icon:'fa-paper-plane-o'"></i>
+                    <a class="navbar-brand" href="#">{{title}}</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
                   <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
                       
                       <li class="nav-item" :class="link.children ? 'dropdown' : ''" v-for="(link,index) in links">
-                        <a v-if="!link.children" class="nav-link" :href="link.url">{{link.title}} <span class="sr-only">(current)</span></a>
+                        <a v-if="!link.children" class="nav-link" target="_blank" :href="link.url">{{link.title}} <span class="sr-only">(current)</span></a>
                         <template v-else>
                             <a class="nav-link dropdown-toggle" href="#" :id="'navbarDropdown'+index" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               {{link.title}}
@@ -430,7 +431,7 @@ let initAsyncFunc = async function (initCfg) {
                             <div v-if="link.children" class="dropdown-menu" :aria-labelledby="'navbarDropdown'+index">
                                 <template v-for="subLink in link.children">
                                     <a v-if="subLink.call" class="dropdown-item" href="###" @click.prevent="subLink.call">{{subLink.title}}</a>
-                                    <a v-else class="dropdown-item" :href="subLink.url">{{subLink.title}}</a>
+                                    <a v-else class="dropdown-item" :href="subLink.url" target="_blank">{{subLink.title}}</a>
                                 </template>
                             </div>
                         </template>

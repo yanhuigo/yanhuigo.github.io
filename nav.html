@@ -23,7 +23,7 @@
 
 <div id="root" class="container-fluid overflow-hidden" style="padding: 0">
 
-    <yanhui-header title="Bookmarks"></yanhui-header>
+    <yanhui-header title="Bookmarks" icon="chrome"></yanhui-header>
     <!--<nav class="navbar navbar-dark bg-dark">
         <div class="align-items-center">
             <i class="fa fa-2x fa-chrome text-light link mr-2 title-align-sub"></i>
@@ -41,14 +41,6 @@
     </nav>-->
 
     <div class="mx-2 mt-3" style="overflow: hidden">
-
-        <div class="alert alert-secondary" role="alert">
-            <span class="font-weight-bold">站内导航：</span>
-            <button @click="window.open(link.url)" v-for="link in innerLinks" type="button"
-                    class="btn btn-outline-info p-1 mx-2">
-                {{link.name}}
-            </button>
-        </div>
 
         <input v-model="searchTxt" class="form-control mr-sm-2" type="search" placeholder="搜索书签..." aria-label="Search"
                @keyup.enter="search"/>
@@ -127,13 +119,7 @@
                     checkedType: "",
                     checkedTag: "",
                     searchTxt: "",
-                    loading: false,
-                    innerLinks: [
-                        {name: "CDN", url: "/cdn"},
-                        {name: "Monaco Editor", url: "/pages/fileEditor.html"},
-                        {name: "Markdown Editor", url: "/pages/mdEditor.html"},
-                        {name: "JsonView", url: "/pages/jsonView.html"},
-                    ]
+                    loading: false
                 }
             },
             watch: {
