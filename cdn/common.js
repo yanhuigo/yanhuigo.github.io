@@ -133,7 +133,6 @@ let common = (function () {
             return response;
         }, function (error) {
             if (error.response.status === 401 && "/login.html" !== window.location.pathname) {
-                localStorage.removeItem(storage_login);
                 window.location.href = "/login.html";
             } else {
                 return Promise.reject(error);

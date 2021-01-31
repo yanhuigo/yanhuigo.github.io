@@ -25,7 +25,13 @@
         let [dataJson, setDataJson] = React.useState({});
 
         React.useEffect(() => {
-            setDataJson(JSON.parse(jsonContent));
+            let storage = {};
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    storage[key] = localStorage[key];
+                }
+            }
+            setDataJson(storage);
         }, [])
 
         function loadJsonFile() {
@@ -50,6 +56,8 @@
                         2、支持节点内容复制
                         <br/>
                         3、支持节点新增、修改、删除，异动对应的json会同步更新输入框
+                        <br/>
+                        4、默认预览的是localStorage对象
                     </div>
                     <div className={"mb-1"}>
                         <div className="form-group">
