@@ -25,26 +25,30 @@ let initAsyncFunc = async function (initCfg) {
 
     async function appInit() {
 
-        let baseLibs = ["/cdn/vue/vue.min.js", "/cdn/axios.min.js", "/cdn/bootstrap/jquery.slim.min.js"];
-        let asyncLibs = ["/cdn/bootstrap/bootstrap.min.js", "/cdn/bootstrap/bootstrap.min.css", "/cdn/font-awesome-4.7.0/css/font-awesome.min.css"];
+        if (!initCfg.noLoadDefault) {
+            let baseLibs = ["/cdn/vue/vue.min.js", "/cdn/axios.min.js", "/cdn/bootstrap/jquery.slim.min.js"];
+            let asyncLibs = ["/cdn/bootstrap/bootstrap.min.js", "/cdn/bootstrap/bootstrap.min.css", "/cdn/font-awesome-4.7.0/css/font-awesome.min.css"];
 
-        if (initCfg.baseLibs) {
-            baseLibs = baseLibs.concat(initCfg.baseLibs);
-        }
-
-        if (initCfg.asyncLibs) {
-            asyncLibs = asyncLibs.concat(initCfg.asyncLibs);
-        }
-
-        await loadBaseLibs(baseLibs);
-        axiosInit();
-        for (let lib of asyncLibs) {
-            if (lib.indexOf(".css") !== -1) {
-                loadCss(lib);
-            } else {
-                loadLibs(lib);
+            if (initCfg.baseLibs) {
+                baseLibs = baseLibs.concat(initCfg.baseLibs);
             }
 
+            if (initCfg.asyncLibs) {
+                asyncLibs = asyncLibs.concat(initCfg.asyncLibs);
+            }
+
+            await loadBaseLibs(baseLibs);
+            axiosInit();
+            for (let lib of asyncLibs) {
+                if (lib.indexOf(".css") !== -1) {
+                    loadCss(lib);
+                } else {
+                    loadLibs(lib);
+                }
+
+            }
+        } else {
+            window.axios && axiosInit();
         }
 
 
@@ -369,6 +373,47 @@ let initAsyncFunc = async function (initCfg) {
 
     function vueComponentBind() {
 
+        // element
+        Vue.component('yanhui-header-element', {
+            data() {
+                return {
+                    links: []
+                }
+            },
+            mounted() {
+                this.links = appCfg.navLinks.concat([]);
+                this.operations && this.links.push({
+                    title: "Action",
+                    children: this.operations ? this.operations : []
+                });
+            },
+            methods: {
+                handleSelect(key, keyPath) {
+                    console.log(key, keyPath);
+                    let callFunc = this[`menuCall${String(key).replace("-", "_")}`];
+                    callFunc && callFunc();
+                },
+                menuCall0() {
+                    alert(1);
+                },
+                menuCall1_0() {
+                    alert(2);
+                }
+            },
+            template: `
+                <el-menu :default-active="0" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+                    <template v-for="(link,index) in links">
+                        <el-menu-item v-if="!link.children" :index="index">{{link.title}}</el-menu-item>
+                        <el-submenu v-else :index="index">
+                            <template slot="title">{{link.title}}</template>
+                            <el-menu-item v-for="(subLink,subIndex) in link.children" :index="index+'-'+subIndex">{{subLink.title}}</el-menu-item>
+                        </el-submenu>
+                    </template>
+                </el-menu>
+            `
+        });
+
+        // bootstrap
         Vue.component('yanhui-header', {
             data() {
                 return {
