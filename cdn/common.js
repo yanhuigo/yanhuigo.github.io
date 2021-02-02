@@ -82,7 +82,7 @@ let initAsyncFunc = async function (initCfg) {
         }
 
         // 初始化app配置
-        let appCfgData = await getContent(configFilePath);
+        let appCfgData = await getContent(configFilePath, true);
         appCfg = JSON.parse(appCfgData);
     }
 
