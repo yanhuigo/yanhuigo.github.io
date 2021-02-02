@@ -19,7 +19,7 @@ let initAsyncFunc = async function (initCfg) {
         return;
     }
 
-    let {access_token} = JSON.parse(loginStorageData);
+    let {access_token, created_at, expires_in, refresh_token} = JSON.parse(loginStorageData);
     // 保存文件路径和sha的对应关系
     let fileTree = {};
 
@@ -74,6 +74,23 @@ let initAsyncFunc = async function (initCfg) {
     }
 
     async function dataInit() {
+
+
+        // 初始化app配置
+        let tokenHasExpires = Math.floor(Date.now() / 1000) - created_at > expires_in;
+        if (tokenHasExpires) {
+            let response = await axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`);
+            if (response.status === 200) {
+                let loginStateTxt = JSON.stringify(response.data);
+                console.log("已刷新token", response.data);
+                access_token = response.data.access_token;
+                localStorage.setItem(storage_login, loginStateTxt);
+            } else {
+                window.location.href = "/login.html";
+                return;
+            }
+        }
+
         let fileListStorageData = localStorage.getItem(storage_fileList);
         if (fileListStorageData) {
             fileTree = JSON.parse(fileListStorageData);
@@ -81,8 +98,7 @@ let initAsyncFunc = async function (initCfg) {
             await initFileTree();
         }
 
-        // 初始化app配置
-        let appCfgData = await getContent(configFilePath, true);
+        let appCfgData = await getContent(configFilePath);
         appCfg = JSON.parse(appCfgData);
     }
 
