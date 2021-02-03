@@ -420,7 +420,7 @@ window.initApp = async (initCfg = {}) => {
 }
 
 
-$(() => {
+window.$ && $(() => {
 
     // bootstrap组件初始化
     $('.dropdown-toggle').dropdown();
