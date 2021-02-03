@@ -16,7 +16,7 @@
 
 <div id="app">
 
-    <yanhui-header title="CDN Index"></yanhui-header>
+    <yanhui-header :actions="actions" title="CDN Index"></yanhui-header>
 
     <div class="p-3 d-md-flex justify-content-around flex-wrap yh-content">
 
@@ -62,19 +62,27 @@
     </div>
 
 </div>
-<script src="common.js"></script>
+
+<script src="/cdn/vue/vue.min.js"></script>
+<script src="/cdn/axios.min.js"></script>
+<script src="/cdn/bootstrap/jquery.slim.min.js"></script>
+<script src="/cdn/bootstrap/bootstrap.min.js"></script>
+
+<script src="/js/common-min.js"></script>
+
+<link rel="stylesheet" href="/cdn/bootstrap/bootstrap.min.css"/>
+<link rel="stylesheet" href="/cdn/font-awesome-4.7.0/css/font-awesome.min.css"/>
+
 <script>
 
-    initApp({
-        baseLibs: [],
-        asyncLibs: [],
-    }).then(() => {
+    initApp().then(() => {
         new Vue({
             el: "#app",
             data() {
                 return {
                     cfg: {},
-                    fileTree: ""
+                    fileTree: "",
+                    actions: []
                 }
             },
             methods: {
