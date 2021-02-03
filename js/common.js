@@ -11,7 +11,7 @@ let initAsyncFunc = async function (initCfg) {
         project: "webdata"
     }
 
-    if ("/login.html" === window.location.pathname) return { config };
+    if ("/login.html" === window.location.pathname) return {config};
 
     let loginStorageData = localStorage.getItem(storage_login);
     if ("/login.html" !== window.location.pathname && !loginStorageData) {
@@ -19,67 +19,20 @@ let initAsyncFunc = async function (initCfg) {
         return;
     }
 
-    let { access_token, created_at, expires_in, refresh_token } = JSON.parse(loginStorageData);
+    let {access_token, created_at, expires_in, refresh_token} = JSON.parse(loginStorageData);
     // 保存文件路径和sha的对应关系
     let fileTree = {};
 
     async function appInit() {
-
-        if (initCfg.loadDefault) {
-
-            // 自动加载基础依赖
-
-            // 基础依赖，顺序加载
-            let baseLibs = ["/cdn/vue/vue.min.js", "/cdn/axios.min.js", "/cdn/bootstrap/jquery.slim.min.js"];
-            // 异步加载的依赖
-            let asyncLibs = ["/cdn/bootstrap/bootstrap.min.js", "/cdn/bootstrap/bootstrap.min.css", "/cdn/font-awesome-4.7.0/css/font-awesome.min.css"];
-
-            if (initCfg.baseLibs) {
-                baseLibs = baseLibs.concat(initCfg.baseLibs);
-            }
-
-            if (initCfg.asyncLibs) {
-                asyncLibs = asyncLibs.concat(initCfg.asyncLibs);
-            }
-
-            await loadBaseLibs(baseLibs);
-            axiosInit();
-            for (let lib of asyncLibs) {
-                if (lib.indexOf(".css") !== -1) {
-                    loadCss(lib);
-                } else {
-                    loadLibs(lib);
-                }
-
-            }
-        } else {
-            window.axios && axiosInit();
-        }
-
-
         return new Promise(async resolve => {
+            window.axios && axiosInit();
             window.Vue && vueComponentBind();
             await dataInit();
             resolve();
         });
     }
 
-    async function loadBaseLibs(libs = []) {
-        for (let lib of libs) {
-            await loadBaseLib(lib);
-        }
-    }
-
-    async function loadBaseLib(lib) {
-        return new Promise((resolve) => {
-            loadLibs(lib, () => {
-                resolve();
-            });
-        });
-    }
-
     async function dataInit() {
-
 
         // 初始化app配置
         let tokenHasExpires = Math.floor(Date.now() / 1000) - created_at > expires_in;
@@ -351,50 +304,6 @@ let initAsyncFunc = async function (initCfg) {
 
     }
 
-    function loadLibs(url, callback) {
-        let script = document.createElement('script');
-        let fn = callback || function () {
-        };
-
-        script.type = 'text/javascript';
-        if (script.readyState) {
-            script.onreadystatechange = function () {
-                if (script.readyState === 'loaded' || script.readyState === 'complete') {
-                    script.onreadystatechange = null;
-                    fn();
-                }
-            };
-        } else {
-            script.onload = function () {
-                fn();
-            };
-        }
-        script.src = url;
-        document.getElementsByTagName('head')[0].appendChild(script);
-    }
-
-    function loadCss(url, callback) {
-        let link = document.createElement('link');
-        let fn = callback || function () {
-        };
-
-        link.rel = 'stylesheet';
-        if (link.readyState) {
-            link.onreadystatechange = function () {
-                if (link.readyState === 'loaded' || link.readyState === 'complete') {
-                    link.onreadystatechange = null;
-                    fn();
-                }
-            };
-        } else {
-            link.onload = function () {
-                fn();
-            };
-        }
-        link.href = url;
-        document.getElementsByTagName('head')[0].appendChild(link);
-    }
-
     function vueComponentBind() {
 
         let commonOperations = [
@@ -409,7 +318,7 @@ let initAsyncFunc = async function (initCfg) {
                         }
                     },
                     {
-                        title: "清空所有缓存", call: () => {
+                        title: "清空缓存并刷新", call: () => {
                             if (confirm("确认清空所有缓存并刷新页面？")) {
                                 for (let key in localStorage) {
                                     if (localStorage.hasOwnProperty(key) && key !== storage_login) {
@@ -421,9 +330,9 @@ let initAsyncFunc = async function (initCfg) {
                         }
                     },
                     {
-                        title: "同步文件树", call: () => {
-                            confirm("确认同步文件树？") && initFileTree().then(() => {
-                                tip("同步文件树完成！");
+                        title: "同步文件树并刷新", call: () => {
+                            confirm("确认同步文件树并刷新页面？") && initFileTree().then(() => {
+                                window.location.reload();
                             });
                         }
                     }
@@ -431,51 +340,10 @@ let initAsyncFunc = async function (initCfg) {
             },
         ];
 
-        // element
-        Vue.component('yanhui-header-element', {
-            data() {
-                return {
-                    links: []
-                }
-            },
-            mounted() {
-                this.links = appCfg.navLinks.concat([]);
-                this.operations && this.links.push({
-                    title: "Action",
-                    children: this.operations ? this.operations : []
-                });
-            },
-            methods: {
-                handleSelect(key, keyPath) {
-                    console.log(key, keyPath);
-                    let callFunc = this[`menuCall${String(key).replace("-", "_")}`];
-                    callFunc && callFunc();
-                },
-                menuCall0() {
-                    alert(1);
-                },
-                menuCall1_0() {
-                    alert(2);
-                }
-            },
-            template: `
-                <el-menu :default-active="0" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-                    <template v-for="(link,index) in links">
-                        <el-menu-item v-if="!link.children" :index="index">{{link.title}}</el-menu-item>
-                        <el-submenu v-else :index="index">
-                            <template slot="title">{{link.title}}</template>
-                            <el-menu-item v-for="(subLink,subIndex) in link.children" :index="index+'-'+subIndex">{{subLink.title}}</el-menu-item>
-                        </el-submenu>
-                    </template>
-                </el-menu>
-            `
-        });
-
         // bootstrap
         Vue.component('yanhui-header', {
             data() {
-                return {
-                }
+                return {}
             },
             methods: {},
             mounted() {
@@ -537,8 +405,7 @@ let initAsyncFunc = async function (initCfg) {
         newFile,
         base64: Base64,
         tip,
-        initFileTree,
-        loadLibs
+        initFileTree
     }
 
 };

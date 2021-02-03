@@ -11,11 +11,17 @@
 
     <div id="root">
 
-        <yanhui-header title="Markdown编辑器" icon="file-code-o" :actions="actions"></yanhui-header>
+        <yanhui-header title="Markdown编辑器" icon="file-word-o" :actions="actions">
+            <div slot="headerRight">
+                <span class="text-truncate">
+                    {{selectedFile ? `正在编辑 ${selectedFile}` : '请选择编辑文件...'}}
+                </span>
+            </div>
+        </yanhui-header>
 
         <div class="m-3">
 
-            <div class="row ml-1">
+            <!--<div class="row ml-1">
                 <div class="input-group mb-3" style="width: 98%">
                     <div class="input-group-prepend">
                         <span class="input-group-text font-italic font-weight-bold">请选择Markdown文件</span>
@@ -25,7 +31,7 @@
                         <option v-for="file in fileList" :value="file">{{file}}</option>
                     </select>
                 </div>
-            </div>
+            </div>-->
 
             <div class="row">
                 <div id="test-editor" style="margin-bottom: 5rem">

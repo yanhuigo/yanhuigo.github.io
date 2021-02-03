@@ -1,7 +1,7 @@
 initApp().then(() => {
     let editor;
-    require.config({ paths: { vs: '../cdn/monaco-editor/min/vs' } });
-    let themeIsDark = true;
+    require.config({paths: {vs: '../cdn/monaco-editor/min/vs'}});
+    let themeIsDark = false;
     let tip = common.tip;
 
     let app = new Vue({
@@ -38,7 +38,7 @@ initApp().then(() => {
                             },
                             {
                                 title: "切换主题", call: () => {
-                                    editor.updateOptions({ theme: themeIsDark ? "vs" : "vs-dark" });
+                                    editor.updateOptions({theme: themeIsDark ? "vs" : "vs-dark"});
                                     themeIsDark = !themeIsDark;
                                 }
                             }, {
@@ -47,12 +47,12 @@ initApp().then(() => {
                                 },
                             },
                             {
-                                title: "重新加载文件", call: () => {
+                                title: "同步文件", call: () => {
                                     app.loadFile(true);
                                 }
                             },
                             {
-                                title: "清空文件树缓存", call: () => {
+                                title: "同步文件树", call: () => {
                                     if (!confirm("确认清空文件树缓存？")) return;
                                     common.initFileTree().then((data) => {
                                         app.initFileList(data);
@@ -69,8 +69,10 @@ initApp().then(() => {
                 let fileActions = []
                 for (let key in data) {
                     this.fileList.push(key);
-                    fileActions.push({ title: key, call: this.fileClickCall.bind(this, key) });
+                    fileActions.push({title: key, call: this.fileClickCall.bind(this, key)});
                 }
+                this.actions = [];
+                this.initActions();
                 this.actions.push({
                     title: "Files", children: fileActions
                 });
@@ -106,12 +108,21 @@ initApp().then(() => {
             },
             closeIframe() {
                 this.showIframe = false;
+            },
+            listenEvent() {
+                $(window).keydown(function (event) {
+                    if (event.keyCode === 83 && event.ctrlKey) {
+                        app.update();
+                        event.preventDefault();
+                    }
+                });
             }
         },
         mounted() {
             this.initActions();
             this.initFileList(common.fileTree);
             initEditor();
+            this.listenEvent();
             //this.actions.push({ "title": "测试" })
 
         }
@@ -187,7 +198,7 @@ initApp().then(() => {
             editor = monaco.editor.create(document.getElementById('container'), {
                 value: '',
                 language: "markdown",
-                theme: "vs-dark",
+                theme: "vs",
                 automaticLayout: true
             });
             actionInit();

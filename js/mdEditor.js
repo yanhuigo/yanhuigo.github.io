@@ -4,37 +4,52 @@ initApp().then(() => {
         el: "#root",
         data() {
             return {
-                selectedFile: "test/test.md",
+                selectedFile: "",
                 fileList: [],
                 editor: null,
-                actions: {
-                    title: "Actions", children: [
-                        {
-                            title: "更新文件", call: () => {
-                                this.update();
-                            }
-                        },
-                        {
-                            title: "同步文件", call: () => {
-                                this.syncFile();
-                            }
-                        },
-                        {
-                            title: "同步文件树", call: () => {
-                                this.syncFileTree();
-                            }
-                        }
-                    ]
-                }
+                actions: []
             }
         },
         methods: {
-            initFileList() {
-                for (let key in common.fileTree) {
+            initActions() {
+                this.actions.push({
+                        title: "Actions", children: [
+                            {
+                                title: "更新文件", call: () => {
+                                    this.update();
+                                }
+                            },
+                            {
+                                title: "同步文件", call: () => {
+                                    this.syncFile();
+                                }
+                            },
+                            {
+                                title: "同步文件树", call: () => {
+                                    this.syncFileTree();
+                                }
+                            }
+                        ]
+                    }
+                )
+            },
+            initFileList(fileList) {
+                let fileActions = []
+                for (let key in fileList) {
                     if (key && key.endsWith(".md")) {
                         this.fileList.push(key);
+                        fileActions.push({title: key, call: this.fileClickCall.bind(this, key)});
                     }
                 }
+                this.actions.push({
+                    title: "Files", children: fileActions
+                });
+            },
+            fileClickCall(key) {
+                this.selectedFile = key;
+                this.$nextTick(() => {
+                    this.loadFile();
+                })
             },
             loadFile(sync = false) {
                 common.getContent(this.selectedFile, sync).then(data => {
@@ -58,10 +73,12 @@ initApp().then(() => {
                 this.loadFile(true);
             },
             syncFileTree() {
-                confirm("确认同步文件树？") && common.initFileTree().then(() => {
+                confirm("确认同步文件树？") && common.initFileTree().then((data) => {
                     tip("同步文件树完成！");
+                    this.actions = [];
+                    this.initActions()
                     this.fileList = [];
-                    this.initFileList();
+                    this.initFileList(data);
                 });
             },
             listenEvent() {
@@ -74,19 +91,27 @@ initApp().then(() => {
             }
         },
         mounted() {
-            this.initFileList();
+            this.initActions();
+            this.initFileList(common.fileTree);
             this.editor = editormd("test-editor", {
                 mode: "gfm",
                 width: "98%",
                 autoHeight: true,
                 path: "../cdn/editormd/lib/",
-                watch: true,
+                watch: false,
                 tocm: true,
                 taskList: true,
                 emoji: true,
                 tex: true,
                 flowChart: true,
                 sequenceDiagram: true,
+                toolbarIcons: [
+                    "undo", "redo", "|",
+                    "bold", "del", "italic", "quote", "uppercase", "lowercase", "|",
+                    "h1", "h2", "h3", "h4", "h5", "h6", "|",
+                    "list-ul", "list-ol", "hr", "|",
+                    "watch", "fullscreen"
+                ],
                 onload: () => {
                     this.loadFile();
                 },

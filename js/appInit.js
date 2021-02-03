@@ -3,7 +3,7 @@ let pathArr = window.location.pathname.split('/');
 let bsnName = pathArr[pathArr.length - 1].replace(".html", "");
 let bsnJsPath = `/js/${bsnName ? bsnName : "/index"}`;
 
-if (window.location.host === 'localhost') isProd = false;
+if (window.location.host.indexOf('localhost') !== -1) isProd = false;
 let header = document.getElementsByTagName('head')[0];
 let loadBsn = () => {
     // 业务包
