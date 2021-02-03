@@ -1,160 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/jpeg" sizes="80x80" href="../imgs/logo.jpg"/>
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="../imgs/logo.jpg" />
     <title>Markdown编辑器</title>
 </head>
+
 <body>
 
-<div id="root">
+    <div id="root">
 
-    <yanhui-header title="Markdown编辑器" icon="file-code-o" :operations="operations"></yanhui-header>
+        <yanhui-header title="Markdown编辑器" icon="file-code-o" :actions="actions"></yanhui-header>
 
-    <div class="m-3">
+        <div class="m-3">
 
-        <div class="row ml-1">
-            <div class="input-group mb-3" style="width: 98%">
-                <div class="input-group-prepend">
-                    <span class="input-group-text font-italic font-weight-bold">请选择Markdown文件</span>
-                </div>
-                <select class="custom-select flex-grow-1" id="inputGroupSelect01" v-model="selectedFile"
+            <div class="row ml-1">
+                <div class="input-group mb-3" style="width: 98%">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text font-italic font-weight-bold">请选择Markdown文件</span>
+                    </div>
+                    <select class="custom-select flex-grow-1" id="inputGroupSelect01" v-model="selectedFile"
                         @change="loadFile(false)">
-                    <option v-for="file in fileList" :value="file">{{file}}</option>
-                </select>
+                        <option v-for="file in fileList" :value="file">{{file}}</option>
+                    </select>
+                </div>
             </div>
+
+            <div class="row">
+                <div id="test-editor" style="margin-bottom: 5rem">
+                    <textarea style="display:none;"></textarea>
+                </div>
+            </div>
+
         </div>
-
-        <div class="row">
-            <div id="test-editor" style="margin-bottom: 5rem">
-                <textarea style="display:none;"></textarea>
-            </div>
-        </div>
-
-        <!--<div class="alert alert-secondary d-flex justify-content-between align-items-center fixed-bottom m-2 p-2"
-             role="alert">
-            <div>
-                <span class="text-info">😀 Ctrl+S 保存文件喔~~</span>
-            </div>
-            <button type="button" class="btn btn-outline-info" @click="update">Update</button>
-            <button type="button" class="btn btn-outline-info" @click="syncFile">SyncFile</button>
-            <button type="button" class="btn btn-outline-info" @click="syncFileTree">SyncFileTree</button>
-            <div>
-                <span v-if="selectedFile === ''" class="text-danger">未选择文件</span>
-                <span v-else>
-                    <span class="mx-1 text-success">已选择文件</span>
-                    <span class="text-primary">{{selectedFile}}</span>
-                </span>
-            </div>
-        </div>-->
-
     </div>
-</div>
 
+    <script src="/cdn/vue/vue.min.js"></script>
+    <script src="/cdn/axios.min.js"></script>
+    <script src="/cdn/bootstrap/jquery.slim.min.js"></script>
+    <script src="/cdn/bootstrap/popper.min.js"></script>
+    <script src="/cdn/bootstrap/bootstrap.min.js"></script>
+    <script src="/cdn/editormd/editormd.min.js"></script>
 
-<script src="/cdn/common.js"></script>
+    <link rel="stylesheet" href="/cdn/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="/cdn/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/cdn/editormd/css/editormd.css" />
 
-<script>
+    <!-- 业务js在 /js/ 目录下，默认与页面名称相同 -->
+    <script src="/js/appInit-min.js"></script>
 
-    initApp({
-        baseLibs: ["/cdn/editormd/editormd.min.js"],
-        asyncLibs: ["/cdn/editormd/css/editormd.css"],
-    }).then(() => {
-        let tip = common.tip;
-        let app = new Vue({
-            el: "#root",
-            data() {
-                return {
-                    selectedFile: "test/test.md",
-                    fileList: [],
-                    editor: null,
-                    operations: [
-                        {
-                            title: "更新文件", call: () => {
-                                this.update();
-                            }
-                        },
-                        {
-                            title: "同步文件", call: () => {
-                                this.syncFile();
-                            }
-                        },
-                        {
-                            title: "同步文件树", call: () => {
-                                this.syncFileTree();
-                            }
-                        }
-                    ]
-                }
-            },
-            methods: {
-                initFileList() {
-                    for (let key in common.fileTree) {
-                        if (key && key.endsWith(".md")) {
-                            this.fileList.push(key);
-                        }
-                    }
-                },
-                loadFile(sync = false) {
-                    common.getContent(this.selectedFile, sync).then(data => {
-                        this.editor.setValue(data);
-                        if (sync) tip("文件加载完成!", `已重新加载文件 => ${this.selectedFile}`);
-                    });
-                },
-                update() {
-                    if (this.selectedFile === "") {
-                        tip("请选选择文件！");
-                        return;
-                    }
-                    let value = this.editor.getValue();
-                    common.updateFile(this.selectedFile, value);
-                },
-                syncFile() {
-                    if (this.selectedFile === "") {
-                        tip("请选选择文件！");
-                        return;
-                    }
-                    this.loadFile(true);
-                },
-                syncFileTree() {
-                    confirm("确认同步文件树？") && common.initFileTree().then(() => {
-                        tip("同步文件树完成！");
-                        this.fileList = [];
-                        this.initFileList();
-                    });
-                },
-                listenEvent() {
-                    $(window).keydown(function (event) {
-                        if (event.keyCode === 83 && event.ctrlKey) {
-                            app.update();
-                            event.preventDefault();
-                        }
-                    });
-                }
-            },
-            mounted() {
-                this.initFileList();
-                this.editor = editormd("test-editor", {
-                    mode: "gfm",
-                    width: "98%",
-                    height: "calc(100vh - 250px)",
-                    path: "../cdn/editormd/lib/",
-                    watch: true,
-                    tocm: true,
-                    taskList: true,
-                    emoji: true,
-                    tex: true,
-                    flowChart: true,
-                    sequenceDiagram: true,
-                    onload: () => {
-                        this.loadFile();
-                    },
-                });
-                this.listenEvent();
-            }
-        });
-    })
-
-</script>
 </body>
+
 </html>

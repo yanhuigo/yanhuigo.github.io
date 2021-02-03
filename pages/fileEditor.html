@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Monaco-Editor</title>
     <meta charset="UTF-8">
-    <link rel="icon" type="image/jpeg" sizes="80x80" href="../imgs/logo.jpg"/>
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="../imgs/logo.jpg" />
     <style type="text/css">
         body {
             margin: 0;
@@ -12,202 +13,77 @@
         }
     </style>
 </head>
+
 <body>
-<div id="container" style="width: 100%; height: 100vh;"></div>
-<div id="root">
-    <div class="alert alert-secondary d-flex justify-content-start align-items-center fixed-bottom m-2 p-2"
-         role="alert">
-        <span class="font-weight-bold border border-info rounded p-1" style="border-width: 2px!important">Monaco-Editor编辑器</span>
-        <!--<select class="custom-select" style="width: 200px" v-model="selectedFile" @change="loadFile(false)">
-            <option v-for="file in fileList" :value="file">{{file}}</option>
-        </select>-->
-        <div class="input-group ml-2" style="width: 400px">
-            <div class="input-group-prepend">
-                <span class="input-group-text">Editor File</span>
-            </div>
-            <input v-model="inputTxt" type="search" class="form-control" list="fileDataList"/>
-            <datalist id="fileDataList">
-                <option v-for="file in fileList" :value="file"></option>
-            </datalist>
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" @click="loadFile(false)">Load</button>
-            </div>
-        </div>
-        <span class="ml-3 text-primary font-italic border-bottom border-info">{{selectedFile ? `正在编辑文件 ${selectedFile}` : '请选择编辑文件'}}</span>
-        <span class="ml-3 text-secondary font-italic border-bottom border-dark">F1 打开编辑器导航 ; ctrl+s 保存文件 ; ctrl+p 在iframe中预览文件</span>
-    </div>
 
-    <div class="modal d-block" tabindex="-1" v-if="showIframe">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{selectedFile}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+    <div id="root">
+
+        <yanhui-header title="Monaco Editor" :actions="actions">
+            <div slot="headerRight">
+                <span class="text-truncate">
+                    {{selectedFile ? `正在编辑 ${selectedFile}` : '请选择编辑文件...'}}
+                </span>
+            </div>
+        </yanhui-header>
+
+        <div id="container" style="width: 100%; height: 100vh;"></div>
+
+        <!-- <div class="alert alert-secondary d-flex justify-content-start align-items-center fixed-bottom m-2 p-2"
+            role="alert">
+            <span class="font-weight-bold border border-info rounded p-1"
+                style="border-width: 2px!important">Monaco-Editor编辑器</span>
+            <div class="input-group ml-2" style="width: 400px">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Editor File</span>
+                </div>
+                <input v-model="inputTxt" type="search" class="form-control" list="fileDataList" />
+                <datalist id="fileDataList">
+                    <option v-for="file in fileList" :value="file"></option>
+                </datalist>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" @click="loadFile(false)">Load</button>
+                </div>
+            </div>
+            <span class="ml-3 text-primary font-italic border-bottom border-info">{{selectedFile ? `正在编辑文件
+                ${selectedFile}` : '请选择编辑文件'}}</span>
+            <span class="ml-3 text-secondary font-italic border-bottom border-dark">F1 打开编辑器导航 ; ctrl+s 保存文件 ; ctrl+p
+                在iframe中预览文件</span>
+        </div> -->
+
+        <div class="modal d-block" tabindex="-1" v-if="showIframe">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{selectedFile}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                             @click="closeIframe">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <iframe class="border border-secondary rounded" :srcdoc="renderFileContent" width="100%"
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <iframe class="border border-secondary rounded" :srcdoc="renderFileContent" width="100%"
                             height="600px">
-                    </iframe>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeIframe">Close
-                    </button>
+                        </iframe>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="closeIframe">Close
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <script src="/cdn/vue/vue.min.js"></script>
+    <script src="/cdn/axios.min.js"></script>
+    <script src="/cdn/bootstrap/jquery.slim.min.js"></script>
+    <script src="/cdn/bootstrap/bootstrap.min.js"></script>
+    <script src="/cdn/monaco-editor/min/vs/loader.js"></script>
 
-</div>
-<script src="../cdn/common.js"></script>
-<script>
+    <!-- 业务js在 /js/ 目录下，默认与页面名称相同 -->
+    <script src="/js/appInit-min.js"></script>
 
-    initApp({
-        baseLibs: ["/cdn/monaco-editor/min/vs/loader.js"],
-        asyncLibs: [],
-    }).then(() => {
-        let editor;
-        require.config({paths: {vs: '../cdn/monaco-editor/min/vs'}});
-        let themeIsDark = true;
-        let tip = common.tip;
-
-        let app = new Vue({
-            el: "#root",
-            data() {
-                return {
-                    selectedFile: "",
-                    fileList: [],
-                    inputTxt: "",
-                    editor: null,
-                    showIframe: false,
-                    renderFileContent: "<h2>Hello</h2>"
-                }
-            },
-            methods: {
-                initFileList(data) {
-                    this.fileList = [];
-                    for (let key in data) {
-                        this.fileList.push(key);
-                    }
-                },
-                loadFile(sync = false) {
-                    if (this.fileList.indexOf(this.inputTxt) === -1) {
-                        alert(`文件不存在 ${this.inputTxt}`);
-                        return;
-                    }
-                    this.selectedFile = this.inputTxt;
-                    common.getContent(this.selectedFile, sync).then(data => {
-                        let suffix = this.selectedFile.substr(this.selectedFile.lastIndexOf(".") + 1);
-                        switch (suffix) {
-                            case "md":
-                                suffix = "markdown";
-                                break;
-                            default:
-                                break;
-                        }
-                        monaco.editor.setModelLanguage(editor.getModel(), suffix);
-                        editor.setValue(data);
-                        if (sync) tip("文件加载完成!", `已重新加载文件 => ${this.selectedFile}`);
-                    });
-                },
-                update() {
-                    if (this.selectedFile === "") {
-                        tip("请选择编辑文件");
-                        return;
-                    }
-                    let value = editor.getValue();
-                    common.updateFile(this.selectedFile, value);
-                },
-                closeIframe() {
-                    this.showIframe = false;
-                }
-            },
-            mounted() {
-                this.initFileList(common.fileTree);
-                initEditor();
-            }
-        });
-
-        function actionInit() {
-
-            let actions = [
-                {
-                    name: "在iframe中预览",
-                    keys: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_P],
-                    group: "yh-util",
-                    call: () => {
-                        let value = editor.getValue();
-                        app.renderFileContent = value;
-                        app.showIframe = true;
-                    },
-                },
-                {
-                    name: "js eval", group: "yh-util", call: () => {
-                        let selectionTxt = editor.getModel().getValueInRange(editor.getSelection());
-                        window.eval(selectionTxt);
-                    }
-                },
-                {
-                    name: "切换主题", group: "yh-util", call: () => {
-                        editor.updateOptions({theme: themeIsDark ? "vs" : "vs-dark"});
-                        themeIsDark = !themeIsDark;
-                    }
-                }, {
-                    name: "保存文件", group: "yh-file", keys: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S], call: () => {
-                        app.update();
-                    },
-                },
-                {
-                    name: "重新加载文件", group: "yh-file", call: () => {
-                        app.loadFile(true);
-                    }
-                },
-                {
-                    name: "清空文件树缓存", group: "yh-file", call: () => {
-                        if (!confirm("确认清空文件树缓存？")) return;
-                        common.initFileTree().then((data) => {
-                            app.initFileList(data);
-                            app.loadFile();
-                        });
-                    }
-                }
-            ];
-
-            let index = 0;
-            for (let action of actions) {
-                editor.addAction({
-                    id: `yh-editor-${++index}`,
-                    label: action.name,
-                    // ctrl+p触发
-                    // monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_P,
-                    // 按住ctrl 再分别按下 k m 后触发
-                    // monaco.KeyMod.chord(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_K, monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_M)
-                    keybindings: action.keys ? action.keys : [],
-                    precondition: null,
-                    keybindingContext: null,
-                    contextMenuGroupId: action.group ? action.group : 'yh-editor',
-                    contextMenuOrder: 1.5 + index,
-                    run: action.call
-                });
-            }
-
-        }
-
-        function initEditor() {
-            require(['vs/editor/editor.main'], function () {
-                editor = monaco.editor.create(document.getElementById('container'), {
-                    value: '',
-                    language: "markdown",
-                    theme: "vs-dark",
-                    automaticLayout: true
-                });
-                actionInit();
-            });
-        }
-    });
-
-</script>
+    <link rel="stylesheet" href="/cdn/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="/cdn/font-awesome-4.7.0/css/font-awesome.min.css" />
 </body>
+
 </html>

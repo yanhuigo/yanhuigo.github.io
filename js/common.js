@@ -11,22 +11,27 @@ let initAsyncFunc = async function (initCfg) {
         project: "webdata"
     }
 
-    if ("/login.html" === window.location.pathname) return {config};
+    if ("/login.html" === window.location.pathname) return { config };
 
     let loginStorageData = localStorage.getItem(storage_login);
     if ("/login.html" !== window.location.pathname && !loginStorageData) {
-        window.location.href = "/login.html";
+        window.location.href = `/login.html?page=${window.location.pathname}`;
         return;
     }
 
-    let {access_token, created_at, expires_in, refresh_token} = JSON.parse(loginStorageData);
+    let { access_token, created_at, expires_in, refresh_token } = JSON.parse(loginStorageData);
     // 保存文件路径和sha的对应关系
     let fileTree = {};
 
     async function appInit() {
 
-        if (!initCfg.noLoadDefault) {
+        if (initCfg.loadDefault) {
+
+            // 自动加载基础依赖
+
+            // 基础依赖，顺序加载
             let baseLibs = ["/cdn/vue/vue.min.js", "/cdn/axios.min.js", "/cdn/bootstrap/jquery.slim.min.js"];
+            // 异步加载的依赖
             let asyncLibs = ["/cdn/bootstrap/bootstrap.min.js", "/cdn/bootstrap/bootstrap.min.css", "/cdn/font-awesome-4.7.0/css/font-awesome.min.css"];
 
             if (initCfg.baseLibs) {
@@ -128,6 +133,9 @@ let initAsyncFunc = async function (initCfg) {
             return Base64.decode(cacheContent);
         }
         let data = await axios.get(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}?access_token=${access_token}`);
+        if (!data.content) {
+            return null;
+        }
         localStorage.setItem(filePath, data.content);
         return Base64.decode(data.content);
     }
@@ -146,7 +154,7 @@ let initAsyncFunc = async function (initCfg) {
             sha,
             message: `open api update ${window.location.pathname}`
         }).then(() => {
-            tip("更新成功！");
+            tip(`更新[${filePath}]成功！`);
             localStorage.setItem(filePath, data);
             initFileTree();
         }).catch((err) => {
@@ -389,6 +397,40 @@ let initAsyncFunc = async function (initCfg) {
 
     function vueComponentBind() {
 
+        let commonOperations = [
+            {
+                title: "OpenApi", children: [
+                    {
+                        title: "更新应用配置", call: () => {
+                            if (confirm("确认清空应用配置并刷新页面？")) {
+                                localStorage.removeItem(configFilePath);
+                                window.location.reload();
+                            }
+                        }
+                    },
+                    {
+                        title: "清空所有缓存", call: () => {
+                            if (confirm("确认清空所有缓存并刷新页面？")) {
+                                for (let key in localStorage) {
+                                    if (localStorage.hasOwnProperty(key) && key !== storage_login) {
+                                        localStorage.removeItem(key);
+                                    }
+                                }
+                                window.location.reload();
+                            }
+                        }
+                    },
+                    {
+                        title: "同步文件树", call: () => {
+                            confirm("确认同步文件树？") && initFileTree().then(() => {
+                                tip("同步文件树完成！");
+                            });
+                        }
+                    }
+                ]
+            },
+        ];
+
         // element
         Vue.component('yanhui-header-element', {
             data() {
@@ -433,51 +475,18 @@ let initAsyncFunc = async function (initCfg) {
         Vue.component('yanhui-header', {
             data() {
                 return {
-                    links: []
                 }
             },
             methods: {},
             mounted() {
-                let commonOperations = [
-                    {
-                        title: "OpenApi", children: [
-                            {
-                                title: "更新应用配置", call: () => {
-                                    if (confirm("确认清空应用配置并刷新页面？")) {
-                                        localStorage.removeItem(configFilePath);
-                                        window.location.reload();
-                                    }
-                                }
-                            },
-                            {
-                                title: "清空所有缓存", call: () => {
-                                    if (confirm("确认清空所有缓存并刷新页面？")) {
-                                        for (let key in localStorage) {
-                                            if (localStorage.hasOwnProperty(key) && key !== storage_login) {
-                                                localStorage.removeItem(key);
-                                            }
-                                        }
-                                        window.location.reload();
-                                    }
-                                }
-                            },
-                            {
-                                title: "同步文件树", call: () => {
-                                    confirm("确认同步文件树？") && initFileTree().then(() => {
-                                        tip("同步文件树完成！");
-                                    });
-                                }
-                            }
-                        ]
-                    },
-                ];
-                this.links = appCfg.navLinks.concat(commonOperations);
-                this.operations && this.links.push({
-                    title: "Action",
-                    children: this.operations ? this.operations : []
-                });
+
             },
-            props: ['title', "icon", "operations"],
+            props: ['title', "icon", "actions"],
+            computed: {
+                links: function () {
+                    return appCfg.navLinks.concat(commonOperations).concat(this.actions);
+                }
+            },
             template: `
                 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
                     <i class="fa fa-2x text-light link mr-2 title-align-sub" :class="icon?'fa-'+icon:'fa-paper-plane-o'"></i>
@@ -489,7 +498,12 @@ let initAsyncFunc = async function (initCfg) {
                     <ul class="navbar-nav mr-auto">
                       
                       <li class="nav-item" :class="link.children ? 'dropdown' : ''" v-for="(link,index) in links">
-                        <a v-if="!link.children" class="nav-link" target="_blank" :href="link.url">{{link.title}} <span class="sr-only">(current)</span></a>
+                        
+                        <template v-if="!link.children">
+                            <a v-if="link.call" class="nav-link" target="_blank" href="###" @click.prevent="link.call">{{link.title}} <span class="sr-only">(current)</span></a>
+                            <a v-else target="_blank" :href="link.url">{{link.title}} <span class="sr-only">(current)</span></a>
+                        </template>
+
                         <template v-else>
                             <a class="nav-link dropdown-toggle" href="#" :id="'navbarDropdown'+index" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               {{link.title}}
@@ -503,6 +517,9 @@ let initAsyncFunc = async function (initCfg) {
                         </template>
                       </li>
                     </ul>
+                    <form class="form-inline my-2 my-lg-0 text-light">
+                        <slot name="headerRight"></slot>
+                    </form>
                   </div>
                 </nav>
             `
@@ -534,3 +551,12 @@ window.initApp = async (initCfg = {}) => {
 
     console.log("init complete...");
 }
+
+
+$(() => {
+
+    // bootstrap组件初始化
+    $('.dropdown-toggle').dropdown();
+
+
+});
