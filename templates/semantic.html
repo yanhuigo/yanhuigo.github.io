@@ -4,10 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/jpeg" sizes="80x80" href="/imgs/logo.jpg" />
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="/imgs/logo.jpg"/>
     <title>semantic-ui template page</title>
     <style type="text/css">
-        .ui.container.hello>div {
+        .ui.container.hello {
+            padding-top: 3rem;
+        }
+
+        .ui.container.hello > div {
             margin: 1rem;
             padding: 1rem;
             border: 1px solid lightgray;
@@ -17,7 +21,50 @@
 
 <body>
 
-    <div id="app" class="ui container hello">
+<div id="app">
+
+    <div class="ui fixed inverted menu p-1">
+        <div class="ui container">
+            <a href="#" class="header item">
+                <!--<img class="logo" src="assets/images/logo.png">-->
+                Semantic
+            </a>
+            <a href="#" class="item">主页</a>
+            <div class="ui simple dropdown item">
+                Dropdown <i class="dropdown icon"></i>
+                <div class="menu">
+                    <a class="item" href="#">链接选项</a>
+                    <a class="item" href="#">链接选项</a>
+                    <div class="divider"></div>
+                    <div class="header">标题项</div>
+                    <div class="item">
+                        <i class="dropdown icon"></i>
+                        子菜单
+                        <div class="menu">
+                            <a class="item" href="#">链接选项</a>
+                            <a class="item" href="#">链接选项</a>
+                        </div>
+                    </div>
+                    <a class="item" href="#">链接选项</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui container hello">
+
+        <div>
+            <h1 class="ui header">模态框</h1>
+            <button class="ui button primary" @click="showModal">show</button>
+            <div class="ui modal">
+                <div class="header">标题</div>
+                <div class="content">
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                </div>
+            </div>
+        </div>
 
         <div>
             <h1 class="ui header">按钮</h1>
@@ -89,7 +136,8 @@
             <h1 class="ui header">图标</h1>
             <div class="ui doubling five column grid">
                 <div class="column"><i class="american sign language interpreting icon"></i>american sign language
-                    interpreting</div>
+                    interpreting
+                </div>
                 <div class="column"><i class="assistive listening systems icon"></i>assistive listening systems</div>
                 <div class="column"><i class="audio description icon"></i>audio description</div>
                 <div class="column"><i class="blind icon"></i>blind</div>
@@ -107,72 +155,78 @@
                 <div class="column"><i class="wheelchair icon"></i>wheelchair</div>
             </div>
         </div>
-
     </div>
 
-    <link href="/cdn/semantic/semantic.min.css" rel="stylesheet">
-    <script src="/cdn/bootstrap/jquery.slim.min.js"></script>
-    <script src="/cdn/semantic/semantic.min.js"></script>
-    <script src="/cdn/vue/vue.min.js"></script>
 
-    <script>
-        $(() => {
-            // 初始化下拉列表
-            $('.ui.dropdown').dropdown({
-                maxSelections: 3
-            });
+</div>
 
-            $('.ui.search').search({
-                source: [
-                    { title: 'Andorra' },
-                    { title: 'United Arab Emirates' },
-                    { title: 'Afghanistan' },
-                    { title: 'Antigua' },
-                    { title: 'Anguilla' },
-                    { title: 'Albania' },
-                    { title: 'Armenia' },
-                    { title: 'Netherlands Antilles' },
-                    { title: 'Angola' },
-                    { title: 'Argentina' },
-                    { title: 'American Samoa' },
-                    { title: 'Austria' },
-                    { title: 'Australia' },
-                    { title: 'Aruba' },
-                    { title: 'Aland Islands' },
-                    { title: 'Azerbaijan' },
-                    { title: 'Bosnia' },
-                    { title: 'Barbados' },
-                    { title: 'Bangladesh' },
-                    { title: 'Belgium' },
-                    { title: 'Burkina Faso' },
-                    { title: 'Bulgaria' },
-                    { title: 'Bahrain' },
-                    { title: 'Burundi' }
-                    // etc
-                ],
-                minCharacters: 0,
-                selectFirstResult: true,
-                onSelect(result, response) {
-                    console.log(result);
-                }
-            });
+<link href="/cdn/bootstrap/util.css" rel="stylesheet">
+<link href="/cdn/semantic/semantic.min.css" rel="stylesheet">
+<script src="/cdn/bootstrap/jquery.min.js"></script>
+<script src="/cdn/semantic/semantic.min.js"></script>
+<script src="/cdn/vue/vue.min.js"></script>
+
+<script>
+    $(() => {
+        // 初始化下拉列表
+        $('.ui.dropdown').dropdown({
+            maxSelections: 3
         });
 
-        let app = new Vue({
-            el: "#app",
-            data() {
-                return {
-                    testData: {}
-                }
-            },
-            methods: {
-                showMenu() {
-                    $('.ui.sidebar').sidebar('toggle');
-                }
+        $('.ui.search').search({
+            source: [
+                {title: 'Andorra'},
+                {title: 'United Arab Emirates'},
+                {title: 'Afghanistan'},
+                {title: 'Antigua'},
+                {title: 'Anguilla'},
+                {title: 'Albania'},
+                {title: 'Armenia'},
+                {title: 'Netherlands Antilles'},
+                {title: 'Angola'},
+                {title: 'Argentina'},
+                {title: 'American Samoa'},
+                {title: 'Austria'},
+                {title: 'Australia'},
+                {title: 'Aruba'},
+                {title: 'Aland Islands'},
+                {title: 'Azerbaijan'},
+                {title: 'Bosnia'},
+                {title: 'Barbados'},
+                {title: 'Bangladesh'},
+                {title: 'Belgium'},
+                {title: 'Burkina Faso'},
+                {title: 'Bulgaria'},
+                {title: 'Bahrain'},
+                {title: 'Burundi'}
+                // etc
+            ],
+            minCharacters: 0,
+            selectFirstResult: true,
+            onSelect(result, response) {
+                console.log(result);
             }
-        })
+        });
+    });
 
-    </script>
+    let app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                testData: {}
+            }
+        },
+        methods: {
+            showMenu() {
+                $('.ui.sidebar').sidebar('toggle');
+            },
+            showModal() {
+                $('.ui.modal').modal('show');
+            }
+        }
+    })
+
+</script>
 
 </body>
 
