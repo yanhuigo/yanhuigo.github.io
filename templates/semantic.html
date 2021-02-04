@@ -59,9 +59,9 @@
             <div class="ui modal">
                 <div class="header">标题</div>
                 <div class="content">
-                    <p></p>
-                    <p></p>
-                    <p></p>
+                    <p>11111111111</p>
+                    <p>22222222222</p>
+                    <p>3333333333333</p>
                 </div>
             </div>
         </div>
@@ -69,6 +69,44 @@
         <div>
             <h1 class="ui header">按钮</h1>
             <button class="ui button primary">hello</button>
+            <button class="ui primary button">基色</button>
+            <button class="ui secondary button">副色</button>
+            <button class="ui positive button">支持色</button>
+            <button class="ui negative button">反对色</button>
+            <button class="ui red button">红色</button>
+            <button class="ui orange button">橙色</button>
+            <button class="ui yellow button">黄色</button>
+            <button class="ui olive button">橄榄绿</button>
+            <button class="ui green button">纯绿</button>
+            <button class="ui teal button">水鸭蓝</button>
+            <button class="ui blue button">纯蓝</button>
+            <button class="ui violet button">紫罗兰</button>
+            <button class="ui purple button">纯紫</button>
+            <button class="ui pink button">粉红</button>
+            <button class="ui brown button">棕色</button>
+            <button class="ui grey basic button">灰色</button>
+            <button class="ui black basic button">黑色</button>
+
+            <div class="ui buttons">
+                <button class="ui red basic button">One</button>
+                <button class="ui blue basic button">Two</button>
+                <button class="ui green basic button">Three</button>
+            </div>
+
+            <div class="ui large buttons">
+                <button class="ui button">One</button>
+                <div class="or"></div>
+                <button class="ui button">Two</button>
+                <div class="or"></div>
+                <button class="ui button">Three</button>
+            </div>
+
+            <div class="ui small basic teal icon buttons">
+                <button class="ui button"><i class="file icon"></i></button>
+                <button class="ui button"><i class="save icon"></i></button>
+                <button class="ui button"><i class="upload icon"></i></button>
+                <button class="ui button"><i class="download icon"></i></button>
+            </div>
         </div>
 
         <div class="ui divider"></div>
@@ -110,16 +148,18 @@
         <div>
             <h1 class="ui header">侧边栏菜单</h1>
             <button class="ui button primary" @click="showMenu">打开菜单</button>
-            <div class="ui sidebar inverted vertical menu">
-                <a class="item">
-                    1
-                </a>
-                <a class="item">
-                    2
-                </a>
-                <a class="item">
-                    3
-                </a>
+            <div>
+                <div class="ui sidebar inverted vertical menu">
+                    <a class="item">
+                        1
+                    </a>
+                    <a class="item">
+                        2
+                    </a>
+                    <a class="item">
+                        3
+                    </a>
+                </div>
             </div>
         </div>
 
@@ -155,6 +195,52 @@
                 <div class="column"><i class="wheelchair icon"></i>wheelchair</div>
             </div>
         </div>
+
+
+        <div>
+            <h1 class="ui header">卡片</h1>
+            <div class="ui cards">
+                <div class="card">
+                    <div class="content">
+                        <img class="right floated mini ui image rounded" src="/imgs/logo.jpg">
+                        <div class="header">
+                            Elliot Fu
+                        </div>
+                        <div class="meta">
+                            Friends of Veronika
+                        </div>
+                        <div class="description">
+                            Elliot requested permission to view your contact details
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        <div class="ui two buttons">
+                            <div class="ui basic green button">Approve</div>
+                            <div class="ui basic red button">Decline</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="content">
+                        <img class="right floated mini ui image rounded" src="/imgs/logo.jpg">
+                        <div class="header">
+                            Jenny Hess
+                        </div>
+                        <div class="description">
+                            Jenny wants to add you to the group <b>best friends</b>
+                        </div>
+                    </div>
+                    <div class="extra content">
+                        <div class="ui three buttons">
+                            <div class="ui basic secondary button">Approve</div>
+                            <div class="ui basic secondary button">Decline</div>
+                            <div class="ui basic primary button">Decline</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
 
