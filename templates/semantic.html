@@ -51,6 +51,15 @@
             </select>
         </div>
 
+        <div class="ui category search">
+            <h1 class="ui header">搜索框</h1>
+            <div class="ui icon input">
+                <input class="prompt" type="text" placeholder="Search animals..." v-model="testData.input">
+                <i class="search icon"></i>
+            </div>
+            <div class="results"></div>
+        </div>
+
         <div>
             <h1 class="ui header">侧边栏菜单</h1>
             <button class="ui button primary" @click="showMenu">打开菜单</button>
@@ -99,15 +108,6 @@
             </div>
         </div>
 
-        <div class="ui category search">
-            <h1 class="ui header">搜索框</h1>
-            <div class="ui icon input">
-                <input class="prompt" type="text" placeholder="Search animals...">
-                <i class="search icon"></i>
-            </div>
-            <div class="results"></div>
-        </div>
-
     </div>
 
     <link href="/cdn/semantic/semantic.min.css" rel="stylesheet">
@@ -149,12 +149,22 @@
                     { title: 'Bahrain' },
                     { title: 'Burundi' }
                     // etc
-                ]
-            })
+                ],
+                minCharacters: 0,
+                selectFirstResult: true,
+                onSelect(result, response) {
+                    console.log(result);
+                }
+            });
         });
 
-        new Vue({
+        let app = new Vue({
             el: "#app",
+            data() {
+                return {
+                    testData: {}
+                }
+            },
             methods: {
                 showMenu() {
                     $('.ui.sidebar').sidebar('toggle');
