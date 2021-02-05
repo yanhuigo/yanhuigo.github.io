@@ -470,9 +470,9 @@ const common = (function () {
     }
 
 
-    function tip(msg, detail = "") {
+    function tip(msg, type) {
         if (window.tip) {
-            window.tip.info(msg);
+            window.tip[type](msg);
         } else if (window.Notification) {
             Notification.requestPermission(function (status) {
                 let n = new Notification(msg, {
@@ -508,7 +508,7 @@ const common = (function () {
     async function updateFile(filePath, content) {
         let sha = fileTree[filePath];
         if (!sha) {
-            tip(`未匹配匹配文件 ${filePath}`);
+            tip(`未匹配匹配文件 ${filePath}`, "info");
             return;
         }
         let data = Base64.encode(content);
@@ -518,12 +518,12 @@ const common = (function () {
             sha,
             message: `open api update ${window.location.pathname}`
         }).then(() => {
-            tip(`更新[${filePath}]成功！`);
+            tip(`更新[${filePath}]成功！`, "success");
             localStorage.setItem(filePath, data);
             initFileTree();
         }).catch((err) => {
             console.error(err);
-            tip("更新异常！");
+            tip("更新异常！", "error");
         })
     }
 
@@ -538,11 +538,11 @@ const common = (function () {
             content: data,
             message: `open api new ${window.location.pathname}`
         }).then((data) => {
-            tip("新增成功！");
+            tip("新增成功！", "success");
             initFileTree();
         }).catch((err) => {
             console.error(err);
-            tip("新增异常！");
+            tip("新增异常！", "error");
         })
     }
 
