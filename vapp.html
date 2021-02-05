@@ -1,120 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" type="image/jpeg" sizes="80x80" href="/imgs/logo.jpg"/>
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="/imgs/logo.jpg" />
     <title>App Page</title>
+    <style type="text/css">
+        .vapp-content {
+            margin-top: 5rem !important;
+        }
+
+        .mt-header {
+            margin-top: 5rem !important;
+        }
+
+        .vapp-tpl {
+            display: none;
+        }
+    </style>
 </head>
+
 <body>
 
-<!--app根组件-->
-<div id="root">
-
-    <app-header></app-header>
-
-    <div class="ui container pt-5">
-        <router-view></router-view>
+    <div id="vapp-leftMenu" class="ui sidebar bottom inverted menu p-3">
+        <a class="item" v-for="link in navLinks" :href="link.url" target="_blank">
+            {{link.title}}
+        </a>
     </div>
 
-</div>
+    <div class="pusher dimmed">
+        <!--app根组件-->
+        <div id="root">
+            <app-header></app-header>
+            <keep-alive>
+                <router-view></router-view>
+            </keep-alive>
+        </div>
+    </div>
 
-<!--头部菜单页-->
-<div id="page-header" class="invisible">
-    <div class="ui fixed inverted menu">
-        <div class="ui container">
-            <a href="#/home" class="header item">
-                <!--<img class="mini ui image rounded mr-1" src="/imgs/logo.jpg">-->
-                App
-            </a>
-            <a href="#/about" class="item">about</a>
-            <div class="ui simple dropdown item">
-                Dropdown <i class="dropdown icon"></i>
-                <div class="menu">
-                    <a class="item" href="#">链接选项</a>
-                    <a class="item" href="#">链接选项</a>
-                    <div class="divider"></div>
-                    <div class="header">标题项</div>
-                    <div class="item">
+
+    <!--头部菜单页-->
+    <div id="page-header" class="vapp-tpl">
+        <div class="ui fixed menu inverted">
+            <div class="ui container">
+                <a @click.prevent="toggleMenu" class="header item">
+                    <!--<img class="mini ui image rounded mr-1" src="/imgs/logo.jpg">-->
+                    <i class="icon paper plane square large"></i>
+                    {{title}}
+                </a>
+                <template v-for="menu in menus">
+                    <a v-if="menu.url" :href="menu.url" class="item" :class="active.toUpperCase()===menu.title.toUpperCase() ? 'active' : '' " @click="active=menu.title">
+                        <i v-if="menu.icon" class="icon large" :class="menu.icon"></i>
+                        {{menu.title}}
+                    </a>
+                    <div v-else class="ui simple dropdown item">
+                        <span><i v-if="menu.icon" class="icon large" :class="menu.icon"></i>{{menu.title}}</span>
                         <i class="dropdown icon"></i>
-                        子菜单
+                        <!-- 二级节点 -->
                         <div class="menu">
-                            <a class="item" href="#">链接选项</a>
-                            <a class="item" href="#">链接选项</a>
+                            <template v-for="lv2Menu in menu.children">
+                                <a v-if="lv2Menu.url" :href="lv2Menu.url"
+                                    :target="lv2Menu.url.indexOf('http') !== -1 ? '_blank' : '_self' "
+                                    class="item">{{lv2Menu.title}}</a>
+                                <div v-else class="ui simple dropdown item">
+                                    <span>{{lv2Menu.title}}</span>
+                                    <i class="dropdown icon"></i>
+                                    <!-- 三级节点 -->
+                                    <div class="menu">
+                                        <template v-for="lv3Menu in lv2Menu.children">
+                                            <a v-if="lv3Menu.url" :href="lv3Menu.url"
+                                                :target="lv3Menu.url.indexOf('http') !== -1 ? '_blank' : '_self' "
+                                                class="item">{{lv3Menu.title}}</a>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
                         </div>
                     </div>
-                    <a class="item" href="#">链接选项</a>
-                </div>
+
+                </template>
             </div>
         </div>
     </div>
-</div>
 
-<!--home组件-->
-<div id="page-home" class="invisible">
-    <div>
-        <h1 class="ui header">tpl-page-Home {{var1}}</h1>
+    <!--home组件-->
+    <div id="page-home" class="vapp-tpl">
+        <div class="vapp-content ui container">
+            <div class="ui search mb-3">
+                <div class="ui icon input d-flex">
+                    <input class="search" type="text" @keyup.enter="search" v-model="searchTxt" placeholder="搜索书签..." />
+                    <i class="search icon"></i>
+                </div>
+            </div>
+
+            <div class="ui buttons">
+                <template v-for="type in bmTypeList">
+                    <button class="ui button" :class="checkedType==type ? 'positive' : '' "
+                        @click="checkedType=type">{{type}}</button>
+                    <!-- <div class="or"></div> -->
+                </template>
+            </div>
+
+            <div class="my-4">
+                <a class="ui tag label" :class="checkedTag==tag.name ? 'teal' : '' " v-for="tag in bmTagList"
+                    @click="tagClick(tag)">{{tag.name}}</a>
+            </div>
+
+            <div class="ui cards centered">
+                <a class="card" target="_blank" :href="bm.c" v-for="bm in bmList">
+                    <div class="content">
+                        <p class="ui header small d-inline">
+                            {{bm.b}}
+                        </p>
+                        <div class="meta">
+                            {{bm.tag}}
+                        </div>
+                        <div class="description">
+                            {{bm.c}}
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+
     </div>
-</div>
 
-<!--about组件-->
-<div id="page-about" class="invisible">
-    <div>
-        <h1 class="ui header">tpl-page-About</h1>
+    <!--编辑器组件-->
+    <div id="page-editor" class="vapp-tpl">
+        <div class="mt-header d-sm-flex ui segment" style="height: calc(100vh - 6rem);">
+            <div class="ui vertical menu" style="min-width: 240px;">
+                <div class="item ui search" id="ed-file-search">
+                    <div class="ui transparent icon input">
+                        <input class="prompt" type="text" placeholder="Search Files...">
+                        <i class="search icon"></i>
+                    </div>
+                    <div class="results"></div>
+                </div>
+                <a class="item" v-for="file in fileList" @click="selectFile(file)">
+                    <i class="icon file"></i>
+                    {{file}}
+                </a>
+            </div>
+            <div class="flex-grow-1" id="editor-container" style="min-width: 360px;"></div>
+        </div>
+
     </div>
-</div>
 
-<script src="/cdn/vue/vue.min.js"></script>
-<script src="/cdn/vue/vue-router.js"></script>
+    <script src="/cdn/vue/vue.min.js"></script>
+    <script src="/cdn/axios.min.js"></script>
+    <script src="/cdn/vue/vue-router.js"></script>
 
-<link href="/cdn/bootstrap/util.css" rel="stylesheet">
-<link href="/cdn/semantic/semantic.min.css" rel="stylesheet">
-<script src="/cdn/bootstrap/jquery.min.js"></script>
-<script src="/cdn/semantic/semantic.min.js"></script>
+    <link href="/cdn/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/cdn/semantic/semantic.min.css" rel="stylesheet">
+    <script src="/cdn/bootstrap/jquery.min.js"></script>
+    <script src="/cdn/semantic/semantic.min.js"></script>
 
-<script>
 
-    // 1. 定义 (路由) 组件。
-    const Home = {
-        template: $("#page-home").html(),
-        data() {
-            return {
-                var1: "abc"
-            }
-        }
-    }
-    const About = {
-        template: $("#page-about").html()
-    }
+    <script>
+        let isProd = true;
+        if (window.location.host.indexOf('localhost') !== -1) isProd = false;
+        let header = document.getElementsByTagName('head')[0];
+        let script_bsn = document.createElement('script');
+        script_bsn.src = `/js/vapp${isProd ? '-min' : ''}.js`;
+        header.appendChild(script_bsn);
+    </script>
 
-    const Header = {
-        template: $("#page-header").html()
-    }
-
-    // 2. 定义路由
-    const routes = [
-        {path: '/home', component: Home},
-        {path: '/about', component: About}
-    ]
-
-    const router = new VueRouter({
-        routes // (缩写) 相当于 routes: routes
-    })
-
-    new Vue({
-        el: "#root",
-        components: {
-            "app-header": Header
-        },
-        router,
-        data() {
-            return {title: "Hello Vue..."}
-        },
-        mounted() {
-            console.log("vue app mounted...");
-        }
-    })
-
-</script>
 </body>
+
 </html>
