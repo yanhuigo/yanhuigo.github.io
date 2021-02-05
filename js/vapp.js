@@ -1,6 +1,16 @@
 // vue组件定义
 const vappComponents = (function () {
 
+    const menus = [
+        {title: "Home", url: "home", icon: "home"},
+        {title: "Editor", url: "editor", icon: "edit"},
+        {
+            title: "Links", children: [
+                {title: "semantic-ui", url: "https://zijieke.com/semantic-ui/"},
+            ]
+        },
+    ];
+
     function Home() {
 
         let bmTypeList = [];//分类集合
@@ -11,7 +21,7 @@ const vappComponents = (function () {
             if (bm.a) { // 子分类文件夹
                 for (let cbm of bm.a) {
                     if (cbm.a) {
-                        bmTagList.push({ name: cbm.b, type });
+                        bmTagList.push({name: cbm.b, type});
                         recursionBookmark(cbm, type, cbm.b);
                     } else {
                         recursionBookmark(cbm, type, tag);
@@ -48,7 +58,7 @@ const vappComponents = (function () {
                 initSearch() {
                     $('.ui.search').search({
                         source: [
-                            { title: 'test', actionUrl: "https://zijieke.com/semantic-ui/modules/search.php#/settings" },
+                            {title: 'test', actionUrl: "https://zijieke.com/semantic-ui/modules/search.php#/settings"},
                         ],
                         minCharacters: 0,
                         selectFirstResult: true,
@@ -177,13 +187,13 @@ const vappComponents = (function () {
                         }
                         monaco.editor.setModelLanguage(editor.getModel(), suffix);
                         editor.setValue(data);
-                        if (sync) common.tip("文件加载完成!", `已重新加载文件 => ${this.selectedFile}`);
+                        if (sync) tip("文件加载完成!", `已重新加载文件 => ${this.selectedFile}`);
                     });
                 },
 
                 initMonacoEditor() {
                     common.asyncLoadLibs(["/cdn/monaco-editor/min/vs/loader.js"]).then(() => {
-                        require.config({ paths: { vs: '/cdn/monaco-editor/min/vs' } });
+                        require.config({paths: {vs: '/cdn/monaco-editor/min/vs'}});
                         require(['vs/editor/editor.main'], () => {
                             editor = monaco.editor.create(document.getElementById('editor-container'), {
                                 value: 'start edit gitee files...',
@@ -199,7 +209,7 @@ const vappComponents = (function () {
                 initSemantic() {
                     let fileList = common.getFileList();
                     this.fileList = fileList;
-                    let source = fileList.map(file => ({ title: file }));
+                    let source = fileList.map(file => ({title: file}));
                     let app = this;
                     $('#ed-file-search').search({
                         source,
@@ -218,7 +228,7 @@ const vappComponents = (function () {
 
                 update() {
                     if (this.selectedFile === "") {
-                        tip("请选择编辑文件");
+                        tip.info("请选择编辑文件");
                         return;
                     }
                     let value = editor.getValue();
@@ -228,9 +238,20 @@ const vappComponents = (function () {
                 initEditorActions() {
                     let actions = [
                         {
-                            name: "保存文件", group: "yh-file", keys: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S], call: () => {
+                            name: "保存文件",
+                            group: "yh-file",
+                            keys: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S],
+                            call: () => {
                                 this.update();
                             },
+                        },
+                        {
+                            name: "清空文件树缓存", group: "yh-file", call: () => {
+                                if (!confirm("确认清空文件树缓存？")) return;
+                                common.initFileTree().then((data) => {
+                                    tip.success("清空文件树缓存完成！");
+                                });
+                            }
                         }
                     ];
 
@@ -263,18 +284,14 @@ const vappComponents = (function () {
             return {
                 title: "Yanhui",
                 active: "",
-                menus: [
-                    { title: "Home", url: "#/home", icon: "home" },
-                    { title: "Editor", url: "#/editor", icon: "edit" },
-                    {
-                        title: "Links", children: [
-                            { title: "semantic-ui", url: "https://zijieke.com/semantic-ui/" },
-                        ]
-                    },
-                ]
+                menus
             }
         },
         methods: {
+            titleCall(menu) {
+                this.active = menu.title;
+                this.$router.push(menu.url);
+            },
             toggleMenu() {
                 utils.toggleLeftMenu();
             }
@@ -287,7 +304,8 @@ const vappComponents = (function () {
     return {
         Home: Home(),
         Header,
-        Editor: Editor()
+        Editor: Editor(),
+        menus
     }
 
 })();
@@ -297,9 +315,9 @@ const vappStart = (function () {
 
     // 2. 定义路由
     const routes = [
-        { path: '/', redirect: '/home' },
-        { path: '/home', component: vappComponents.Home },
-        { path: '/editor', component: vappComponents.Editor }
+        {path: '/', redirect: '/home'},
+        {path: '/home', component: vappComponents.Home},
+        {path: '/editor', component: vappComponents.Editor}
     ]
 
     const router = new VueRouter({
@@ -307,26 +325,37 @@ const vappStart = (function () {
     })
 
     let appInitFunc = () => {
-        new Vue({
+
+        let app = new Vue({
             el: "#root",
             components: {
                 "app-header": vappComponents.Header
             },
             router,
+            methods: {},
             data() {
-                return { navLinks: [] }
+                return {navLinks: []}
             },
             mounted() {
             }
         });
 
+        window.tip = app.tip;
+
         new Vue({
             el: "#vapp-leftMenu",
             data() {
-                return { navLinks: [] }
+                return {navLinks: []}
+            },
+            methods: {
+                itemClick(link) {
+                    app.$router.push(link.url);
+                    $("#vapp-leftMenu").sidebar('toggle');
+                    app.$refs.header.active = link.url;
+                }
             },
             mounted() {
-                this.navLinks = common.getAppCfg().navLinks[0].children;
+                this.navLinks = vappComponents.menus;
             }
         });
 
@@ -337,11 +366,30 @@ const vappStart = (function () {
 })();
 
 $(function () {
+    let jMsg = $("#vapp-msg");
 
     // segment-ui组件初始化
+    jMsg.on('click', function () {
+        jMsg.transition('fade');
+    });
 
-
-
+    // type positive negative
+    window.tip = {};
+    tip.info = (msg, type) => {
+        if (type) jMsg.addClass(type);
+        jMsg.transition('fade');
+        $("#vapp-msg-content").html(msg);
+        setTimeout(() => {
+            jMsg.transition('fade');
+            if (type) jMsg.removeClass(type);
+        }, 2000);
+    }
+    tip.success = (msg) => {
+        tip.info(msg, "positive");
+    }
+    tip.error = (msg) => {
+        tip.info(msg, "negative");
+    }
 });
 
 const utils = {
@@ -364,7 +412,7 @@ const common = (function () {
         project: "webdata"
     }
 
-    if ("/login.html" === window.location.pathname) return { config };
+    if ("/login.html" === window.location.pathname) return {config};
 
     let loginStorageData = localStorage.getItem(storage_login);
     if ("/login.html" !== window.location.pathname && !loginStorageData) {
@@ -372,7 +420,7 @@ const common = (function () {
         return;
     }
 
-    let { access_token, created_at, expires_in, refresh_token } = JSON.parse(loginStorageData);
+    let {access_token, created_at, expires_in, refresh_token} = JSON.parse(loginStorageData);
     // 保存文件路径和sha的对应关系
     let fileTree = {};
 
@@ -423,7 +471,9 @@ const common = (function () {
 
 
     function tip(msg, detail = "") {
-        if (window.Notification) {
+        if (window.tip) {
+            window.tip.info(msg);
+        } else if (window.Notification) {
             Notification.requestPermission(function (status) {
                 let n = new Notification(msg, {
                     body: detail,
@@ -549,7 +599,8 @@ const common = (function () {
 
     function loadLibs(url, callback) {
         let script = document.createElement('script');
-        let fn = callback || function () { };
+        let fn = callback || function () {
+        };
 
         script.type = 'text/javascript';
         if (script.readyState) {
