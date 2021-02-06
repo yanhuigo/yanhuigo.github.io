@@ -26,8 +26,12 @@
             min-width: 240px !important;
         }
 
+        .vapp-title {
+            font-family: cursive !important;
+        }
+
         .masthead.segment {
-            min-height: 700px;
+            min-height: 100vh;
             padding: 1em 0em;
         }
 
@@ -42,13 +46,14 @@
         .masthead h1.ui.header {
             margin-top: 3em;
             margin-bottom: 0em;
-            font-size: 4em;
+            font-size: 3.5em;
             font-weight: normal;
         }
 
         .masthead h2 {
             font-size: 1.7em;
             font-weight: normal;
+            font-family: 'fangsong';
         }
     </style>
 </head>
@@ -72,22 +77,13 @@
     </div>
 </div>
 
-<div id="vapp-msg" class="ui vapp message transition floating invisible">
-    <i class="close icon"></i>
-    <div class="header">
-        提示信息！
-    </div>
-    <p id="vapp-msg-content"></p>
-</div>
-
 <!--头部菜单页-->
 <div id="page-header" class="vapp-tpl">
     <div class="ui fixed menu inverted">
         <div class="ui container">
-            <a @click.prevent="toggleMenu" class="header item">
+            <a @click.prevent="toggleMenu" class="header item d-sm-none">
                 <!--<img class="mini ui image rounded mr-1" src="/imgs/logo.jpg">-->
                 <i class="icon paper plane square large"></i>
-                {{title}}
             </a>
             <template v-for="menu in menus">
                 <a v-if="menu.url" class="item d-none d-md-block"
@@ -130,14 +126,21 @@
     <div>
         <div class="ui inverted vertical masthead center segment" style="padding-top: 5rem">
             <div class="ui text container">
-                <h1 class="ui inverted header">
-                    Yanhui1993
+                <h1 v-if="cfg.title" class="ui inverted header vapp-title text-center mb-5">
+                    {{cfg.title[0]}}
                 </h1>
-                <h2>人间有味是清欢<i class="smile icon"></i></h2>
+                <div class="d-flex flex-row flex-wrap justify-content-center">
+                    <div class="ml-3" v-if="cfg.tags" v-for="tag in cfg.tags">
+                        <h2>
+                            <i class="icon" :class="tag[1]"></i>{{tag[0]}}
+                        </h2>
+                    </div>
+                </div>
+                <h2 class="text-center" v-if="cfg.subTitle" v-for="subTitle in cfg.subTitle">{{subTitle[0]}}<i class="icon" :class="subTitle[1]"></i></h2>
             </div>
         </div>
 
-        <div class="ui vertical stripe segment my-3">
+        <!--<div class="ui vertical stripe segment my-3">
             <div class="ui text container">
                 <h3 class="ui header">Breaking The Grid, Grabs Your Attention</h3>
                 <p>Instead of focusing on content creation and hard work, we have learned how to master the art of doing
@@ -154,7 +157,7 @@
                     dance.</p>
                 <a class="ui large button">I'm Still Quite Interested</a>
             </div>
-        </div>
+        </div>-->
 
         <div class="ui inverted vertical footer segment">
             <div class="ui container">
@@ -162,20 +165,20 @@
                     <div class="three wide column">
                         <h4 class="ui inverted header">站内导航</h4>
                         <div class="ui inverted link list">
-                            <a href="/bookmarks.html" target="_blank" class="item">书签管理页</a>
-                            <a href="/cdn" target="_blank" class="item">CDN</a>
+                            <a v-for="link in cfg.innerLinks" :href="link[0]" target="_blank"
+                               class="item">{{link[1]}}</a>
                         </div>
                     </div>
                     <div class="three wide column">
                         <h4 class="ui inverted header">收藏站点</h4>
                         <div class="ui inverted link list">
-                            <a href="https://zijieke.com/semantic-ui/" target="_blank" class="item">Semantic-ui中文文档</a>
+                            <a v-for="link in cfg.outLinks" :href="link[0]" target="_blank" class="item">{{link[1]}}</a>
                         </div>
                     </div>
-                    <div class="seven wide column">
+                    <!--<div class="seven wide column">
                         <h4 class="ui inverted header">页脚</h4>
                         <p>Extra space for a call to action inside the footer that could help re-engage users.</p>
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>
@@ -183,7 +186,7 @@
     </div>
 </div>
 
-
+<!--书签-->
 <div id="page-bookmarks" class="vapp-tpl">
     <div class="vapp-content ui container">
         <div class="mb-3 d-flex flex-row">

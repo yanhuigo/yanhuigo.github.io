@@ -12,11 +12,13 @@ const vappComponents = (function () {
         return {
             template: $("#page-home").html(),
             data() {
-                return {}
+                return {
+                    cfg: {}
+                }
             },
             methods: {},
             mounted() {
-
+                this.cfg = common.getAppCfg().home;
             }
         }
     }
@@ -170,7 +172,6 @@ const vappComponents = (function () {
             }
         }
     }
-
 
     function Editor() {
 
@@ -434,7 +435,7 @@ const common = (function () {
     let appCfg = {};
     const storage_login = "login-state";
     const storage_fileList = "fileList";
-    const configFilePath = "json/config.json";
+    const configFilePath = "json/vapp.json";
     const config = {
         client_id: "f5250ed1c6f0a51423ca06aa4faf5c10d64ce8b411c425256d22fec16a531665",
         client_secret: "00a0f31357ce04fe3619eab7149d7c1b4daade23677a898b8f14bb647bc25fb3",
