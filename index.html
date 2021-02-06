@@ -4,80 +4,281 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" type="image/jpeg" sizes="80x80" href="imgs/logo.jpg" />
-    <title>书签导航页</title>
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="/imgs/logo.jpg"/>
+    <title>Yanhui1993</title>
     <style type="text/css">
-        .custom-control-input,
-        .custom-control-label {
-            cursor: pointer;
+        .vapp-content {
+            margin-top: 5rem !important;
         }
 
-        .link {
-            cursor: pointer;
+        .mt-header {
+            margin-top: 5rem !important;
         }
 
-        .title-align-sub {
-            vertical-align: sub;
+        .vapp-tpl {
+            display: none;
+        }
+
+        .vapp.ui.message {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            min-width: 240px !important;
+        }
+
+        .masthead.segment {
+            min-height: 700px;
+            padding: 1em 0em;
+        }
+
+        .masthead .logo.item img {
+            margin-right: 1em;
+        }
+
+        .masthead .ui.menu .ui.button {
+            margin-left: 0.5em;
+        }
+
+        .masthead h1.ui.header {
+            margin-top: 3em;
+            margin-bottom: 0em;
+            font-size: 4em;
+            font-weight: normal;
+        }
+
+        .masthead h2 {
+            font-size: 1.7em;
+            font-weight: normal;
         }
     </style>
 </head>
 
 <body>
 
-    <div id="root" class="container-fluid overflow-hidden" style="padding: 0">
+<div id="vapp-leftMenu" class="ui sidebar left vertical inverted fixed menu p-2">
+    <a class="item" v-for="link in navLinks" v-if="link.url" @click="itemClick(link)">
+        <i v-if="link.icon" class="icon large" :class="link.icon"></i>
+        {{link.title}}
+    </a>
+</div>
 
-        <yanhui-header title="Bookmarks" icon="chrome" :actions="actions"></yanhui-header>
+<div class="pusher dimmed">
+    <!--app根组件-->
+    <div id="root">
+        <app-header ref="header"></app-header>
+        <keep-alive>
+            <router-view></router-view>
+        </keep-alive>
+    </div>
+</div>
 
-        <div class="mx-2 mt-3" style="overflow: hidden">
+<div id="vapp-msg" class="ui vapp message transition floating invisible">
+    <i class="close icon"></i>
+    <div class="header">
+        提示信息！
+    </div>
+    <p id="vapp-msg-content"></p>
+</div>
 
-            <input v-model="searchTxt" class="form-control mr-sm-2" type="search" placeholder="搜索书签..."
-                aria-label="Search" @keyup.enter="search" />
-            <div class="alert alert-success mt-3" role="alert">
-                <span class="font-weight-bold">分类：</span>
-                <div class="custom-control custom-radio custom-control-inline m-1 mr-2" v-for="type in bmTypeList">
-                    <input @click="typeClick(type)" v-model="checkedType" :value="type" type="radio" :id="'id_'+type"
-                        name="bmType" class="custom-control-input" />
-                    <label class="custom-control-label" :for="'id_'+type">{{type}}</label>
+<!--头部菜单页-->
+<div id="page-header" class="vapp-tpl">
+    <div class="ui fixed menu inverted">
+        <div class="ui container">
+            <a @click.prevent="toggleMenu" class="header item">
+                <!--<img class="mini ui image rounded mr-1" src="/imgs/logo.jpg">-->
+                <i class="icon paper plane square large"></i>
+                {{title}}
+            </a>
+            <template v-for="menu in menus">
+                <a v-if="menu.url" class="item d-none d-md-block"
+                   :class="active.toUpperCase()===menu.title.toUpperCase() ? 'active' : '' " @click="titleCall(menu)">
+                    <i v-if="menu.icon" class="icon large" :class="menu.icon"></i>
+                    {{menu.title}}
+                </a>
+                <div v-else class="ui simple dropdown item d-none d-md-block">
+                    <span><i v-if="menu.icon" class="icon large" :class="menu.icon"></i>{{menu.title}}</span>
+                    <i class="dropdown icon"></i>
+                    <!-- 二级节点 -->
+                    <div class="menu">
+                        <template v-for="lv2Menu in menu.children">
+                            <a v-if="lv2Menu.url" :href="lv2Menu.url"
+                               :target="lv2Menu.url.indexOf('http') !== -1 ? '_blank' : '_self' "
+                               class="item">{{lv2Menu.title}}</a>
+                            <div v-else class="ui simple dropdown item">
+                                <span>{{lv2Menu.title}}</span>
+                                <i class="dropdown icon"></i>
+                                <!-- 三级节点 -->
+                                <div class="menu">
+                                    <template v-for="lv3Menu in lv2Menu.children">
+                                        <a v-if="lv3Menu.url" :href="lv3Menu.url"
+                                           :target="lv3Menu.url.indexOf('http') !== -1 ? '_blank' : '_self' "
+                                           class="item">{{lv3Menu.title}}</a>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
                 </div>
-            </div>
 
-            <div class="alert alert-info" role="alert" v-show="bmTagList && bmTagList.length>0">
-                <span class="font-weight-bold">标签：</span>
-                <div class="custom-control custom-radio custom-control-inline m-1 mr-2" v-for="tag in bmTagList">
-                    <input @click="tagClick(tag)" v-model="checkedTag" :value="tag.name" type="radio"
-                        :id="'id_'+tag.name" name="bmTag" class="custom-control-input">
-                    <label class="custom-control-label" :for="'id_'+tag.name">{{tag.name}}</label>
-                </div>
+            </template>
+        </div>
+    </div>
+</div>
+
+<!--home组件-->
+<div id="page-home" class="vapp-tpl">
+    <div>
+        <div class="ui inverted vertical masthead center segment" style="padding-top: 5rem">
+            <div class="ui text container">
+                <h1 class="ui inverted header">
+                    Yanhui1993
+                </h1>
+                <h2>人间有味是清欢<i class="smile icon"></i></h2>
             </div>
         </div>
 
+        <div class="ui vertical stripe segment my-3">
+            <div class="ui text container">
+                <h3 class="ui header">Breaking The Grid, Grabs Your Attention</h3>
+                <p>Instead of focusing on content creation and hard work, we have learned how to master the art of doing
+                    nothing by providing massive amounts of whitespace and generic content that can seem massive,
+                    monolithic
+                    and worth your attention.</p>
+                <a class="ui large button">Read More</a>
+                <h4 class="ui horizontal header divider">
+                    <a href="homepage.php#">Case Studies</a>
+                </h4>
+                <h3 class="ui header">Did We Tell You About Our Bananas?</h3>
+                <p>Yes I know you probably disregarded the earlier boasts as non-sequitur filler content, but its really
+                    true. It took years of gene splicing and combinatory DNA research, but our bananas can really
+                    dance.</p>
+                <a class="ui large button">I'm Still Quite Interested</a>
+            </div>
+        </div>
 
-        <div class="p-2 d-flex flex-row flex-wrap justify-content-center link">
-            <a v-for="bm in bmList" target="_blank" :href="bm.c" :title="bm.b+'\n'+bm.c"
-                class="overflow-hidden bg-light m-2 p-3 list-group-item-action col-12 col-md-6 col-lg-3 mt-2 link">
-                <div class="d-flex w-100 justify-content-between text-nowrap">
-                    <span class="mb-1 h6">{{bm.b}}</span>
+        <div class="ui inverted vertical footer segment">
+            <div class="ui container">
+                <div class="ui stackable inverted divided equal height stackable grid">
+                    <div class="three wide column">
+                        <h4 class="ui inverted header">站内导航</h4>
+                        <div class="ui inverted link list">
+                            <a href="/bookmarks.html" target="_blank" class="item">书签管理页</a>
+                            <a href="/cdn" target="_blank" class="item">CDN</a>
+                        </div>
+                    </div>
+                    <div class="three wide column">
+                        <h4 class="ui inverted header">收藏站点</h4>
+                        <div class="ui inverted link list">
+                            <a href="https://zijieke.com/semantic-ui/" target="_blank" class="item">Semantic-ui中文文档</a>
+                        </div>
+                    </div>
+                    <div class="seven wide column">
+                        <h4 class="ui inverted header">页脚</h4>
+                        <p>Extra space for a call to action inside the footer that could help re-engage users.</p>
+                    </div>
                 </div>
-                <small>
-                    <span class="badge badge-success">{{bm.type}}</span>
-                    <span class="badge badge-info">{{bm.tag}}</span>
-                </small>
-                <label class="mb-1 text-info text-nowrap">{{bm.c}}</label>
-            </a>
+            </div>
         </div>
 
     </div>
+</div>
 
-    <script src="/cdn/vue/vue.min.js"></script>
-    <script src="/cdn/axios.min.js"></script>
-    <script src="/cdn/bootstrap/jquery.slim.min.js"></script>
-    <script src="/cdn/bootstrap/bootstrap.min.js"></script>
 
-    <!-- 业务js在 /js/ 目录下，默认与页面名称相同 -->
-    <script src="/js/appInit-min.js"></script>
+<div id="page-bookmarks" class="vapp-tpl">
+    <div class="vapp-content ui container">
+        <div class="ui search mb-3">
+            <div class="ui icon input d-flex">
+                <input class="search" type="text" @keyup.enter="search" v-model="searchTxt" placeholder="搜索书签..."/>
+                <i class="search icon"></i>
+            </div>
+        </div>
 
-    <link rel="stylesheet" href="/cdn/bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" href="/cdn/font-awesome-4.7.0/css/font-awesome.min.css" />
+        <div class="ui buttons flex-wrap">
+            <template v-for="type in bmTypeList">
+                <button class="ui button" :class="checkedType==type ? 'positive' : '' "
+                        @click="checkedType=type">{{type}}
+                </button>
+                <!-- <div class="or"></div> -->
+            </template>
+        </div>
+
+        <div class="my-3">
+            <a class="ui tag label mt-1" :class="checkedTag==tag.name ? 'teal' : '' " v-for="tag in bmTagList"
+               @click="tagClick(tag)">{{tag.name}}</a>
+        </div>
+
+        <div class="ui cards centered">
+            <a class="card" target="_blank" :href="bm.c" v-for="bm in bmList">
+                <div class="content">
+                    <p class="ui header small d-inline">
+                        {{bm.b}}
+                    </p>
+                    <div class="meta">
+                        {{bm.tag}}
+                    </div>
+                    <div class="description">
+                        {{bm.c}}
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+
+</div>
+
+<!--编辑器组件-->
+<div id="page-editor" class="vapp-tpl">
+    <div class="mt-header d-sm-flex ui segment" style="height: calc(100vh - 6rem);">
+        <div class="ui vertical menu p-1" style="min-width: 240px;">
+            <div class="ui icon buttons ml-3 my-1">
+                <button class="ui button" data-tooltip="新增文件" data-position="bottom center" @click="addFile"><i
+                        class="plus icon"></i></button>
+                <button class="ui button" data-tooltip="同步文件树" data-position="bottom center" @click="syncFiles"><i
+                        class="sync alternate icon"></i>
+                </button>
+            </div>
+            <div class="item ui search my-1" id="ed-file-search">
+                <div class="ui icon input search">
+                    <input class="prompt" type="text" placeholder="Search Files...">
+                    <i class="search icon"></i>
+                </div>
+                <div class="results"></div>
+            </div>
+            <a class="item" :class="selectedFile===file ? 'active teal':''" v-for="file in fileList"
+               @click="selectFile(file)">
+                <i class="icon git"></i>
+                {{file}}
+            </a>
+        </div>
+        <div class="flex-grow-1" id="editor-container" style="min-width: 360px;min-height: 360px"></div>
+    </div>
+
+</div>
+
+<script src="/cdn/vue/vue.min.js"></script>
+<script src="/cdn/axios.min.js"></script>
+<script src="/cdn/vue/vue-router.js"></script>
+
+<!-- 引入样式 -->
+<link rel="stylesheet" href="/cdn/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="/cdn/element-ui/lib/index.js"></script>
+
+<link href="/cdn/bootstrap/bootstrap.min.css" rel="stylesheet">
+<link href="/cdn/semantic/semantic.min.css" rel="stylesheet">
+<script src="/cdn/bootstrap/jquery.min.js"></script>
+<script src="/cdn/semantic/semantic.min.js"></script>
+
+
+<script>
+    let isProd = true;
+    if (window.location.host.indexOf('localhost') !== -1) isProd = false;
+    let header = document.getElementsByTagName('head')[0];
+    let script_bsn = document.createElement('script');
+    script_bsn.src = `/js/vapp${isProd ? '-min' : ''}.js`;
+    header.appendChild(script_bsn);
+</script>
 
 </body>
 

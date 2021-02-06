@@ -3,15 +3,26 @@ const vappComponents = (function () {
 
     const menus = [
         {title: "Home", url: "home", icon: "home"},
+        {title: "Bookmarks", url: "bookmarks", icon: "bookmark"},
         {title: "Editor", url: "editor", icon: "edit"},
-        {
-            title: "Links", children: [
-                {title: "semantic-ui", url: "https://zijieke.com/semantic-ui/"},
-            ]
-        },
     ];
 
     function Home() {
+
+        return {
+            template: $("#page-home").html(),
+            data() {
+                return {}
+            },
+            methods: {
+            },
+            mounted() {
+
+            }
+        }
+    }
+
+    function Bookmarks() {
 
         let bmTypeList = [];//分类集合
         let bmTagList = [];//标签集合  分类下的多级子分类
@@ -35,7 +46,7 @@ const vappComponents = (function () {
         }
 
         return {
-            template: $("#page-home").html(),
+            template: $("#page-bookmarks").html(),
             data() {
                 return {
                     bmTypeList: [],
@@ -175,6 +186,33 @@ const vappComponents = (function () {
             },
             methods: {
 
+                addFile() {
+                    utils.prompt('请输入文件路径', '新增文件', {
+                        inputPattern: /^[\w/](.)+[a-z]+$/,
+                        inputErrorMessage: '格式不正确'
+                    }).then(({value}) => {
+                        common.newFile(value, "new File init").then(() => {
+                            this.initSemantic();
+                        })
+                    }).catch(() => {
+
+                    });
+                },
+
+                syncFiles() {
+                    utils.confirm('是否重新同步文件树?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        common.initFileTree().then(data => {
+                            this.initSemantic();
+                        });
+                    }).catch(() => {
+
+                    });
+                },
+
                 loadFile(sync = false) {
                     common.getContent(this.selectedFile, sync).then(data => {
                         let suffix = this.selectedFile.substr(this.selectedFile.lastIndexOf(".") + 1);
@@ -228,7 +266,7 @@ const vappComponents = (function () {
 
                 update() {
                     if (this.selectedFile === "") {
-                        tip.info("请选择编辑文件");
+                        utils.message.info("请选择编辑文件");
                         return;
                     }
                     let value = editor.getValue();
@@ -249,7 +287,7 @@ const vappComponents = (function () {
                             name: "清空文件树缓存", group: "yh-file", call: () => {
                                 if (!confirm("确认清空文件树缓存？")) return;
                                 common.initFileTree().then((data) => {
-                                    tip.success("清空文件树缓存完成！");
+                                    utils.message.success("清空文件树缓存完成！");
                                 });
                             }
                         }
@@ -282,7 +320,7 @@ const vappComponents = (function () {
         template: $("#page-header").html(),
         data() {
             return {
-                title: "Yanhui",
+                title: "Yanhui1993",
                 active: "",
                 menus
             }
@@ -302,6 +340,7 @@ const vappComponents = (function () {
     }
 
     return {
+        Bookmarks: Bookmarks(),
         Home: Home(),
         Header,
         Editor: Editor(),
@@ -317,7 +356,8 @@ const vappStart = (function () {
     const routes = [
         {path: '/', redirect: '/home'},
         {path: '/home', component: vappComponents.Home},
-        {path: '/editor', component: vappComponents.Editor}
+        {path: '/editor', component: vappComponents.Editor},
+        {path: '/bookmarks', component: vappComponents.Bookmarks}
     ]
 
     const router = new VueRouter({
@@ -366,36 +406,17 @@ const vappStart = (function () {
 })();
 
 $(function () {
-    let jMsg = $("#vapp-msg");
-
-    // segment-ui组件初始化
-    jMsg.on('click', function () {
-        jMsg.transition('fade');
-    });
-
-    // type positive negative
-    window.tip = {};
-    tip.info = (msg, type) => {
-        if (type) jMsg.addClass(type);
-        jMsg.transition('fade');
-        $("#vapp-msg-content").html(msg);
-        setTimeout(() => {
-            jMsg.transition('fade');
-            if (type) jMsg.removeClass(type);
-        }, 2000);
-    }
-    tip.success = (msg) => {
-        tip.info(msg, "positive");
-    }
-    tip.error = (msg) => {
-        tip.info(msg, "negative");
-    }
 });
 
 const utils = {
     toggleLeftMenu() {
         $("#vapp-leftMenu").sidebar('toggle');
-    }
+    },
+    alert: Vue.prototype.$alert,
+    message: Vue.prototype.$message,
+    notify: Vue.prototype.$notify,
+    prompt: Vue.prototype.$prompt,
+    confirm: Vue.prototype.$confirm,
 };
 
 // commmon init...
@@ -442,16 +463,15 @@ const common = (function () {
     }
 
     async function dataInit() {
-
         // 初始化app配置
         let tokenHasExpires = Math.floor(Date.now() / 1000) - created_at > expires_in;
         if (tokenHasExpires) {
             let response = await axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`);
             if (response.status === 200) {
                 let loginStateTxt = JSON.stringify(response.data);
-                console.log("已刷新token", response.data);
                 access_token = response.data.access_token;
                 localStorage.setItem(storage_login, loginStateTxt);
+                utils.notify.success("刷新token成功！");
             } else {
                 window.location.href = "/login.html";
                 return;
@@ -469,27 +489,6 @@ const common = (function () {
         appCfg = JSON.parse(appCfgData);
     }
 
-
-    function tip(msg, type) {
-        if (window.tip) {
-            window.tip[type](msg);
-        } else if (window.Notification) {
-            Notification.requestPermission(function (status) {
-                let n = new Notification(msg, {
-                    body: detail,
-                    dir: "rtl",
-                    icon: "https://yanhui1993.gitee.io/imgs/logo.jpg"
-                });
-                n.onshow = function () {
-                    setTimeout(n.close.bind(n), 3000);
-                }
-            });
-        } else {
-            alert(msg);
-        }
-    }
-
-
     // 获取指定路径的文件内容
     async function getContent(filePath, refresh = false) {
         let cacheContent = localStorage.getItem(filePath);
@@ -498,6 +497,7 @@ const common = (function () {
         }
         let data = await axios.get(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}?access_token=${access_token}`);
         if (!data.content) {
+            utils.message.warning(`获取文件内容失败! [${filePath}]`);
             return null;
         }
         localStorage.setItem(filePath, data.content);
@@ -508,7 +508,7 @@ const common = (function () {
     async function updateFile(filePath, content) {
         let sha = fileTree[filePath];
         if (!sha) {
-            tip(`未匹配匹配文件 ${filePath}`, "info");
+            utils.notify.warning(`未匹配匹配文件 ${filePath}`);
             return;
         }
         let data = Base64.encode(content);
@@ -518,12 +518,12 @@ const common = (function () {
             sha,
             message: `open api update ${window.location.pathname}`
         }).then(() => {
-            tip(`更新[${filePath}]成功！`, "success");
+            utils.notify.success(`更新[${filePath}]成功！`, "success");
             localStorage.setItem(filePath, data);
             initFileTree();
         }).catch((err) => {
             console.error(err);
-            tip("更新异常！", "error");
+            utils.notify.error("更新异常！", "error");
         })
     }
 
@@ -533,17 +533,21 @@ const common = (function () {
             return;
         }
         let data = Base64.encode(content);
-        axios.post(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}`, {
-            access_token,
-            content: data,
-            message: `open api new ${window.location.pathname}`
-        }).then((data) => {
-            tip("新增成功！", "success");
-            initFileTree();
-        }).catch((err) => {
-            console.error(err);
-            tip("新增异常！", "error");
+        return new Promise((resolve) => {
+            axios.post(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}`, {
+                access_token,
+                content: data,
+                message: `open api new ${window.location.pathname}`
+            }).then(async (data) => {
+                utils.notify.success("新增成功！", "success");
+                await initFileTree();
+                resolve();
+            }).catch((err) => {
+                console.error(err);
+                utils.notify.error("新增异常！", "error");
+            })
         })
+
     }
 
     // 获取整个项目的文件列表
@@ -786,7 +790,6 @@ const common = (function () {
         updateFile,
         newFile,
         base64: Base64,
-        tip,
         initFileTree,
         asyncLoadLibs,
         getAppCfg
