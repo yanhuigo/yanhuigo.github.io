@@ -186,11 +186,16 @@
 
 <div id="page-bookmarks" class="vapp-tpl">
     <div class="vapp-content ui container">
-        <div class="ui search mb-3">
-            <div class="ui icon input d-flex">
-                <input class="search" type="text" @keyup.enter="search" v-model="searchTxt" placeholder="搜索书签..."/>
-                <i class="search icon"></i>
+        <div class="mb-3 d-flex flex-row">
+            <div class="ui search flex-grow-1">
+                <div class="ui icon input d-flex">
+                    <input class="search" type="text" @keyup.enter="search" v-model="searchTxt" placeholder="搜索书签..."/>
+                    <i class="search icon"></i>
+                </div>
             </div>
+            <button class="ui icon button ml-1" data-tooltip="下载书签" data-position="bottom left" @click="refreshData">
+                <i class="sync icon"></i>
+            </button>
         </div>
 
         <div class="ui buttons flex-wrap">
@@ -251,7 +256,17 @@
                 {{file}}
             </a>
         </div>
-        <div class="flex-grow-1" id="editor-container" style="min-width: 360px;min-height: 360px"></div>
+        <div class="flex-grow-1 d-flex flex-column">
+            <div class="flex-grow-1" id="editor-container" style="min-width: 360px;min-height: 360px"></div>
+            <div class="ui raised segment">
+                <a class="ui ribbon label" :class="selectedFile ? 'green':'red'">编辑信息</a>
+
+                <span class="font-weight-bold" v-if="selectedFile">正在编辑 <span
+                        class="ui label teal">{{selectedFile}}</span></span>
+                <span class="font-weight-bold" v-else>请选择编辑文件！</span>
+
+            </div>
+        </div>
     </div>
 
 </div>

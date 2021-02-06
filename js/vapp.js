@@ -14,8 +14,7 @@ const vappComponents = (function () {
             data() {
                 return {}
             },
-            methods: {
-            },
+            methods: {},
             mounted() {
 
             }
@@ -118,9 +117,11 @@ const vappComponents = (function () {
                     });
                 },
                 refreshData() {
-                    let result = confirm("确认重新下载书签数据？");
-                    if (result) {
-                        this.loading = true;
+                    utils.confirm('确认重新下载书签数据?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
                         this.checkedType = "";
                         this.checkedTag = "";
                         bmList = [];
@@ -130,10 +131,9 @@ const vappComponents = (function () {
                         this.bmTagList = [];
                         this.bmList = [];
                         this.loadData(true);
-                        setTimeout(() => {
-                            this.loading = false;
-                        }, 3000)
-                    }
+                    }).catch(() => {
+
+                    });
                     return false;
                 },
                 loadData(refreshCache) {
@@ -270,7 +270,15 @@ const vappComponents = (function () {
                         return;
                     }
                     let value = editor.getValue();
-                    common.updateFile(this.selectedFile, value);
+                    common.getContent(this.selectedFile).then(data => {
+                        if (data !== value) {
+                            common.updateFile(this.selectedFile, value);
+                        } else {
+                            utils.message.info("文件内容未变化！");
+                        }
+                    });
+
+
                 },
 
                 initEditorActions() {
@@ -329,6 +337,7 @@ const vappComponents = (function () {
             titleCall(menu) {
                 this.active = menu.title;
                 this.$router.push(menu.url);
+                $(document).scrollTop(0);
             },
             toggleMenu() {
                 utils.toggleLeftMenu();
