@@ -3,8 +3,8 @@ const vappComponents = (function () {
 
     const menus = [
         { title: "Home", url: "home", icon: "home" },
-        { title: "Bookmarks", url: "bookmarks", icon: "bookmark" },
-        { title: "Editor", url: "editor", icon: "edit" },
+        { title: "Bookmarks", url: "bookmarks", icon: "bookmark outline" },
+        { title: "Files", url: "files", icon: "file alternate outline" },
     ];
 
     function Home() {
@@ -173,12 +173,12 @@ const vappComponents = (function () {
         }
     }
 
-    function Editor() {
+    function Files() {
 
         let editor;
 
         return {
-            template: $("#page-editor").html(),
+            template: $("#page-files").html(),
             data() {
                 return {
                     selectedFile: "",
@@ -386,7 +386,7 @@ const vappComponents = (function () {
         Bookmarks: Bookmarks(),
         Home: Home(),
         Header,
-        Editor: Editor(),
+        Files: Files(),
         menus
     }
 
@@ -399,7 +399,7 @@ const vappStart = (function () {
     const routes = [
         { path: '/', redirect: '/home' },
         { path: '/home', component: vappComponents.Home },
-        { path: '/editor', component: vappComponents.Editor },
+        { path: '/files', component: vappComponents.Files },
         { path: '/bookmarks', component: vappComponents.Bookmarks }
     ]
 
