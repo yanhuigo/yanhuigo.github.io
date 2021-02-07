@@ -2,9 +2,9 @@
 const vappComponents = (function () {
 
     const menus = [
-        {title: "Home", url: "home", icon: "home"},
-        {title: "Bookmarks", url: "bookmarks", icon: "bookmark"},
-        {title: "Editor", url: "editor", icon: "edit"},
+        { title: "Home", url: "home", icon: "home" },
+        { title: "Bookmarks", url: "bookmarks", icon: "bookmark" },
+        { title: "Editor", url: "editor", icon: "edit" },
     ];
 
     function Home() {
@@ -33,7 +33,7 @@ const vappComponents = (function () {
             if (bm.a) { // 子分类文件夹
                 for (let cbm of bm.a) {
                     if (cbm.a) {
-                        bmTagList.push({name: cbm.b, type});
+                        bmTagList.push({ name: cbm.b, type });
                         recursionBookmark(cbm, type, cbm.b);
                     } else {
                         recursionBookmark(cbm, type, tag);
@@ -70,7 +70,7 @@ const vappComponents = (function () {
                 initSearch() {
                     $('.ui.search').search({
                         source: [
-                            {title: 'test', actionUrl: "https://zijieke.com/semantic-ui/modules/search.php#/settings"},
+                            { title: 'test', actionUrl: "https://zijieke.com/semantic-ui/modules/search.php#/settings" },
                         ],
                         minCharacters: 0,
                         selectFirstResult: true,
@@ -191,7 +191,7 @@ const vappComponents = (function () {
                     utils.prompt('请输入文件路径', '新增文件', {
                         inputPattern: /^[\w/](.)+[a-z]+$/,
                         inputErrorMessage: '格式不正确'
-                    }).then(({value}) => {
+                    }).then(({ value }) => {
                         common.newFile(value, "new File init").then(() => {
                             this.initSemantic();
                         })
@@ -232,7 +232,7 @@ const vappComponents = (function () {
 
                 initMonacoEditor() {
                     common.asyncLoadLibs(["/cdn/monaco-editor/min/vs/loader.js"]).then(() => {
-                        require.config({paths: {vs: '/cdn/monaco-editor/min/vs'}});
+                        require.config({ paths: { vs: '/cdn/monaco-editor/min/vs' } });
                         require(['vs/editor/editor.main'], () => {
                             editor = monaco.editor.create(document.getElementById('editor-container'), {
                                 value: 'start edit gitee files...',
@@ -248,7 +248,7 @@ const vappComponents = (function () {
                 initSemantic() {
                     let fileList = common.getFileList();
                     this.fileList = fileList;
-                    let source = fileList.map(file => ({title: file}));
+                    let source = fileList.map(file => ({ title: file }));
                     let app = this;
                     $('#ed-file-search').search({
                         source,
@@ -364,10 +364,10 @@ const vappStart = (function () {
 
     // 2. 定义路由
     const routes = [
-        {path: '/', redirect: '/home'},
-        {path: '/home', component: vappComponents.Home},
-        {path: '/editor', component: vappComponents.Editor},
-        {path: '/bookmarks', component: vappComponents.Bookmarks}
+        { path: '/', redirect: '/home' },
+        { path: '/home', component: vappComponents.Home },
+        { path: '/editor', component: vappComponents.Editor },
+        { path: '/bookmarks', component: vappComponents.Bookmarks }
     ]
 
     const router = new VueRouter({
@@ -384,7 +384,7 @@ const vappStart = (function () {
             router,
             methods: {},
             data() {
-                return {navLinks: []}
+                return { navLinks: [] }
             },
             mounted() {
             }
@@ -395,7 +395,7 @@ const vappStart = (function () {
         new Vue({
             el: "#vapp-leftMenu",
             data() {
-                return {navLinks: []}
+                return { navLinks: [] }
             },
             methods: {
                 itemClick(link) {
@@ -427,6 +427,7 @@ const utils = {
     notify: Vue.prototype.$notify,
     prompt: Vue.prototype.$prompt,
     confirm: Vue.prototype.$confirm,
+    loading: Vue.prototype.$loading,
 };
 
 // commmon init...
@@ -443,7 +444,7 @@ const common = (function () {
         project: "webdata"
     }
 
-    if ("/login.html" === window.location.pathname) return {config};
+    if ("/login.html" === window.location.pathname) return { config };
 
     let loginStorageData = localStorage.getItem(storage_login);
     if ("/login.html" !== window.location.pathname && !loginStorageData) {
@@ -451,7 +452,7 @@ const common = (function () {
         return;
     }
 
-    let {access_token, created_at, expires_in, refresh_token} = JSON.parse(loginStorageData);
+    let { access_token, created_at, expires_in, refresh_token } = JSON.parse(loginStorageData);
     // 保存文件路径和sha的对应关系
     let fileTree = {};
 
@@ -521,6 +522,7 @@ const common = (function () {
             utils.notify.warning(`未匹配匹配文件 ${filePath}`);
             return;
         }
+        let loading = utils.loading({ text: "更新文件中..." });
         let data = Base64.encode(content);
         axios.put(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}`, {
             access_token,
@@ -528,10 +530,12 @@ const common = (function () {
             sha,
             message: `open api update ${window.location.pathname}`
         }).then(() => {
+            loading.close();
             utils.notify.success(`更新[${filePath}]成功！`, "success");
             localStorage.setItem(filePath, data);
             initFileTree();
         }).catch((err) => {
+            loading.close();
             console.error(err);
             utils.notify.error("更新异常！", "error");
         })
@@ -543,6 +547,7 @@ const common = (function () {
             return;
         }
         let data = Base64.encode(content);
+        let loading = utils.loading({ text: "新增文件中..." });
         return new Promise((resolve) => {
             axios.post(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}`, {
                 access_token,
@@ -550,9 +555,11 @@ const common = (function () {
                 message: `open api new ${window.location.pathname}`
             }).then(async (data) => {
                 utils.notify.success("新增成功！", "success");
+                loading.close();
                 await initFileTree();
                 resolve();
             }).catch((err) => {
+                loading.close();
                 console.error(err);
                 utils.notify.error("新增异常！", "error");
             })
