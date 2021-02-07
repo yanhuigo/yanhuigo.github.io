@@ -214,6 +214,25 @@ const vappComponents = (function () {
                     });
                 },
 
+                deleteFile() {
+                    if (this.selectedFile === "") {
+                        utils.message.info("请选择文件");
+                        return;
+                    }
+                    utils.confirm(`确认删除文件[${this.selectedFile}]?`, '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        common.delteFile(this.selectedFile).then(data => {
+                            this.selectedFile = "";
+                            this.initSemantic();
+                        });
+                    }).catch(() => {
+
+                    });
+                },
+
                 loadFile(sync = false) {
                     common.getContent(this.selectedFile, sync).then(data => {
                         let suffix = this.selectedFile.substr(this.selectedFile.lastIndexOf(".") + 1);
@@ -246,9 +265,23 @@ const vappComponents = (function () {
                 },
 
                 initSemantic() {
-                    let fileList = common.getFileList();
+                    let fileListOrigin = common.getFileListOrigin();
+                    let fileList = [];
+                    let lastDir;
+                    for (let file of fileListOrigin) {
+                        if (file.type === "tree") {
+                            // 文件夹
+                            lastDir = { file, children: [] };
+                            fileList.push(lastDir);
+                        } else if (lastDir && file.path.indexOf(lastDir.file.path) !== -1) {
+                            lastDir.children.push(file);
+                        } else {
+                            fileList.push({ file });
+                        }
+                    }
+
+                    let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({ title: file.path }));
                     this.fileList = fileList;
-                    let source = fileList.map(file => ({ title: file }));
                     let app = this;
                     $('#ed-file-search').search({
                         source,
@@ -436,7 +469,8 @@ const common = (function () {
     let appCfg = {};
     const storage_login = "login-state";
     const storage_fileList = "fileList";
-    const configFilePath = "json/vapp.json";
+    const storage_fileList_origin = "fileList_origin";
+    const configFilePath = "config/vapp.json";
     const config = {
         client_id: "f5250ed1c6f0a51423ca06aa4faf5c10d64ce8b411c425256d22fec16a531665",
         client_secret: "00a0f31357ce04fe3619eab7149d7c1b4daade23677a898b8f14bb647bc25fb3",
@@ -455,6 +489,7 @@ const common = (function () {
     let { access_token, created_at, expires_in, refresh_token } = JSON.parse(loginStorageData);
     // 保存文件路径和sha的对应关系
     let fileTree = {};
+    let fileListOrigin = [];
 
 
     function getFileList() {
@@ -463,6 +498,10 @@ const common = (function () {
             fileList.push(key);
         }
         return fileList;
+    }
+
+    function getFileListOrigin() {
+        return fileListOrigin;
     }
 
     async function appInit() {
@@ -490,8 +529,10 @@ const common = (function () {
         }
 
         let fileListStorageData = localStorage.getItem(storage_fileList);
+        let fileListStorageDataOrigin = localStorage.getItem(storage_fileList_origin);
         if (fileListStorageData) {
             fileTree = JSON.parse(fileListStorageData);
+            fileListOrigin = JSON.parse(fileListStorageDataOrigin);
         } else {
             await initFileTree();
         }
@@ -519,7 +560,7 @@ const common = (function () {
     async function updateFile(filePath, content) {
         let sha = fileTree[filePath];
         if (!sha) {
-            utils.notify.warning(`未匹配匹配文件 ${filePath}`);
+            utils.notify.warning(`未匹配文件 ${filePath}`);
             return;
         }
         let loading = utils.loading({ text: "更新文件中..." });
@@ -539,6 +580,36 @@ const common = (function () {
             console.error(err);
             utils.notify.error("更新异常！", "error");
         })
+    }
+
+    // 删除文件
+    async function delteFile(filePath) {
+        let sha = fileTree[filePath];
+        if (!sha) {
+            utils.notify.warning(`未匹配文件 ${filePath}`);
+            return;
+        }
+        let loading = utils.loading({ text: "删除文件中..." });
+        return new Promise((resolve) => {
+            axios.delete(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}`, {
+                params: {
+                    access_token,
+                    sha,
+                    message: `open api delete ${window.location.pathname}`
+                }
+            }).then(async () => {
+                loading.close();
+                utils.notify.success(`删除[${filePath}]成功！`, "success");
+                localStorage.removeItem(filePath);
+                await initFileTree();
+                resolve();
+            }).catch((err) => {
+                loading.close();
+                console.error(err);
+                utils.notify.error("删除异常！", "error");
+            })
+        })
+
     }
 
     // 新增文件
@@ -579,7 +650,9 @@ const common = (function () {
             }
         }
         fileTree = newFileTree;
+        fileListOrigin = fileList;
         localStorage.setItem(storage_fileList, JSON.stringify(newFileTree));
+        localStorage.setItem(storage_fileList_origin, JSON.stringify(fileList));
         return fileTree;
     }
 
@@ -806,10 +879,12 @@ const common = (function () {
         getContent,
         updateFile,
         newFile,
+        delteFile,
         base64: Base64,
         initFileTree,
         asyncLoadLibs,
-        getAppCfg
+        getAppCfg,
+        getFileListOrigin
     }
 
 })();

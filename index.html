@@ -260,12 +260,27 @@
                     </div>
                     <div class="results"></div>
                 </div>
-                <a class="item" :class="selectedFile===file ? 'active teal':''" v-for="file in fileList"
-                    @click="selectFile(file)">
-                    <i class="icon git"></i>
-                    {{file}}
-                </a>
+                <div class="item" v-for="file in fileList">
+                    <template v-if="file.children">
+                        <div class="header">{{file.file.path}}</div>
+                        <div class="menu" v-for="subFile in file.children">
+                            <a class="item" @click="selectFile(subFile.path)"
+                                :class="selectedFile===subFile.path ? 'active teal':''">
+                                <i class="icon git"></i>
+                                {{subFile.path.split(file.file.path+"/")[1]}}
+                            </a>
+                        </div>
+                    </template>
+                    <div class="menu" v-else>
+                        <a class="item" @click="selectFile(file.file.path)"
+                            :class="selectedFile===file.file.path ? 'active teal':''">
+                            {{file.file.path}}
+                        </a>
+                    </div>
+                </div>
+
             </div>
+
             <div class="flex-grow-1 d-flex flex-column">
                 <div class="flex-grow-1" id="editor-container" style="min-width: 360px;min-height: 360px"></div>
                 <div class="ui raised segment">
@@ -274,7 +289,9 @@
                     <span class="font-weight-bold" v-if="selectedFile">正在编辑 <span
                             class="ui label teal">{{selectedFile}}</span></span>
                     <span class="font-weight-bold" v-else>请选择编辑文件！</span>
-
+                    <button v-if="selectedFile" class="ui compact icon button ml-1" data-tooltip="删除当前文件"
+                        data-position="top center" @click="deleteFile"><i class="trash alternate outline icon"></i>
+                    </button>
                 </div>
             </div>
         </div>
