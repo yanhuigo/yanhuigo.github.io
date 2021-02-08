@@ -609,6 +609,50 @@ const vappStart = (function () {
             }
         });
 
+        new Vue({
+            el: "#vapp-login",
+            data() {
+                return {
+                    username: "",
+                    password: "",
+                }
+            },
+            methods: {
+                login() {
+                    if (this.username.trim() === "" || this.password.trim() === "") {
+                        utils.notify.warning("请输入用户名密码！");
+                        return false;
+                    }
+                    axios.post('https://gitee.com/oauth/token', {
+                        grant_type: "password",
+                        username: this.username,
+                        password: this.password,
+                        client_id: common.config.client_id,
+                        client_secret: common.config.client_secret,
+                        scope: "projects",
+                    }).then(data => {
+                        common.updateLogin(data);
+                        localStorage.setItem(common.storage_login, JSON.stringify(data));
+                        utils.notify.success("登录成功");
+                        $("#vapp-login").modal("hide");
+                        // app.$router.go(0);
+                    }).catch((err) => {
+                        console.log(err);
+                        utils.notify.error("登录失败");
+                    });
+                    return false;
+                }
+            },
+            mounted() {
+                $("#vapp-login").modal({
+                    closable: false,
+                    onApprove: () => {
+                        this.login();
+                        return false;
+                    }
+                })
+            }
+        });
 
     };
 
@@ -657,6 +701,13 @@ const common = (function () {
     // 保存文件路径和sha的对应关系
     let fileTree = {};
     let fileListOrigin = [];
+
+    function updateLogin(data) {
+        access_token = data.access_token;
+        created_at = data.created_at;
+        expires_in = data.expires_in;
+        refresh_token = data.refresh_token;
+    }
 
 
     function getFileList() {
@@ -836,11 +887,10 @@ const common = (function () {
             }
             return response;
         }, function (error) {
-            if (error.response.status === 401 && "/login.html" !== window.location.pathname) {
-                window.location.href = "/login.html";
-            } else {
-                return Promise.reject(error);
+            if (error.response.status === 401) {
+                $("#vapp-login").modal("show");
             }
+            return Promise.reject(error);
         });
     }
 
@@ -1058,7 +1108,9 @@ const common = (function () {
         initFileTree,
         asyncLoadLibs,
         getAppCfg,
-        getFileListOrigin
+        getFileListOrigin,
+        updateLogin,
+        storage_login
     }
 
 })();
