@@ -508,6 +508,12 @@
 
                 if (settings.flowChart || settings.sequenceDiagram) 
                 {
+                    if (window.define) {
+                        // 处理与monaca编辑器requirejs不兼容的问题
+                        window.oldDefine = window.define;
+                        window.define = undefined;
+                    }
+
                     editormd.loadScript(loadPath + "raphael.min", function() {
 
                         editormd.loadScript(loadPath + "underscore.min", function() {  
@@ -532,6 +538,9 @@
                                     editormd.loadScript(loadPath + "jquery.flowchart.min", function() {
                                         editormd.loadScript(loadPath + "sequence-diagram.min", function() {
                                             _this.loadedDisplay();
+                                            if (window.oldDefine) {
+                                                window.define = window.oldDefine;
+                                            }
                                         });
                                     });
                                 });
@@ -2067,7 +2076,13 @@
                 {
                     if (!editormd.kaTeXLoaded && settings.autoLoadModules) 
                     {
+                        if (window.define) {
+                            // 处理与monaca编辑器requirejs不兼容的问题
+                            window.oldDefine = window.define;
+                            window.define = undefined;
+                        }  
                         editormd.loadKaTeX(function() {
+                            window.define = window.oldDefine;
                             editormd.$katex = katex;
                             editormd.kaTeXLoaded = true;
                             _this.katexRender();
@@ -4179,8 +4194,8 @@
     // 使用国外的CDN，加载速度有时会很慢，或者自定义URL
     // You can custom KaTeX load url.
     editormd.katexURL  = {
-        css : "//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min",
-        js  : "//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min"
+        css : "//cdn.bootcdn.net/ajax/libs/KaTeX/0.12.0/katex.min",
+        js  : "//cdn.bootcdn.net/ajax/libs/KaTeX/0.12.0/katex.min"
     };
     
     editormd.kaTeXLoaded = false;

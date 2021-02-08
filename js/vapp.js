@@ -5,6 +5,7 @@ const vappComponents = (function () {
         { title: "Home", url: "home", icon: "home" },
         { title: "Bookmarks", url: "bookmarks", icon: "bookmark outline" },
         { title: "Files", url: "files", icon: "file alternate outline" },
+        { title: "MdEditor", url: "mdEditor", icon: "edit outline alternate outline" },
     ];
 
     function Home() {
@@ -251,10 +252,10 @@ const vappComponents = (function () {
 
                 initMonacoEditor() {
                     common.asyncLoadLibs(["/cdn/monaco-editor/min/vs/loader.js"]).then(() => {
-                        require.config({ paths: { vs: '/cdn/monaco-editor/min/vs' } });
+                        require.config({ paths: { vs: '../cdn/monaco-editor/min/vs' } });
                         require(['vs/editor/editor.main'], () => {
                             editor = monaco.editor.create(document.getElementById('editor-container'), {
-                                value: 'start edit gitee files...',
+                                value: '点击左侧列表文件开始编辑...',
                                 language: "markdown",
                                 theme: "vs",
                                 automaticLayout: true
@@ -271,8 +272,12 @@ const vappComponents = (function () {
                     for (let file of fileListOrigin) {
                         if (file.type === "tree") {
                             // 文件夹
-                            lastDir = { file, children: [] };
-                            fileList.push(lastDir);
+                            if (lastDir && file.path.startsWith(lastDir.file.path)) {
+                                // 子目录
+                            } else {
+                                lastDir = { file, children: [] };
+                                fileList.push(lastDir);
+                            }
                         } else if (lastDir && file.path.indexOf(lastDir.file.path) !== -1) {
                             lastDir.children.push(file);
                         } else {
@@ -358,35 +363,178 @@ const vappComponents = (function () {
         }
     }
 
-    const Header = {
-        template: $("#page-header").html(),
-        data() {
-            return {
-                title: "Yanhui1993",
-                active: "",
-                menus
-            }
-        },
-        methods: {
-            titleCall(menu) {
-                this.active = menu.title;
-                this.$router.push(menu.url);
-                $(document).scrollTop(0);
+    function MdEditor() {
+        let editor;
+        return {
+            template: $("#page-mdEditor").html(),
+            data() {
+                return {
+                    selectedFile: "",
+                    fileList: []
+                }
             },
-            toggleMenu() {
-                utils.toggleLeftMenu();
+            methods: {
+                updateFile() {
+                    if (this.selectedFile === "") {
+                        utils.message.info("请选择Markdown文件");
+                        return;
+                    }
+                    let value = editor.getValue();
+                    common.updateFile(this.selectedFile, value);
+                },
+                deleteFile() {
+                    if (this.selectedFile === "") {
+                        utils.message.info("请选择Markdown文件");
+                        return;
+                    }
+                    utils.confirm(`确认删除文件[${this.selectedFile}]?`, '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        common.delteFile(this.selectedFile).then(data => {
+                            this.selectedFile = "";
+                            editor.setValue("");
+                            this.initSemantic();
+                        });
+                    }).catch(() => {
+
+                    });
+                },
+                syncFiles() {
+                    utils.confirm('是否重新同步文件树?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        common.initFileTree().then(data => {
+                            this.initSemantic();
+                        });
+                    }).catch(() => {
+
+                    });
+                },
+                loadFile(sync = false) {
+                    common.getContent(this.selectedFile, sync).then(data => {
+                        editor.setValue(data);
+                        if (sync) utils.message.success("文件加载完成!", `已重新加载文件 => ${this.selectedFile}`);
+                    });
+                },
+                selectFile(file) {
+                    this.selectedFile = file;
+                    this.loadFile();
+                },
+                initSemantic() {
+                    let fileListOrigin = common.getFileListOrigin().filter(file => file.path.indexOf("md") !== -1);
+                    let fileList = [];
+                    let lastDir;
+                    for (let file of fileListOrigin) {
+                        if (file.type === "tree") {
+                            // 文件夹
+                            lastDir = { file, children: [] };
+                            fileList.push(lastDir);
+                        } else if (lastDir && file.path.indexOf(lastDir.file.path) !== -1) {
+                            lastDir.children.push(file);
+                        } else {
+                            fileList.push({ file });
+                        }
+                    }
+
+                    let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({ title: file.path }));
+                    this.fileList = fileList;
+                    let app = this;
+                    $('#md-file-search').search({
+                        source,
+                        minCharacters: 1,
+                        selectFirstResult: true,
+                        onSelect(result, response) {
+                            app.selectFile(result.title);
+                        }
+                    });
+                },
+                initMdEditor() {
+                    if (window.define) {
+                        // 处理与monaca编辑器requirejs不兼容的问题
+                        window.oldDefine = window.define;
+                        window.define = undefined;
+                    }
+                    common.asyncLoadLibs(["/cdn/editormd/css/editormd.min.css", '/cdn/editormd/editormd-min.js']).then(() => {
+                        editor = editormd("md-editor", {
+                            mode: "gfm",
+                            width: "100%",
+                            path: "../cdn/editormd/lib/",
+                            watch: false,
+                            tocm: true,
+                            taskList: true,
+                            emoji: true,
+                            tex: true,
+                            flowChart: true,
+                            sequenceDiagram: true,
+                            toolbarIcons: [
+                                "undo", "redo", "|",
+                                "bold", "del", "italic", "quote", "uppercase", "lowercase", "|",
+                                "h1", "h2", "h3", "h4", "h5", "h6", "|",
+                                "list-ul", "list-ol", "hr", "|",
+                                "watch", "fullscreen"
+                            ],
+                            onload: () => {
+                                if (window.oldDefine) {
+                                    window.define = window.oldDefine;
+                                }
+                            },
+                        });
+                    });
+
+                },
+                listenEvent() {
+                    $("#md-editor").keydown((event) => {
+                        if (event.keyCode === 83 && event.ctrlKey) {
+                            event.preventDefault();
+                            this.updateFile();
+                        }
+                    });
+                }
+            },
+            mounted() {
+                this.initSemantic();
+                this.initMdEditor();
+                this.listenEvent();
             }
-        },
-        mounted() {
-            this.active = location.hash.split("#/")[1];
+        }
+    }
+
+    function Header() {
+        return {
+            template: $("#page-header").html(),
+            data() {
+                return {
+                    title: "Yanhui1993",
+                    active: "",
+                    menus
+                }
+            },
+            methods: {
+                titleCall(menu) {
+                    this.active = menu.title;
+                    this.$router.push(menu.url);
+                    $(document).scrollTop(0);
+                },
+                toggleMenu() {
+                    utils.toggleLeftMenu();
+                }
+            },
+            mounted() {
+                this.active = location.hash.split("#/")[1];
+            }
         }
     }
 
     return {
         Bookmarks: Bookmarks(),
         Home: Home(),
-        Header,
+        Header: Header(),
         Files: Files(),
+        MdEditor: MdEditor(),
         menus
     }
 
@@ -400,7 +548,8 @@ const vappStart = (function () {
         { path: '/', redirect: '/home' },
         { path: '/home', component: vappComponents.Home },
         { path: '/files', component: vappComponents.Files },
-        { path: '/bookmarks', component: vappComponents.Bookmarks }
+        { path: '/bookmarks', component: vappComponents.Bookmarks },
+        { path: '/mdEditor', component: vappComponents.MdEditor }
     ]
 
     const router = new VueRouter({
@@ -415,7 +564,11 @@ const vappStart = (function () {
                 "app-header": vappComponents.Header
             },
             router,
-            methods: {},
+            methods: {
+                syncHeaderActive(to) {
+                    this.$refs.header['active'] = to.path.substr(1);
+                }
+            },
             data() {
                 return { navLinks: [] }
             },
@@ -423,7 +576,10 @@ const vappStart = (function () {
             }
         });
 
-        window.tip = app.tip;
+        router.beforeEach((to, from, next) => {
+            app.syncHeaderActive(to);
+            next();
+        });
 
         new Vue({
             el: "#vapp-leftMenu",
@@ -435,6 +591,17 @@ const vappStart = (function () {
                     app.$router.push(link.url);
                     $("#vapp-leftMenu").sidebar('toggle');
                     app.$refs.header.active = link.url;
+                },
+                clearCache() {
+                    if (!confirm("确认清空所有缓存?")) return;
+                    for (let key in localStorage) {
+                        if (localStorage.hasOwnProperty(key)) {
+                            if (key && key !== 'login-state') {
+                                localStorage.removeItem(key);
+                            }
+                        }
+                    }
+                    location.reload();
                 }
             },
             mounted() {
@@ -685,9 +852,16 @@ const common = (function () {
 
     async function loadBaseLib(lib) {
         return new Promise((resolve) => {
-            loadLibs(lib, () => {
-                resolve();
-            });
+            if (lib.endsWith(".js")) {
+                loadLibs(lib, () => {
+                    resolve();
+                });
+            } else if (lib.endsWith(".css")) {
+                loadCss(lib, () => {
+                    resolve();
+                });
+            }
+
         });
     }
 
