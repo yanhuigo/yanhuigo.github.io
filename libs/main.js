@@ -5,17 +5,29 @@ require.config({
             'css': '/cdn/css.min.js',
         }
     },
+    // 默认自动加载的模块
     deps: [
-        "vue", "vue-router", "axios", "element",
+        "vue", "vueRouter", "axios", "ELEMENT", "jquery", "semantic",
         "css!/cdn/element-ui/lib/theme-chalk/index.css",
+        "css!/cdn/element-ui/lib/theme-chalk/display.css",
+        "css!/cdn/semantic/semantic.min.css",
         "css!/css/util.css",
-        "css!/css/main.css",
     ],
+    // 定义模块 名称key-路径value
     paths: {
         "vue": "/cdn/vue/vue.min",
-        "vue-router": "/cdn/vue/vue-router",
+        "vueRouter": "/cdn/vue/vue-router",
         "axios": "/cdn/axios.min",
-        "element": "/cdn/element-ui/lib/index",
+        "ELEMENT": "/cdn/element-ui/lib/index",
+        "jquery": '/cdn/bootstrap/jquery.min',
+        "semantic": '/cdn/semantic/semantic.min',
+        "vs": '/cdn/monaco-editor/min/vs',
+    },
+    // 加载非AMD规范的JS文件
+    shim: {
+        "semantic": {
+            deps: ['jquery']
+        }
     }
 });
 
@@ -24,8 +36,19 @@ require([
     'vue',
     'axios',
     'gitee',
-    'require'
-], function (vue, axios, gitee, require) {
+    'ELEMENT',
+    'vueRouter',
+    'editor',
+    'header',
+], function (
+    Vue,
+    axios,
+    gitee,
+    element,
+    VueRouter,
+    editor,
+    header
+) {
 
     axiosInit();
 
@@ -36,20 +59,44 @@ require([
 
     });
 
-    let element = require("ELEMENT");
-    vue.use(element);
+    Vue.use(element);
+    Vue.use(VueRouter);
 
     function appInit() {
-        new vue({
+        new Vue({
             el: "#root",
+            router: vueRouterInit(),
+            components: {
+                "app-header": header
+            },
             mounted() {
-                this.$loading("aaa")
+
             },
             template: `
-            <div>
-                start app
+            <div class="d-flex flex-column vh-100">
+                <div class="wyd-border hidden-sm-only">
+                    <app-header />
+                </div>
+                <div class="wyd-border flex-grow-1">
+                    <keep-alive>
+                        <router-view></router-view>
+                    </keep-alive>
+                </div>
+                <div class="wyd-border">
+                    Bottom
+                </div>
             </div>
         `
+        });
+    }
+
+    function vueRouterInit() {
+        const routes = [
+            {path: '/', redirect: '/editor'},
+            {path: '/editor', component: editor},
+        ]
+        return new VueRouter({
+            routes
         });
     }
 

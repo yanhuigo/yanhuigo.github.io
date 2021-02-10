@@ -1,9 +1,7 @@
-define(function (require) {
+define([
+    'ELEMENT',
+], function (element) {
 
-    let element = require('ELEMENT');
-    if (!element) {
-        return {};
-    }
 
     console.log("element ui 加载成功", element);
 
