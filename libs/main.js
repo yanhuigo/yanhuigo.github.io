@@ -74,15 +74,15 @@ require([
             },
             template: `
             <div class="d-flex flex-column vh-100">
-                <div class="wyd-border hidden-sm-only">
+                <div class="hidden-sm-only">
                     <app-header />
                 </div>
-                <div class="wyd-border flex-grow-1">
+                <div class="flex-grow-1">
                     <keep-alive>
                         <router-view></router-view>
                     </keep-alive>
                 </div>
-                <div class="wyd-border">
+                <div>
                     Bottom
                 </div>
             </div>

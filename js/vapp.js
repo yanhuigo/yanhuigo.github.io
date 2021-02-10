@@ -247,7 +247,7 @@ const vappComponents = (function () {
                         }
                         monaco.editor.setModelLanguage(editor.getModel(), suffix);
                         editor.setValue(data);
-                        if (sync) tip("文件加载完成!", `已重新加载文件 => ${this.selectedFile}`);
+                        if (sync) utils.notify.success(`已重新加载文件 ${this.selectedFile}`);
                     });
                 },
 

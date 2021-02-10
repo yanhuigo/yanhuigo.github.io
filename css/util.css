@@ -2,6 +2,10 @@
     border: 1px solid darkgrey;
 }
 
+.wyd-sidebar {
+    min-width: 240px;
+}
+
 .visible {
     visibility: visible !important
 }

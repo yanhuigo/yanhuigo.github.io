@@ -1,35 +1,4 @@
-define(["vue", 'jquery', 'semantic'], function (Vue, $) {
-
-    const menus = [
-        {title: "Home", url: "home", icon: "home"},
-        {title: "Bookmarks", url: "bookmarks", icon: "bookmark outline"},
-        {title: "Files", url: "files", icon: "file alternate outline"},
-        {title: "MdEditor", url: "mdEditor", icon: "edit outline alternate outline"},
-    ];
-
-    Vue.component("app-header-item", {
-        props: ['data', 'root'],
-        components: {},
-
-        template: `
-            <div :class="data.children?'ui pointing dropdown link item':'item'">
-                
-                <template v-if="!data.children">
-                    <a v-if="root" class="text">{{data.title}}</a>
-                    <div v-else class="text">{{data.title}}</div>
-                </template>
-                
-                <template v-else >
-                    <span class="text">{{data.title}}</span>
-                    <i class="dropdown icon"></i>
-                    <div class="menu">
-                        <app-header-item v-for="(subData,index) in data.children" :key="index" :data="subData" :root="false"></app-header-item>
-                    </div>
-                </template>
-                
-            </div>
-        `
-    });
+define(['jquery'], function ($) {
 
     return {
         data() {

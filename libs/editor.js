@@ -6,13 +6,16 @@ define(['vue', 'require'], function (Vue, require) {
                 monaco.editor.create(document.getElementById('editor-container'), {
                     value: '点击左侧列表文件开始编辑...',
                     language: "markdown",
-                    theme: "vs-dark",
+                    theme: "vs",
                     automaticLayout: true
                 });
             });
         },
         template: `
-            <div id="editor-container" class="h-100"></div>
+            <div class="d-flex flex-row h-100">
+                <div class="wyd-sidebar wyd-border">123</div>
+                <div id="editor-container" class="flex-grow-1"></div>
+            </div>
         `,
     }
 
