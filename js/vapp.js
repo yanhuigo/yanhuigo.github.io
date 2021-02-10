@@ -2,10 +2,10 @@
 const vappComponents = (function () {
 
     const menus = [
-        { title: "Home", url: "home", icon: "home" },
-        { title: "Bookmarks", url: "bookmarks", icon: "bookmark outline" },
-        { title: "Files", url: "files", icon: "file alternate outline" },
-        { title: "MdEditor", url: "mdEditor", icon: "edit outline alternate outline" },
+        {title: "Home", url: "home", icon: "home"},
+        {title: "Bookmarks", url: "bookmarks", icon: "bookmark outline"},
+        {title: "Files", url: "files", icon: "file alternate outline"},
+        {title: "MdEditor", url: "mdEditor", icon: "edit outline alternate outline"},
     ];
 
     function Home() {
@@ -34,7 +34,7 @@ const vappComponents = (function () {
             if (bm.a) { // 子分类文件夹
                 for (let cbm of bm.a) {
                     if (cbm.a) {
-                        bmTagList.push({ name: cbm.b, type });
+                        bmTagList.push({name: cbm.b, type});
                         recursionBookmark(cbm, type, cbm.b);
                     } else {
                         recursionBookmark(cbm, type, tag);
@@ -71,7 +71,7 @@ const vappComponents = (function () {
                 initSearch() {
                     $('.ui.search').search({
                         source: [
-                            { title: 'test', actionUrl: "https://zijieke.com/semantic-ui/modules/search.php#/settings" },
+                            {title: 'test', actionUrl: "https://zijieke.com/semantic-ui/modules/search.php#/settings"},
                         ],
                         minCharacters: 0,
                         selectFirstResult: true,
@@ -183,7 +183,8 @@ const vappComponents = (function () {
             data() {
                 return {
                     selectedFile: "",
-                    fileList: []
+                    fileList: [],
+                    showTree: true
                 }
             },
             methods: {
@@ -192,7 +193,7 @@ const vappComponents = (function () {
                     utils.prompt('请输入文件路径', '新增文件', {
                         inputPattern: /^[\w/](.)+[a-z]+$/,
                         inputErrorMessage: '格式不正确'
-                    }).then(({ value }) => {
+                    }).then(({value}) => {
                         common.newFile(value, "new File init").then(() => {
                             this.initSemantic();
                         })
@@ -252,7 +253,7 @@ const vappComponents = (function () {
 
                 initMonacoEditor() {
                     common.asyncLoadLibs(["/cdn/monaco-editor/min/vs/loader.js"]).then(() => {
-                        require.config({ paths: { vs: '../cdn/monaco-editor/min/vs' } });
+                        require.config({paths: {vs: '../cdn/monaco-editor/min/vs'}});
                         require(['vs/editor/editor.main'], () => {
                             editor = monaco.editor.create(document.getElementById('editor-container'), {
                                 value: '点击左侧列表文件开始编辑...',
@@ -275,17 +276,17 @@ const vappComponents = (function () {
                             if (lastDir && file.path.startsWith(lastDir.file.path)) {
                                 // 子目录
                             } else {
-                                lastDir = { file, children: [] };
+                                lastDir = {file, children: []};
                                 fileList.push(lastDir);
                             }
                         } else if (lastDir && file.path.indexOf(lastDir.file.path) !== -1) {
                             lastDir.children.push(file);
                         } else {
-                            fileList.push({ file });
+                            fileList.push({file});
                         }
                     }
 
-                    let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({ title: file.path }));
+                    let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({title: file.path}));
                     this.fileList = fileList;
                     let app = this;
                     $('#ed-file-search').search({
@@ -431,16 +432,16 @@ const vappComponents = (function () {
                     for (let file of fileListOrigin) {
                         if (file.type === "tree") {
                             // 文件夹
-                            lastDir = { file, children: [] };
+                            lastDir = {file, children: []};
                             fileList.push(lastDir);
                         } else if (lastDir && file.path.indexOf(lastDir.file.path) !== -1) {
                             lastDir.children.push(file);
                         } else {
-                            fileList.push({ file });
+                            fileList.push({file});
                         }
                     }
 
-                    let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({ title: file.path }));
+                    let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({title: file.path}));
                     this.fileList = fileList;
                     let app = this;
                     $('#md-file-search').search({
@@ -545,11 +546,11 @@ const vappStart = (function () {
 
     // 2. 定义路由
     const routes = [
-        { path: '/', redirect: '/home' },
-        { path: '/home', component: vappComponents.Home },
-        { path: '/files', component: vappComponents.Files },
-        { path: '/bookmarks', component: vappComponents.Bookmarks },
-        { path: '/mdEditor', component: vappComponents.MdEditor }
+        {path: '/', redirect: '/home'},
+        {path: '/home', component: vappComponents.Home},
+        {path: '/files', component: vappComponents.Files},
+        {path: '/bookmarks', component: vappComponents.Bookmarks},
+        {path: '/mdEditor', component: vappComponents.MdEditor}
     ]
 
     const router = new VueRouter({
@@ -570,7 +571,7 @@ const vappStart = (function () {
                 }
             },
             data() {
-                return { navLinks: [] }
+                return {navLinks: []}
             },
             mounted() {
             }
@@ -584,7 +585,7 @@ const vappStart = (function () {
         new Vue({
             el: "#vapp-leftMenu",
             data() {
-                return { navLinks: [] }
+                return {navLinks: []}
             },
             methods: {
                 itemClick(link) {
@@ -689,7 +690,7 @@ const common = (function () {
         project: "webdata"
     }
 
-    if ("/login.html" === window.location.pathname) return { config };
+    if ("/login.html" === window.location.pathname) return {config};
 
     let loginStorageData = localStorage.getItem(storage_login);
     if ("/login.html" !== window.location.pathname && !loginStorageData) {
@@ -697,7 +698,7 @@ const common = (function () {
         return;
     }
 
-    let { access_token, created_at, expires_in, refresh_token } = JSON.parse(loginStorageData);
+    let {access_token, created_at, expires_in, refresh_token} = JSON.parse(loginStorageData);
     // 保存文件路径和sha的对应关系
     let fileTree = {};
     let fileListOrigin = [];
@@ -781,7 +782,7 @@ const common = (function () {
             utils.notify.warning(`未匹配文件 ${filePath}`);
             return;
         }
-        let loading = utils.loading({ text: "更新文件中..." });
+        let loading = utils.loading({text: "更新文件中..."});
         let data = Base64.encode(content);
         axios.put(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}`, {
             access_token,
@@ -807,7 +808,7 @@ const common = (function () {
             utils.notify.warning(`未匹配文件 ${filePath}`);
             return;
         }
-        let loading = utils.loading({ text: "删除文件中..." });
+        let loading = utils.loading({text: "删除文件中..."});
         return new Promise((resolve) => {
             axios.delete(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}`, {
                 params: {
@@ -836,7 +837,7 @@ const common = (function () {
             return;
         }
         let data = Base64.encode(content);
-        let loading = utils.loading({ text: "新增文件中..." });
+        let loading = utils.loading({text: "新增文件中..."});
         return new Promise((resolve) => {
             axios.post(`https://gitee.com/api/v5/repos/${config.username}/${config.project}/contents/${filePath}`, {
                 access_token,
