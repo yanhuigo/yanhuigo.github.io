@@ -22,6 +22,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
     }
 
     return {
+        name: "bookmarks",
         data() {
             return {
                 bmTypeList: [],
@@ -144,7 +145,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
             this.loadData();
             // this.initSearch();
         },
-        template:`
+        template: `
             <div class="ui container pb-5 segment">
                 <div class="mb-3 d-flex flex-row">
                     <div class="ui search flex-grow-1">

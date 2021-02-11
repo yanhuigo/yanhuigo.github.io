@@ -38,32 +38,31 @@ require([
     'gitee',
     'ELEMENT',
     'vueRouter',
-    'editor',
+    // 'editor',
     'header',
-    'bookmarks',
+    // 'bookmarks',
     'utils',
-    'login',
+    'onlinePage',
 ], function (
     Vue,
     axios,
     gitee,
     element,
     VueRouter,
-    Editor,
+    // Editor,
     Header,
-    Bookmarks,
+    // Bookmarks,
     utils,
-    Login
+    OnlinePage,
 ) {
 
     axiosInit();
 
     gitee.initState().then(data => {
-
+        vueMixin();
         // 数据初始化完成
         appInit();
         leftAppInit();
-
     });
 
     Vue.use(element);
@@ -71,13 +70,14 @@ require([
 
     let rootApp;
 
+    window.vueApps = {};
+
     function appInit() {
-        rootApp = new Vue({
+        window.wyd2021 = rootApp = new Vue({
             el: "#root",
             router: vueRouterInit(),
             components: {
                 "app-header": Header,
-                "app-login": Login,
             },
             mounted() {
 
@@ -111,8 +111,9 @@ require([
                     });
                 },
                 itemClick(name) {
-                    rootApp.$refs.header.route(name);
-                    rootApp.$refs.header.toggleLeftMenu();
+                    let headerCps = utils.getVueCps("header");
+                    headerCps.route(name);
+                    headerCps.toggleLeftMenu();
                 },
                 clearCache() {
                     utils.confirm('确认清空所有缓存?', '提示', {
@@ -142,12 +143,36 @@ require([
     function vueRouterInit() {
         const routes = [
             {path: '/', redirect: '/bookmarks'},
-            {path: '/bookmarks', component: Bookmarks},
-            {path: '/editor', component: Editor},
+            {
+                path: '/bookmarks', component: resolve => {
+                    require(['bookmarks'], resolve);
+                }
+            },
+            {
+                path: '/editor', component: resolve => {
+                    require(['editor'], resolve);
+                }
+            },
+            {
+                path: '/onlinePage', component: resolve => {
+                    require(['onlinePage'], resolve);
+                }
+            },
         ]
-        return new VueRouter({
+        const router = new VueRouter({
             routes
         });
+
+        /*router.beforeEach((to, from, next) => {
+            console.log(to, from);
+            require([to.path.substr(1)], (cp) => {
+                // router.push({path: to.path, component: cp})
+                console.log(cp);
+                // next();
+            })
+        })*/
+
+        return router;
     }
 
     /**
@@ -173,5 +198,20 @@ require([
             }
             return Promise.reject(error);
         });
+    }
+
+    function vueMixin() {
+        // 全局混入
+        Vue.mixin({
+            mounted() {
+                if (!this.$el.getAttribute) {
+                    return;
+                }
+                let wydFlag = this.$el.getAttribute("wydFlag");
+                if (wydFlag) {
+                    utils.setVueCps(wydFlag, this);
+                }
+            }
+        })
     }
 });

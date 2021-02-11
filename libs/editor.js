@@ -10,6 +10,10 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
         },
         methods: {
 
+            runJs() {
+                window.eval(editor.getValue());
+            },
+
             addFile() {
                 utils.prompt('请输入文件路径', '新增文件', {
                     inputPattern: /^[\w/](.)+[a-z]+$/,
@@ -30,6 +34,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                     type: 'warning'
                 }).then(() => {
                     gitee.getFileTree(true).then(data => {
+                        utils.notify("同步文件树完成！")
                         this.initSemantic(true);
                     });
                 }).catch(() => {
@@ -39,7 +44,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
 
             deleteFile() {
                 if (this.selectedFile === "") {
-                    utils.message.info("请选择文件");
+                    utils.message("请选择文件","info");
                     return;
                 }
                 utils.confirm(`确认删除文件[${this.selectedFile}]?`, '提示', {
@@ -62,6 +67,9 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                     switch (suffix) {
                         case "md":
                             suffix = "markdown";
+                            break;
+                        case "js":
+                            suffix = "javascript";
                             break;
                         default:
                             break;
@@ -91,7 +99,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                 for (let file of fileListOrigin) {
                     if (file.type === "tree") {
                         // 文件夹
-                        if (lastDir && file.path.startsWith(lastDir.file.path)) {
+                        if (lastDir && file.path.startsWith(lastDir.file.path + "/")) {
                             // 子目录
                         } else {
                             lastDir = {file, children: []};
@@ -124,7 +132,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
 
             update() {
                 if (this.selectedFile === "") {
-                    utils.message.info("请选择编辑文件");
+                    utils.message("请选择编辑文件", "info");
                     return;
                 }
                 let value = editor.getValue();
@@ -132,7 +140,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                     if (data !== value) {
                         gitee.updateFile(this.selectedFile, value);
                     } else {
-                        utils.message.info("文件内容未变化！");
+                        utils.message("文件内容未变化！", "info");
                     }
                 });
 
@@ -153,7 +161,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                         name: "清空文件树缓存", group: "yh-file", call: () => {
                             if (!confirm("确认清空文件树缓存？")) return;
                             common.initFileTree().then((data) => {
-                                utils.message.success("清空文件树缓存完成！");
+                                utils.message("清空文件树缓存完成！");
                             });
                         }
                     }
@@ -180,7 +188,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
             this.initSemantic();
         },
         template: `
-            <div class="mt-header d-sm-flex ui h-100">
+            <div class="mt-header d-sm-flex ui h-100" wydFlag="editor">
                 <button v-if="!showTree" class="ui icon button green" title="显示文件树" style="height: 3rem"
                         @click="showTree=!showTree">
                     <i class="arrow right icon"></i>
@@ -227,11 +235,10 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                             </span>
                         <span class="font-weight-bold" v-else>
                                 请选择编辑文件！
-                            </span>
-                        <button v-if="selectedFile" class="ui compact primary icon button ml-1" data-tooltip="保存文件(Ctrl+s)"
-                                data-position="top center" @click="update"><i
-                                class="save alternate outline icon"></i></button>
-                        <button v-if="selectedFile" class="ui compact primary icon button ml-1" data-tooltip="刷新文件"
+                        </span>
+                        
+                        </button>
+                        <button v-if="selectedFile" class="ui compact icon button ml-1" data-tooltip="刷新文件"
                                 data-position="top center" @click="loadFile(true)"><i
                                 class="sync alternate icon"></i></button>
                         <button v-if="selectedFile"
@@ -242,6 +249,16 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                 <!--<div class="w-25">
                     预览区域
                 </div>-->
+                
+                <div class="wyd-position-right" >
+                    <button v-if="selectedFile && selectedFile.endsWith('.js')" class="ui compact icon teal button" data-tooltip="运行js" data-position="top center" @click="runJs">
+                        <i class="node js icon large"></i>
+                    </button>
+                    <button v-if="selectedFile" class="ui compact icon teal button" data-tooltip="保存文件(Ctrl+s)" data-position="top center" @click="update">
+                        <i class="save alternate outline icon large"></i>
+                    </button>
+                </div>
+                    
             </div>
         `,
     }

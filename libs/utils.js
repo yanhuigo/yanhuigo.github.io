@@ -5,6 +5,24 @@ define([
 
     console.log("element ui 加载成功", element);
 
+    let vueComponents = {};
+
+    /**
+     * 获取标记有wydFlag属性的vue组件
+     * @param wydFlag
+     * @returns {*}
+     */
+    function getVueCps(wydFlag) {
+        return vueComponents[wydFlag];
+    }
+
+    function setVueCps(wydFlag, cps) {
+        vueComponents[wydFlag] = cps;
+    }
+
+    function getAllVueCps() {
+        return vueComponents;
+    }
 
     /*
         close
@@ -49,6 +67,9 @@ define([
         alert: element.MessageBox.alert,
         confirm: element.MessageBox.confirm,
         prompt: element.MessageBox.prompt,
+        getVueCps,
+        setVueCps,
+        getAllVueCps,
     }
 
 })

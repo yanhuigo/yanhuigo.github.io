@@ -8,7 +8,7 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
 
     const storageKey = {
         lsLoginState: "login-state",//登录状态
-        lsFileTree: "ls-file-Tree",//文件树
+        lsFileTree: "file-Tree",//文件树
     };
 
     let state = {

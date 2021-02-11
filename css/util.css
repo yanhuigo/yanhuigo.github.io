@@ -6,6 +6,11 @@
     min-width: 240px;
 }
 
+.wyd-position-right{
+    position: absolute;
+    right: 10rem;
+    top:5rem
+}
 
 .font-weight-bold {
     font-weight: 700 !important
