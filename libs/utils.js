@@ -45,7 +45,10 @@ define([
     return {
         message,
         notify,
-        messageBox
+        messageBox,
+        alert: element.MessageBox.alert,
+        confirm: element.MessageBox.confirm,
+        prompt: element.MessageBox.prompt,
     }
 
 })

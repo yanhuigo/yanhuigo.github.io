@@ -4,10 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/jpeg" sizes="80x80" href="/imgs/logo.jpg"/>
-    <title>App</title>
+    <title>Wyd2021</title>
 </head>
 <body>
-<div id="root"></div>
+
+<div id="app-leftMenu" class="ui sidebar left vertical inverted fixed menu p-2">
+    <a class="item" v-for="lv1Menu in level1Menus" @click="itemClick(lv1Menu[1])">
+        <i class="large" :class="lv1Menu[2]"></i> {{lv1Menu[0]}}
+    </a>
+    <!-- 清空所有缓存 -->
+    <a class="item" @click="clearCache">
+        <i class="icon sync large"></i> 清空缓存
+    </a>
+</div>
+<div class="pusher dimmed">
+    <div id="root"></div>
+</div>
+
 <script src="/cdn/require.min.js" data-main="libs/main"></script>
 </body>
 </html>

@@ -7,7 +7,7 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
     }
 
     const storageKey = {
-        lsLoginState: "ls-login-state",//登录状态
+        lsLoginState: "login-state",//登录状态
         lsFileTree: "ls-file-Tree",//文件树
     };
 
@@ -47,19 +47,25 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
      * @param refresh 是否刷新
      * @returns {Promise<null|*>}
      */
-    async function getFileContent(filePath, refresh = false) {
-        let storageKey = `ls-${filePath}`;
-        let cache = getLocalData(storageKey, false);
+    async function getFileContent(filePath, refresh = false, parseJson = false) {
+        let cache = getLocalData(filePath, false);
         if (!refresh && cache) {
-            return base64.decode(cache);
+            let cacheContent = base64.decode(cache);
+            if (parseJson) {
+                return JSON.parse(cacheContent);
+            }
         }
         let data = await axios.get(`${apiConfig.reposUrlPrefix}/contents/${filePath}?access_token=${access_token}`);
         if (!data.content) {
             utils.message(`获取文件内容失败! [${filePath}]`, "error");
             return null;
         }
-        saveLocalData(storageKey, data.content)
-        return base64.decode(data.content);
+        saveLocalData(filePath, data.content);
+        let content = base64.decode(data.content);
+        if (parseJson) {
+            return JSON.parse(content);
+        }
+        return content;
     }
 
     /**
@@ -107,21 +113,25 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
         }
         // let loading = utils.loading({text: "更新文件中..."});
         let data = base64.encode(content);
-        axios.put(`${apiConfig.reposUrlPrefix}/contents/${filePath}`, {
-            access_token,
-            content: data,
-            sha,
-            message: `open api update ${window.location.pathname}`
-        }).then(() => {
-            // loading.close();
-            utils.notify(`更新[${filePath}]成功！`, "success");
-            // localStorage.setItem(filePath, data);
-            // initFileTree();
-        }).catch((err) => {
-            // loading.close();
-            console.error(err);
-            utils.notify("更新异常！", "error");
+        return new Promise((resolve) => {
+            axios.put(`${apiConfig.reposUrlPrefix}/contents/${filePath}`, {
+                access_token,
+                content: data,
+                sha,
+                message: `open api update ${window.location.pathname}`
+            }).then(async () => {
+                // loading.close();
+                utils.notify(`更新[${filePath}]成功！`, "success");
+                saveLocalData(filePath, data);
+                await fileShaMapInit(true);
+                resolve();
+            }).catch((err) => {
+                // loading.close();
+                console.error(err);
+                utils.notify("更新异常！", "error");
+            })
         })
+
     }
 
     /**
@@ -164,10 +174,11 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
      * @param data
      */
     function saveLocalData(key, data) {
+        let lsKey = `ls-${key}`;
         if (typeof data === 'object') {
-            localStorage.setItem(key, JSON.stringify(data));
+            localStorage.setItem(lsKey, JSON.stringify(data));
         } else {
-            localStorage.setItem(key, data);
+            localStorage.setItem(lsKey, data);
         }
 
     }
@@ -179,7 +190,8 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
      * @returns {string|null}
      */
     function getLocalData(key, isObject = true) {
-        let storage = localStorage.getItem(key);
+        let lsKey = `ls-${key}`;
+        let storage = localStorage.getItem(lsKey);
         if (storage) {
             return isObject ? JSON.parse(storage) : storage;
         }
@@ -212,8 +224,8 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
     }
 
     // 文件路径-sha
-    async function fileShaMapInit() {
-        let fileData = await getFileTree();
+    async function fileShaMapInit(refresh = false) {
+        let fileData = await getFileTree(refresh);
         for (let file of fileData) {
             state.fileShaMap.set(file.path, file.sha);
         }

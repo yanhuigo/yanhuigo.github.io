@@ -1,26 +1,49 @@
-define(['jquery'], function ($) {
+define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, gitee) {
 
     return {
         data() {
             return {
-                menus: []
+                active: "bookmarks",
+                level1Menus: []
             }
         },
-        methods: {},
+        methods: {
+            route(name) {
+                if (name === this.active) return;
+                this.$router.push(name);
+                this.active = name;
+            },
+            toggleLeftMenu() {
+                $("#app-leftMenu").sidebar('toggle');
+            },
+            loadLevelMenu() {
+                gitee.getFileContent("config/wyd2021.json", false, true).then(data => {
+                    this.level1Menus = data.level1Menus;
+                });
+            }
+        },
         mounted() {
-            $('.ui.dropdown').dropdown();
+            this.loadLevelMenu();
+            this.active = location.hash.substr(2);
+            $('.ui.dropdown').dropdown({
+                on: 'hover',
+                action: function (text, value) {
+                    utils.message(`${text} - ${value}`);
+                    $(this).dropdown('hide');
+                }
+            });
         },
         template: `
             <div class="ui menu positive">
             
-              <div class="header item">
+              <div class="header item link" @click="toggleLeftMenu">
                 <img class="ui avatar image" src="/cdn/logo.jpg" />
-                <span>Wyd</span>
+                <a class="text-dark font-weight-bold">Wyd2021</a>
               </div>
               
-              <a class="item active"><i class="terminal icon"></i>编辑器</a>
+              <a class="item" :class="active===lv1Menu[1]?'active':''" v-for="lv1Menu in level1Menus" @click="route(lv1Menu[1])"><i :class="lv1Menu[2]"></i>{{lv1Menu[0]}}</a>
                             
-              <div class="ui pointing dropdown link item">
+              <!--<div class="ui pointing dropdown link item">
                 <i class="smile outline icon"></i>
                 <span class="text">导航</span>
                 <i class="dropdown icon"></i>
@@ -31,7 +54,7 @@ define(['jquery'], function ($) {
                     <span class="text">衣服</span>
                     <div class="menu">
                       <div class="header">男装</div>
-                      <div class="item">衬衫</div>
+                      <div class="item active">衬衫</div>
                       <div class="item">裤子</div>
                       <div class="item">牛仔裤</div>
                       <div class="item">鞋</div>
@@ -43,7 +66,7 @@ define(['jquery'], function ($) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div>-->
               
             </div>
         `,

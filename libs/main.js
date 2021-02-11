@@ -40,14 +40,20 @@ require([
     'vueRouter',
     'editor',
     'header',
+    'bookmarks',
+    'utils',
+    'login',
 ], function (
     Vue,
     axios,
     gitee,
     element,
     VueRouter,
-    editor,
-    header
+    Editor,
+    Header,
+    Bookmarks,
+    utils,
+    Login
 ) {
 
     axiosInit();
@@ -56,18 +62,22 @@ require([
 
         // 数据初始化完成
         appInit();
+        leftAppInit();
 
     });
 
     Vue.use(element);
     Vue.use(VueRouter);
 
+    let rootApp;
+
     function appInit() {
-        new Vue({
+        rootApp = new Vue({
             el: "#root",
             router: vueRouterInit(),
             components: {
-                "app-header": header
+                "app-header": Header,
+                "app-login": Login,
             },
             mounted() {
 
@@ -75,25 +85,65 @@ require([
             template: `
             <div class="d-flex flex-column vh-100">
                 <div class="hidden-sm-only">
-                    <app-header />
+                    <app-header ref="header"/>
                 </div>
-                <div class="flex-grow-1">
+                <app-login />
+                <div class="flex-grow-1 p-1">
                     <keep-alive>
                         <router-view></router-view>
                     </keep-alive>
-                </div>
-                <div>
-                    Bottom
                 </div>
             </div>
         `
         });
     }
 
+    function leftAppInit() {
+        new Vue({
+            el: "#app-leftMenu",
+            data() {
+                return {level1Menus: []}
+            },
+            methods: {
+                loadLevelMenu() {
+                    gitee.getFileContent("config/wyd2021.json", false, true).then(data => {
+                        this.level1Menus = data.level1Menus;
+                    });
+                },
+                itemClick(name) {
+                    rootApp.$refs.header.route(name);
+                    rootApp.$refs.header.toggleLeftMenu();
+                },
+                clearCache() {
+                    utils.confirm('确认清空所有缓存?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        for (let key in localStorage) {
+                            if (localStorage.hasOwnProperty(key)) {
+                                if (key && key !== 'login-state') {
+                                    localStorage.removeItem(key);
+                                }
+                            }
+                        }
+                        location.reload();
+                    }).catch(() => {
+
+                    });
+                }
+            },
+            mounted() {
+                this.loadLevelMenu();
+            }
+        });
+    }
+
     function vueRouterInit() {
         const routes = [
-            {path: '/', redirect: '/editor'},
-            {path: '/editor', component: editor},
+            {path: '/', redirect: '/bookmarks'},
+            {path: '/bookmarks', component: Bookmarks},
+            {path: '/editor', component: Editor},
         ]
         return new VueRouter({
             routes
@@ -116,6 +166,11 @@ require([
             }
             return response;
         }, function (error) {
+            if (error.response.status === 401) {
+                if (confirm("确认跳转到登录页？")) {
+                    window.location.href = `/login.html?page=${window.location.pathname}`;
+                }
+            }
             return Promise.reject(error);
         });
     }

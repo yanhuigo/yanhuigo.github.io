@@ -6,6 +6,27 @@
     min-width: 240px;
 }
 
+
+.font-weight-bold {
+    font-weight: 700 !important
+}
+
+.font-weight-bolder {
+    font-weight: bolder !important
+}
+
+.font-italic {
+    font-style: italic !important
+}
+
+.text-white {
+    color: #fff !important
+}
+
+.text-dark {
+    color: #343a40 !important
+}
+
 .visible {
     visibility: visible !important
 }
