@@ -749,7 +749,7 @@ const common = (function () {
 
         let fileListStorageData = localStorage.getItem(storage_fileList);
         let fileListStorageDataOrigin = localStorage.getItem(storage_fileList_origin);
-        if (fileListStorageData) {
+        if (fileListStorageData && fileListStorageDataOrigin) {
             fileTree = JSON.parse(fileListStorageData);
             fileListOrigin = JSON.parse(fileListStorageDataOrigin);
         } else {
