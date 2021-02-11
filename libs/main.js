@@ -84,11 +84,11 @@ require([
             },
             template: `
             <div class="d-flex flex-column vh-100">
-                <div class="hidden-sm-only">
+                <div>
                     <app-header ref="header"/>
                 </div>
                 <app-login />
-                <div class="flex-grow-1 p-1">
+                <div class="flex-grow-1 p-1" style="max-height: 100vh;overflow: auto">
                     <keep-alive>
                         <router-view></router-view>
                     </keep-alive>
@@ -116,22 +116,9 @@ require([
                     headerCps.toggleLeftMenu();
                 },
                 clearCache() {
-                    utils.confirm('确认清空所有缓存?', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning'
-                    }).then(() => {
-                        for (let key in localStorage) {
-                            if (localStorage.hasOwnProperty(key)) {
-                                if (key && key !== 'login-state') {
-                                    localStorage.removeItem(key);
-                                }
-                            }
-                        }
-                        location.reload();
-                    }).catch(() => {
-
-                    });
+                    if (confirm("确认清空所有缓存？")) {
+                        gitee.clearAllCache();
+                    }
                 }
             },
             mounted() {
@@ -192,9 +179,7 @@ require([
             return response;
         }, function (error) {
             if (error.response.status === 401) {
-                if (confirm("确认跳转到登录页？")) {
-                    window.location.href = `/login.html?page=${window.location.pathname}`;
-                }
+                gitee.goLogin();
             }
             return Promise.reject(error);
         });

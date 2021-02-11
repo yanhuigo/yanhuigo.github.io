@@ -188,7 +188,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
             this.initSemantic();
         },
         template: `
-            <div class="mt-header d-sm-flex ui h-100" wydFlag="editor">
+            <div class="mt-header d-sm-flex ui segment m-2" wydFlag="editor" style="height: 90vh">
                 <button v-if="!showTree" class="ui icon button green" title="显示文件树" style="height: 3rem"
                         @click="showTree=!showTree">
                     <i class="arrow right icon"></i>

@@ -1,6 +1,7 @@
 define([
     'ELEMENT',
-], function (element) {
+    'axios'
+], function (element, axios) {
 
 
     console.log("element ui 加载成功", element);
@@ -58,7 +59,6 @@ define([
     function messageBox(msg, type = "alert") {
         return element.MessageBox[type](msg);
     }
-
 
     return {
         message,

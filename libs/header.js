@@ -5,6 +5,7 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
             return {
                 active: "bookmarks",
                 level1Menus: [],
+                level2Menus: [],
             }
         },
         methods: {
@@ -19,20 +20,24 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
             loadLevelMenu() {
                 gitee.getFileContent("config/wyd2021.json", false, true).then(data => {
                     this.level1Menus = data.level1Menus;
+                    this.level2Menus = data.level2Menus;
+                    this.$nextTick(() => {
+                        $(".dropdown").dropdown({
+                            on: 'hover',
+                            action: function (text, value) {
+                                $(this).dropdown('hide');
+                            }
+                        });
+                    })
                 });
+            },
+            goURL(url) {
+                window.open(url);
             }
         },
         mounted() {
             this.loadLevelMenu();
             this.active = location.hash.substr(2);
-            let app = this;
-            $('#app-online-page-menu').dropdown({
-                on: 'hover',
-                action: function (text, value) {
-                    $(this).dropdown('hide');
-                    app.route("onlinePage");
-                }
-            });
         },
         template: `
             <div class="ui menu positive" wydFlag="header">
@@ -42,41 +47,20 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                 <a class="text-dark font-weight-bold">Wyd2021</a>
               </div>
               
-              <a class="item" :class="active===lv1Menu[1]?'active':''" v-for="lv1Menu in level1Menus" @click="route(lv1Menu[1])"><i :class="lv1Menu[2]"></i>{{lv1Menu[0]}}</a>
+              <a class="item hidden-xs-only" :class="active===lv1Menu[1]?'active':''" v-for="lv1Menu in level1Menus" @click="route(lv1Menu[1])"><i :class="lv1Menu[2]"></i>{{lv1Menu[0]}}</a>
                
-              <!--<div id="app-online-page-menu" class="ui pointing dropdown link item">
-                <i class="smile outline icon" :class="active==='onlinePage'?'font-weight-bold':''"></i>
-                <span class="text" :class="active==='onlinePage'?'font-weight-bold':''">在线页面</span>
+              <div flag="lv2MenuList" class="ui pointing dropdown link item" v-for="lv2Menu in level2Menus">
+                <i class="icon" :class="lv2Menu.icon"></i>
+                <span class="text">{{lv2Menu.title}}</span>
                 <i class="dropdown icon"></i>
                 <div class="menu">
-                    <div class="item">test page</div>
+                    <template v-for="lv2Link in lv2Menu.children">
+                        <div v-if="typeof lv2Link==='string'" class="header">{{lv2Link}}</div>
+                        <div v-else  class="item" @click="goURL(lv2Link[1])">{{lv2Link[0]}}</div>
+                    </template>
                 </div>
-              </div>-->
+              </div>
               
-              <!--<div class="ui pointing dropdown link item">
-                <i class="smile outline icon"></i>
-                <span class="text">导航</span>
-                <i class="dropdown icon"></i>
-                <div class="menu">
-                  <div class="header">分类</div>
-                  <div class="item">
-                    <i class="dropdown icon"></i>
-                    <span class="text">衣服</span>
-                    <div class="menu">
-                      <div class="header">男装</div>
-                      <div class="item active">衬衫</div>
-                      <div class="item">裤子</div>
-                      <div class="item">牛仔裤</div>
-                      <div class="item">鞋</div>
-                      <div class="divider"></div>
-                      <div class="header">女装</div>
-                      <div class="item">礼服</div>
-                      <div class="item">鞋</div>
-                      <div class="item">包包</div>
-                    </div>
-                  </div>
-                </div>
-              </div>-->
               
             </div>
         `,

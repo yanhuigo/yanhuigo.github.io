@@ -35,6 +35,7 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
             // 获取项目下的文件树
             axios.get(`${apiConfig.reposUrlPrefix}/git/trees/master?access_token=${access_token}&recursive=1`).then(data => {
                 saveLocalData(storageKey.lsFileTree, data.tree);
+                fileShaMapInit()
                 resolve(data.tree);
             });
 
@@ -174,11 +175,10 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
      * @param data
      */
     function saveLocalData(key, data) {
-        let lsKey = `ls-${key}`;
         if (typeof data === 'object') {
-            localStorage.setItem(lsKey, JSON.stringify(data));
+            localStorage.setItem(key, JSON.stringify(data));
         } else {
-            localStorage.setItem(lsKey, data);
+            localStorage.setItem(key, data);
         }
 
     }
@@ -190,8 +190,7 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
      * @returns {string|null}
      */
     function getLocalData(key, isObject = true) {
-        let lsKey = `ls-${key}`;
-        let storage = localStorage.getItem(lsKey);
+        let storage = localStorage.getItem(key);
         if (storage) {
             return isObject ? JSON.parse(storage) : storage;
         }
@@ -219,6 +218,10 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
     // 登录状态
     function loginStateInit() {
         let loginStorageData = localStorage.getItem(storageKey.lsLoginState);
+        if (!loginStorageData) {
+            goLogin();
+            return;
+        }
         state.loginState = JSON.parse(loginStorageData);
         access_token = state.loginState['access_token'];
     }
@@ -231,13 +234,61 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
         }
     }
 
+    function goLogin() {
+
+        let loginStorageData = localStorage.getItem(storageKey.lsLoginState);
+        if (loginStorageData) {
+            let {created_at, expires_in, refresh_token} = JSON.parse(loginStorageData);
+            if (Math.floor(Date.now() / 1000) - created_at > expires_in) {
+                axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`).then(response => {
+                    if (response.status === 200) {
+                        localStorage.setItem(storageKey.lsLoginState, JSON.stringify(response.data));
+                        utils.message("刷新token成功！");
+                        initState();
+                    }
+                }).catch(() => {
+                    confirmLogin("刷新token失败");
+                });
+            } else {
+                confirmLogin("token未过期");
+            }
+        } else {
+            window.location.href = `/login.html?page=${window.location.pathname}`;
+        }
+    }
+
+    function clearAllCache() {
+        for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) {
+                if (key && key !== storageKey.lsLoginState) {
+                    localStorage.removeItem(key);
+                }
+            }
+        }
+        location.reload();
+    }
+
+    function confirmLogin(title) {
+        utils.confirm(`确认跳转到到登录页?[${title}]`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+            window.location.href = `/login.html?page=${window.location.pathname}`;
+        }).catch(() => {
+
+        });
+    }
+
     return {
         getFileTree,
         getFileContent,
         newFile,
         updateFile,
         deleteFile,
-        initState
+        initState,
+        goLogin,
+        clearAllCache
     }
 
 });
