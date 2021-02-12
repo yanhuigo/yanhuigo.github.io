@@ -1,4 +1,4 @@
-define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, gitee) {
+define(['jquery', 'semantic', 'wyd2021/utils', 'wyd2021/gitee'], function ($, semantic, utils, gitee) {
 
     return {
         data() {

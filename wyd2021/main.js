@@ -38,9 +38,7 @@ require([
     'gitee',
     'ELEMENT',
     'vueRouter',
-    // 'editor',
     'header',
-    // 'bookmarks',
     'utils',
     'onlinePage',
 ], function (
@@ -49,11 +47,8 @@ require([
     gitee,
     element,
     VueRouter,
-    // Editor,
     Header,
-    // Bookmarks,
     utils,
-    OnlinePage,
 ) {
 
     axiosInit();
@@ -151,12 +146,7 @@ require([
         });
 
         /*router.beforeEach((to, from, next) => {
-            console.log(to, from);
-            require([to.path.substr(1)], (cp) => {
-                // router.push({path: to.path, component: cp})
-                console.log(cp);
-                // next();
-            })
+            next();
         })*/
 
         return router;

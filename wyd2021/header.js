@@ -8,6 +8,11 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                 level2Menus: [],
             }
         },
+        watch: {
+            $route(newVal, oldVal) {
+                this.active = newVal.path.substr(1);
+            }
+        },
         methods: {
             route(name) {
                 if (name === this.active) return;
@@ -37,7 +42,6 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
         },
         mounted() {
             this.loadLevelMenu();
-            this.active = location.hash.substr(2);
         },
         template: `
             <div class="ui menu positive" wydFlag="header">

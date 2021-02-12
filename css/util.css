@@ -16,6 +16,10 @@ body{
     top:5rem
 }
 
+.border-0 {
+    border: 0 !important
+}
+
 .font-weight-bold {
     font-weight: 700 !important
 }

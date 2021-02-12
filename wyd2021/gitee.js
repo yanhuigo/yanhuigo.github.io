@@ -236,7 +236,9 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
 
     function goLogin() {
 
-        let loginStorageData = localStorage.getItem(storageKey.lsLoginState);
+        confirmLogin("token过期");
+
+        /*let loginStorageData = localStorage.getItem(storageKey.lsLoginState);
         if (loginStorageData) {
             let {created_at, expires_in, refresh_token} = JSON.parse(loginStorageData);
             if (Math.floor(Date.now() / 1000) - created_at > expires_in) {
@@ -254,7 +256,7 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
             }
         } else {
             window.location.href = `/login.html?page=${window.location.pathname}`;
-        }
+        }*/
     }
 
     function clearAllCache() {

@@ -1,17 +1,31 @@
-define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, utils) {
+define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue, require, gitee, utils) {
 
     return {
         data() {
             return {
                 selectedFile: "",
                 fileList: [],
-                showTree: true
+                showTree: true,
+                showIframe: true,
+                renderFileContent: "<h2>Hello</h2>"
             }
         },
         methods: {
 
+            closeIframe() {
+                this.showIframe = false;
+            },
+
+            previewInIframe() {
+                $("#ed-iframe-modal").modal("show");
+                let value = editor.getValue();
+                this.renderFileContent = value;
+                this.showIframe = true;
+            },
+
             runJs() {
-                window.eval(editor.getValue());
+                let selectionTxt = editor.getModel().getValueInRange(editor.getSelection());
+                window.eval(selectionTxt);
             },
 
             addFile() {
@@ -44,7 +58,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
 
             deleteFile() {
                 if (this.selectedFile === "") {
-                    utils.message("请选择文件","info");
+                    utils.message("请选择文件", "info");
                     return;
                 }
                 utils.confirm(`确认删除文件[${this.selectedFile}]?`, '提示', {
@@ -251,12 +265,25 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                 </div>-->
                 
                 <div class="wyd-position-right" >
-                    <button v-if="selectedFile && selectedFile.endsWith('.js')" class="ui compact icon teal button" data-tooltip="运行js" data-position="top center" @click="runJs">
+                    <button v-if="selectedFile && (selectedFile.endsWith('.html')||selectedFile.endsWith('.js'))" class="ui compact icon teal button" data-tooltip="在iframe中预览" data-position="top center" @click="previewInIframe">
+                        <i class="html5 icon large"></i>
+                    </button>
+                    <button v-if="selectedFile && selectedFile.endsWith('.js')" class="ui compact icon teal button" data-tooltip="运行选中的js" data-position="top center" @click="runJs">
                         <i class="node js icon large"></i>
                     </button>
                     <button v-if="selectedFile" class="ui compact icon teal button" data-tooltip="保存文件(Ctrl+s)" data-position="top center" @click="update">
                         <i class="save alternate outline icon large"></i>
                     </button>
+                </div>
+                
+                <div id="ed-iframe-modal" class="ui modal large">
+                  <div class="header">{{selectedFile}}</div>
+                  <div class="content p-0">
+                    <iframe class="border-0" :srcdoc="renderFileContent" width="100%" height="600px"></iframe>
+                  </div>
+                  <div class="actions">
+                    <div class="ui cancel button">取消</div>
+                  </div>
                 </div>
                     
             </div>
