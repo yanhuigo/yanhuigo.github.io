@@ -1,3 +1,13 @@
+let isProd = true;
+if (window.location.host.indexOf('localhost') !== -1) isProd = false;
+
+// 本地包定义
+let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64"];
+let localPath = {};
+for (let lib of localLibs) {
+    localPath[lib] = isProd ? lib + "-min" : lib;
+}
+
 // 路径配置
 require.config({
     map: {
@@ -22,6 +32,7 @@ require.config({
         "jquery": '/cdn/bootstrap/jquery.min',
         "semantic": '/cdn/semantic/semantic.min',
         "vs": '/cdn/monaco-editor/min/vs',
+        ...localPath
     },
     // 加载非AMD规范的JS文件
     shim: {
@@ -62,10 +73,6 @@ require([
 
     Vue.use(element);
     Vue.use(VueRouter);
-
-    let rootApp;
-
-    window.vueApps = {};
 
     function appInit() {
         window.wyd2021 = rootApp = new Vue({
