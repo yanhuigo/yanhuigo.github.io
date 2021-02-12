@@ -2,7 +2,7 @@ let isProd = true;
 if (window.location.host.indexOf('localhost') !== -1) isProd = false;
 
 // 本地包定义
-let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64"];
+let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home"];
 let localPath = {};
 for (let lib of localLibs) {
     localPath[lib] = isProd ? lib + "-min" : lib;
@@ -22,6 +22,7 @@ require.config({
         "css!/cdn/element-ui/lib/theme-chalk/display.css",
         "css!/cdn/semantic/semantic.min.css",
         "css!/css/util.css",
+        `css!/wyd2021/wyd2021${isProd ? "-min" : ""}.css`,
     ],
     // 定义模块 名称key-路径value
     paths: {
@@ -32,6 +33,7 @@ require.config({
         "jquery": '/cdn/bootstrap/jquery.min',
         "semantic": '/cdn/semantic/semantic.min',
         "vs": '/cdn/monaco-editor/min/vs',
+        "vue-markdown": '/cdn/vue/vue-markdown.min',
         ...localPath
     },
     // 加载非AMD规范的JS文件
@@ -90,7 +92,7 @@ require([
                     <app-header ref="header"/>
                 </div>
                 <app-login />
-                <div class="flex-grow-1 p-1" style="max-height: 100vh;overflow: auto">
+                <div class="flex-grow-1" style="max-height: 100vh;overflow: auto">
                     <keep-alive>
                         <router-view></router-view>
                     </keep-alive>
@@ -131,7 +133,7 @@ require([
 
     function vueRouterInit() {
         const routes = [
-            {path: '/', redirect: '/bookmarks'},
+            {path: '/', redirect: '/home'},
             {
                 path: '/bookmarks', component: resolve => {
                     require(['bookmarks'], resolve);
@@ -143,8 +145,8 @@ require([
                 }
             },
             {
-                path: '/onlinePage', component: resolve => {
-                    require(['onlinePage'], resolve);
+                path: '/home', component: resolve => {
+                    require(['home'], resolve);
                 }
             },
         ]

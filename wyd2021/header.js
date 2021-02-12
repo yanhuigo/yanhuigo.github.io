@@ -44,16 +44,16 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
             this.loadLevelMenu();
         },
         template: `
-            <div class="ui menu positive" wydFlag="header">
+            <div class="ui menu raised inverted wyd-header wyd-border-bottom" wydFlag="header">
             
               <div class="header item link" @click="toggleLeftMenu">
                 <img class="ui avatar image" src="/cdn/logo.jpg" />
-                <a class="text-dark font-weight-bold">Wyd2021</a>
+                <a class="font-weight-bold">Wyd2021</a>
               </div>
               
               <a class="item hidden-xs-only" :class="active===lv1Menu[1]?'active':''" v-for="lv1Menu in level1Menus" @click="route(lv1Menu[1])"><i :class="lv1Menu[2]"></i>{{lv1Menu[0]}}</a>
                
-              <div flag="lv2MenuList" class="ui pointing dropdown link item" v-for="lv2Menu in level2Menus">
+              <div flag="lv2MenuList" class="ui pointing dropdown link item hidden-xs-only" v-for="lv2Menu in level2Menus">
                 <i class="icon" :class="lv2Menu.icon"></i>
                 <span class="text">{{lv2Menu.title}}</span>
                 <i class="dropdown icon"></i>
