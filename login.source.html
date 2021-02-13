@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" type="image/jpeg" sizes="80x80" href="imgs/logo.jpg" />
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="imgs/logo.jpg"/>
     <title>Login Page</title>
     <style type="text/css">
         .form-bg {
@@ -58,7 +58,7 @@
             transition: all 0.5s ease 0s;
         }
 
-        .form-horizontal .form-control:focus+i {
+        .form-horizontal .form-control:focus + i {
             color: #00b4ef;
         }
 
@@ -116,7 +116,7 @@
             visibility: hidden;
         }
 
-        .form-horizontal .main-checkbox input[type=checkbox]:checked+label:after {
+        .form-horizontal .main-checkbox input[type=checkbox]:checked + label:after {
             opacity: 1;
         }
 
@@ -158,104 +158,108 @@
 
 <body class="form-bg">
 
-    <div id="root">
+<div id="root">
 
-        <div class="container">
-            <div class="row justify-content-center mt-5">
-                <div class="col-md-offset-3 col-md-6">
-                    <form @submit.prevent="oauth" class="form-horizontal pb-5">
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-offset-3 col-md-6">
+                <form @submit.prevent="oauth" class="form-horizontal pb-5">
                         <span class="heading">
                             <span>Sign in</span>
                             <i class="fa fa-sign-in mr-2"></i>
                         </span>
-                        <div class="form-group">
-                            <input type="text" v-model="username" class="form-control" id="inputEmail3"
-                                placeholder="Username">
-                            <i class="fa fa-user"></i>
-                        </div>
-                        <div class="form-group help">
-                            <input type="password" v-model="password" class="form-control" id="inputPassword3"
-                                placeholder="Password">
-                            <i class="fa fa-lock"></i>
-                        </div>
-                        <div v-show="loginErr" class="alert alert-danger m-2">用户名或密码错误</div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-outline-primary">登 录</button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="form-group">
+                        <input type="text" v-model="username" class="form-control" id="inputEmail3"
+                               placeholder="Username">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div class="form-group help">
+                        <input type="password" v-model="password" class="form-control" id="inputPassword3"
+                               placeholder="Password">
+                        <i class="fa fa-lock"></i>
+                    </div>
+                    <div v-show="loginErr" class="alert alert-danger m-2">用户名或密码错误</div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-outline-primary">登 录</button>
+                    </div>
+                </form>
             </div>
         </div>
-
     </div>
-    <link rel="stylesheet" href="/cdn/bootstrap/bootstrap.min.css" />
-    <link href="/cdn/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="/cdn/vue/vue.min.js"></script>
-    <script src="/cdn/axios.min.js"></script>
-    <script src="/js/common.js"></script>
-    <script>
-        initApp().then(() => {
-            const storage_login = "login-state";
-            new Vue({
-                el: "#root",
-                data() {
-                    return { username: "", password: "", loginErr: false, loginErrMsg: "" }
-                },
-                methods: {
 
-                    oauth() {
-                        if (this.username.trim() === "" || this.password.trim() === "") {
-                            return false;
-                        }
+</div>
+<link rel="stylesheet" href="/cdn/bootstrap/bootstrap.min.css"/>
+<link href="/cdn/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="/cdn/vue/vue.min.js"></script>
+<script src="/cdn/axios.min.js"></script>
+<script>
+    const config = {
+        client_id: "f5250ed1c6f0a51423ca06aa4faf5c10d64ce8b411c425256d22fec16a531665",
+        client_secret: "00a0f31357ce04fe3619eab7149d7c1b4daade23677a898b8f14bb647bc25fb3",
+        username: "yanhui1993",
+        project: "webdata"
+    }
 
-                        axios.post('https://gitee.com/oauth/token', {
-                            grant_type: "password",
-                            username: this.username,
-                            password: this.password,
-                            client_id: common.config.client_id,
-                            client_secret: common.config.client_secret,
-                            scope: "projects",
-                        }).then(response => {
+    const storage_login = "login-state";
+    new Vue({
+        el: "#root",
+        data() {
+            return {username: "", password: "", loginErr: false, loginErrMsg: ""}
+        },
+        methods: {
+
+            oauth() {
+                if (this.username.trim() === "" || this.password.trim() === "") {
+                    return false;
+                }
+
+                axios.post('https://gitee.com/oauth/token', {
+                    grant_type: "password",
+                    username: this.username,
+                    password: this.password,
+                    client_id: config.client_id,
+                    client_secret: config.client_secret,
+                    scope: "projects",
+                }).then(response => {
+                    if (response.status === 200) {
+                        localStorage.setItem(storage_login, JSON.stringify(response.data));
+                        this.navPage();
+                    }
+                }).catch((err) => {
+                    this.loginErrMsg = err;
+                    this.loginErr = true;
+                });
+
+                return false;
+            },
+
+            loginValid() {
+                let loginStorageData = localStorage.getItem(storage_login);
+                if (loginStorageData) {
+                    let {created_at, expires_in, refresh_token} = JSON.parse(loginStorageData);
+                    if (Math.floor(Date.now() / 1000) - created_at > expires_in) {
+                        axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`).then(response => {
                             if (response.status === 200) {
                                 localStorage.setItem(storage_login, JSON.stringify(response.data));
                                 this.navPage();
                             }
-                        }).catch((err) => {
-                            this.loginErrMsg = err;
-                            this.loginErr = true;
                         });
-
-                        return false;
-                    },
-
-                    loginValid() {
-                        let loginStorageData = localStorage.getItem(storage_login);
-                        if (loginStorageData) {
-                            let { created_at, expires_in, refresh_token } = JSON.parse(loginStorageData);
-                            if (Math.floor(Date.now() / 1000) - created_at > expires_in) {
-                                axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`).then(response => {
-                                    if (response.status === 200) {
-                                        localStorage.setItem(storage_login, JSON.stringify(response.data));
-                                        this.navPage();
-                                    }
-                                });
-                            } else {
-                                this.navPage();
-                            }
-                        }
-                    },
-
-                    navPage() {
-                        let search = window.location.search;
-                        window.location.href = search ? search.split("page=")[1] : "/";
+                    } else {
+                        this.navPage();
                     }
-                },
-                mounted() {
-                    this.loginValid();
                 }
-            })
-        })
-    </script>
+            },
+
+            navPage() {
+                let search = window.location.search;
+                window.location.href = search ? search.split("page=")[1] : "/";
+            }
+        },
+        mounted() {
+            this.loginValid();
+        }
+    })
+</script>
 </body>
 
 </html>

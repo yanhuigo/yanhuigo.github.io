@@ -1,0 +1,306 @@
+define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
+
+    const pubRepo = "webdata";//公开仓库
+    const meRepo = "webme";//隐私仓库
+
+    const storageKey = {
+        lsRepo: "gitee-repo",
+        lsLoginState: "login-state",//登录状态
+        lsFileTree: "file-Tree",//文件树
+    };
+
+    let lsRepo = localStorage.getItem(storageKey.lsRepo);
+
+    let apiConfig = {
+        client_id: "f5250ed1c6f0a51423ca06aa4faf5c10d64ce8b411c425256d22fec16a531665",
+        client_secret: "00a0f31357ce04fe3619eab7149d7c1b4daade23677a898b8f14bb647bc25fb3",
+        reposUrlPrefix: `https://gitee.com/api/v5/repos/yanhui1993`,
+        repo: lsRepo ? lsRepo : pubRepo,
+    };
+
+    let state = {
+        // 登录状态
+        loginState: {},
+        // 文件路径-sha
+        fileShaMap: new Map()
+    }
+
+    let access_token;
+
+    /**
+     * 获取文件树
+     * @param refresh 是否刷新
+     * @param repo
+     * @returns {Promise<unknown>}
+     */
+    async function getFileTree(refresh = false, repo = pubRepo) {
+        return new Promise((resolve) => {
+            let cache = getLocalData(storageKey.lsFileTree, true, repo);
+            if (cache && !refresh) {
+                resolve(cache);
+                return;
+            }
+            // 获取项目下的文件树
+            axios.get(`${apiConfig.reposUrlPrefix}/${repo}/git/trees/master?${access_token ? 'access_token=' + access_token : ''}&recursive=1`).then(data => {
+                saveLocalData(storageKey.lsFileTree, data.tree, repo);
+                fileShaMapInit(false, repo)
+                resolve(data.tree);
+            });
+
+        });
+    }
+
+    /**
+     * 获取文件内容
+     * @param filePath 文件路径
+     * @param refresh 是否刷新
+     * @param parseJson 是否转json
+     * @param repo 仓库
+     * @returns {Promise<null|*>}
+     */
+    async function getFileContent(filePath, refresh = false, parseJson = false, repo = pubRepo) {
+        let cache = getLocalData(filePath, false, repo);
+        if (!refresh && cache) {
+            let cacheContent = base64.decode(cache);
+            if (parseJson) {
+                return JSON.parse(cacheContent);
+            }else {
+                return cacheContent;
+            }
+        }
+        let data = await axios.get(`${apiConfig.reposUrlPrefix}/${repo}/contents/${filePath}?${access_token ? 'access_token=' + access_token : ''}`);
+        if (!data.content) {
+            utils.message(`获取文件内容失败! [${filePath}]`, "error");
+            return null;
+        }
+        saveLocalData(filePath, data.content, repo);
+        let content = base64.decode(data.content);
+        if (parseJson) {
+            return JSON.parse(content);
+        }
+        return content;
+    }
+
+    /**
+     * 新增文件
+     * @param filePath 文件路径
+     * @param content 文件内容
+     * @param repo
+     * @returns {Promise<unknown>}
+     */
+    async function newFile(filePath, content, repo = pubRepo) {
+        if (!filePath || !content) {
+            return null;
+        }
+        let data = base64.encode(content);
+        // let loading = utils.loading({text: "新增文件中..."});
+        return new Promise((resolve) => {
+            axios.post(`${apiConfig.reposUrlPrefix}/${repo}/contents/${filePath}`, {
+                access_token,
+                content: data,
+                message: `open api new ${window.location.pathname}`
+            }).then(async (data) => {
+                utils.notify("新增成功！", "success");
+                // loading.close();
+                await fileShaMapInit(true, repo);
+                resolve(data);
+            }).catch((err) => {
+                // loading.close();
+                console.error(err);
+                utils.notify("新增异常！", "error");
+            })
+        })
+
+    }
+
+    /**
+     * 更新文件
+     * @param filePath 文件路径
+     * @param content 文件内容
+     * @param repo
+     * @returns {Promise<void>}
+     */
+    async function updateFile(filePath, content, repo = pubRepo) {
+        let sha = state.fileShaMap.get(`${repo}#${filePath}`);
+        if (!sha) {
+            utils.notify(`未匹配文件 ${repo}#${filePath}`, 'warning');
+            return null;
+        }
+        // let loading = utils.loading({text: "更新文件中..."});
+        let data = base64.encode(content);
+        return new Promise((resolve) => {
+            axios.put(`${apiConfig.reposUrlPrefix}/${repo}/contents/${filePath}`, {
+                access_token,
+                content: data,
+                sha,
+                message: `open api update ${window.location.pathname}`
+            }).then(async () => {
+                // loading.close();
+                utils.notify(`更新[${filePath}]成功！`, "success");
+                saveLocalData(filePath, data, repo);
+                await fileShaMapInit(true, repo);
+                resolve();
+            }).catch((err) => {
+                // loading.close();
+                console.error(err);
+                utils.notify("更新异常！", "error");
+            })
+        })
+
+    }
+
+    /**
+     * 删除文件
+     * @param filePath 文件路径
+     * @param repo 仓库
+     * @returns {Promise<unknown>}
+     */
+    async function deleteFile(filePath, repo = pubRepo) {
+        let sha = state.fileShaMap.get(`${repo}#${filePath}`);
+        if (!sha) {
+            utils.notify(`未匹配文件 ${repo}#${filePath}`, 'warning');
+            return null;
+        }
+        // let loading = utils.loading({text: "删除文件中..."});
+        return new Promise((resolve) => {
+            axios.delete(`${apiConfig.reposUrlPrefix}/${repo}/contents/${filePath}`, {
+                params: {
+                    access_token,
+                    sha,
+                    message: `open api delete ${window.location.pathname}`
+                }
+            }).then(async () => {
+                // loading.close();
+                utils.notify(`删除[${filePath}]成功！`, "success");
+                delLocalData(filePath, repo)
+                await fileShaMapInit(true, repo);
+                resolve();
+            }).catch((err) => {
+                // loading.close();
+                console.error(err);
+                // utils.notify.error("删除异常！", "error");
+            })
+        })
+
+    }
+
+    /**
+     * 保存数据到本地
+     * @param key
+     * @param data
+     * @param repo
+     */
+    function saveLocalData(key, data, repo = pubRepo) {
+        if (typeof data === 'object') {
+            localStorage.setItem(`${repo}#${key}`, JSON.stringify(data));
+        } else {
+            localStorage.setItem(`${repo}#${key}`, data);
+        }
+
+    }
+
+    /**
+     * 获取本地数据
+     * @param key
+     * @param isObject
+     * @param repo
+     * @returns {string|null}
+     */
+    function getLocalData(key, isObject = true, repo = pubRepo) {
+        let storage = localStorage.getItem(`${repo}#${key}`);
+        if (storage) {
+            return isObject ? JSON.parse(storage) : storage;
+        }
+        return null;
+    }
+
+    /**
+     * 删除本地数据
+     * @param key
+     * @param repo
+     */
+    function delLocalData(key, repo = pubRepo) {
+        localStorage.removeItem(`${repo}#${key}`);
+    }
+
+    /**
+     * 初始化本地localStorage
+     */
+    async function initState() {
+
+        return new Promise(async (resolve, reject) => {
+
+            loginStateInit();
+
+            await fileShaMapInit(false, apiConfig.repo);
+
+            console.log("数据初始化完成！");
+
+            resolve();
+
+        });
+    }
+
+    // 登录状态
+    function loginStateInit() {
+        let loginStorageData = localStorage.getItem(storageKey.lsLoginState);
+        if (!loginStorageData) {
+            // goLogin();
+            return;
+        }
+        state.loginState = JSON.parse(loginStorageData);
+        access_token = state.loginState['access_token'];
+    }
+
+    // 文件路径-sha
+    async function fileShaMapInit(refresh = false, repo) {
+        if (!repo) {
+            console.warn("仓库不能为空")
+            return null;
+        }
+        let fileData = await getFileTree(refresh, repo);
+        for (let file of fileData) {
+            state.fileShaMap.set(`${apiConfig.repo}#${file.path}`, file.sha);
+        }
+    }
+
+    function clearAllCache() {
+        for (let key in localStorage) {
+            if (localStorage.hasOwnProperty(key)) {
+                if (key && key !== storageKey.lsLoginState) {
+                    localStorage.removeItem(key);
+                }
+            }
+        }
+        location.reload();
+    }
+
+    /**
+     * 设置指定仓库
+     * @param repo
+     */
+    function setRepo(repo) {
+        apiConfig.repo = repo;
+        localStorage.setItem(storageKey.lsRepo, repo);
+        utils.message(`切换数据源[${repo}]成功！`);
+    }
+
+    function getRepo() {
+        return apiConfig.repo;
+    }
+
+    return {
+        getFileTree,
+        getFileContent,
+        newFile,
+        updateFile,
+        deleteFile,
+        initState,
+        clearAllCache,
+        setRepo,
+        getRepo,
+        storageKey,
+        apiConfig
+    }
+
+});

@@ -1,1 +1,0 @@
-define(["jquery","semantic","utils","gitee"],(function(e,n,t,i){return{data:()=>({}),methods:{},watch:{$route(e,n){}},mounted(){},template:'\n            <div id="app-onlinePage" wydFlag="onlinePage">\n                onlinePage\n            </div>\n        '}}));

@@ -1,4 +1,4 @@
-body{
+body {
     overflow: hidden;
 }
 
@@ -10,10 +10,10 @@ body{
     min-width: 240px;
 }
 
-.wyd-position-right{
+.wyd-position-right {
     position: absolute;
     right: 10rem;
-    top:5rem
+    top: 5rem
 }
 
 .border-0 {
@@ -608,6 +608,16 @@ body {
     .d-md-inline-flex {
         display: -ms-inline-flexbox !important;
         display: inline-flex !important;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .w-100-xs-only {
+        width: 100% !important
+    }
+
+    .vh-50-xs-only {
+        height: 50vh !important;
     }
 }
 
