@@ -11,6 +11,10 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
         watch: {
             $route(newVal, oldVal) {
                 this.active = newVal.path.substr(1);
+                if (oldVal.path === '/login' && this.level1Menus.length === 0) {
+                    // 登录页面跳转过来重新加载菜单
+                    this.loadLevelMenu();
+                }
             }
         },
         methods: {

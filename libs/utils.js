@@ -8,6 +8,12 @@ define([
 
     let vueComponents = {};
 
+    function goLogin(){
+        if ("#/login" !== window.location.hash) {
+            window.location.href = "#/login";
+        }
+    }
+
     /**
      * 获取标记有wydFlag属性的vue组件
      * @param wydFlag
@@ -70,6 +76,7 @@ define([
         getVueCps,
         setVueCps,
         getAllVueCps,
+        goLogin
     }
 
 })

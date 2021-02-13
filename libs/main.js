@@ -71,6 +71,9 @@ require([
 
     axiosInit();
 
+    Vue.use(element);
+    Vue.use(VueRouter);
+
     gitee.initState().then(data => {
         vueMixin();
         // 数据初始化完成
@@ -78,11 +81,8 @@ require([
         leftAppInit();
     });
 
-    Vue.use(element);
-    Vue.use(VueRouter);
-
     function appInit() {
-        window.wyd2021 = rootApp = new Vue({
+        window.wyd2021 = new Vue({
             el: "#root",
             router: vueRouterInit(),
             components: {
@@ -175,10 +175,8 @@ require([
             }
             return response;
         }, function (error) {
-            if (error.response.status === 401) {
-                if ("#/login" !== window.location.hash) {
-                    window.location.href = "#/login";
-                }
+            if (error.response && error.response.status === 401) {
+                utils.goLogin();
             }
             return Promise.reject(error);
         });

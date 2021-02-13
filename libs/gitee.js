@@ -34,7 +34,7 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
      * @returns {Promise<unknown>}
      */
     async function getFileTree(refresh = false, repo = pubRepo) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             let cache = getLocalData(storageKey.lsFileTree, true, repo);
             if (cache && !refresh) {
                 resolve(cache);
@@ -45,6 +45,8 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
                 saveLocalData(storageKey.lsFileTree, data.tree, repo);
                 fileShaMapInit(false, repo)
                 resolve(data.tree);
+            }).catch(err => {
+                reject(err);
             });
 
         });
@@ -64,7 +66,7 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
             let cacheContent = base64.decode(cache);
             if (parseJson) {
                 return JSON.parse(cacheContent);
-            }else {
+            } else {
                 return cacheContent;
             }
         }
@@ -232,11 +234,15 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
 
             loginStateInit();
 
-            await fileShaMapInit(false, apiConfig.repo);
+            fileShaMapInit(false, apiConfig.repo).then(() => {
+                console.log("数据初始化完成！");
+                resolve();
+            }).catch(err => {
+                console.warn("数据初始化异常！", err)
+                utils.goLogin();
+                resolve();
+            });
 
-            console.log("数据初始化完成！");
-
-            resolve();
 
         });
     }
@@ -254,14 +260,21 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
 
     // 文件路径-sha
     async function fileShaMapInit(refresh = false, repo) {
-        if (!repo) {
-            console.warn("仓库不能为空")
-            return null;
-        }
-        let fileData = await getFileTree(refresh, repo);
-        for (let file of fileData) {
-            state.fileShaMap.set(`${apiConfig.repo}#${file.path}`, file.sha);
-        }
+        return new Promise((resolve, reject) => {
+            if (!repo) {
+                console.warn("仓库不能为空")
+                return null;
+            }
+            getFileTree(refresh, repo).then((fileData) => {
+                for (let file of fileData) {
+                    state.fileShaMap.set(`${apiConfig.repo}#${file.path}`, file.sha);
+                }
+                resolve();
+            }).catch(error => {
+                reject(error);
+            });
+
+        })
     }
 
     function clearAllCache() {
