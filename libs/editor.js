@@ -213,22 +213,61 @@ define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue
         },
         template: `
             <div class="mt-header d-sm-flex ui segment m-2" wydFlag="editor" style="height: 90vh">
+                
                 <button v-if="!showTree" class="ui icon button green" title="显示文件树" style="height: 3rem"
                         @click="showTree=!showTree">
                     <i class="arrow right icon"></i>
                 </button>
+                
                 <div class="ui vertical menu p-1 m-0 file-tree overflow-auto w-100-xs-only" style="min-width:240px;" v-show="showTree">
-                    <div class="ui icon buttons ml-3 my-1">
-                        <button class="ui button" data-tooltip="新增文件" data-position="bottom center" @click="addFile">
-                            <i class="plus icon"></i>
-                        </button>
-                        <button class="ui button" data-tooltip="同步文件树" data-position="bottom center" @click="syncFiles">
-                            <i class="sync alternate icon"></i>
-                        </button>
-                        <button v-show="showTree" class="ui button" data-tooltip="隐藏文件树" data-position="bottom center"
-                                @click="showTree=!showTree">
-                            <i class="arrow left icon"></i>
-                        </button>
+                    <div class="d-flex justify-content-start flex-wrap wyd-editor-operations">
+                        <div class="ui buttons">
+                              <button @click="setRepo('webdata')" class="ui button" :class="repo==='webdata'?'active teal':''"><i class="heart icon"></i>webData</button>
+                              <div class="or"></div>
+                              <button @click="setRepo('webme')" class="ui button" :class="repo==='webme'?'active red':''"><i class="user secret icon"></i>webMe</button>
+                        </div>
+                        <el-tooltip content="新增文件" placement="bottom">
+                            <button class="ui compact icon button small" @click="addFile">
+                                <i class="plus icon"></i>
+                            </button>
+                        </el-tooltip>
+                        <el-tooltip content="同步文件树" placement="bottom">
+                            <button class="ui compact icon button" @click="syncFiles">
+                                <i class="sync alternate icon"></i>
+                            </button>
+                        </el-tooltip>
+                        <el-tooltip content="隐藏文件树" placement="bottom">
+                            <button v-show="showTree" class="ui compact icon button" @click="showTree=!showTree">
+                                <i class="arrow left icon"></i>
+                            </button>
+                        </el-tooltip>
+                        <template v-if="selectedFile" >
+                            <el-tooltip content="保存文件(Ctrl+s)" placement="bottom">
+                                <button class="ui compact icon teal button" @click="update">
+                                    <i class="save alternate outline icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="同步文件" placement="bottom">
+                                <button class="ui compact icon teal button ml-1" @click="loadFile(true)">
+                                    <i class="cloud download icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="删除文件" placement="bottom">
+                                <button class="ui compact teal icon button ml-1" @click="deleteFile">
+                                    <i class="trash alternate outline icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="在iframe中预览" placement="bottom">
+                                <button v-if="selectedFile.endsWith('.html')||selectedFile.endsWith('.js')" class="ui compact icon green button" @click="previewInIframe">
+                                    <i class="html5 icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="运行选中的js" placement="bottom">
+                                <button v-if="selectedFile.endsWith('.js')" class="ui compact icon green button" @click="runJs">
+                                    <i class="node js icon"></i>
+                                </button>
+                            </el-tooltip>
+                        </template>
                     </div>
                     <div class="item ui search my-1" id="ed-file-search">
                         <div class="ui icon input search">
@@ -240,56 +279,38 @@ define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue
                     <div class="item" v-for="file in fileList">
                         <template v-if="file.children">
                             <div class="header">{{file.file.path}}</div>
-                            <div class="menu" v-for="subFile in file.children"><a class="item"
-                                                                                  @click="selectFile(subFile.path)"
-                                                                                  :class="selectedFile===subFile.path ? 'active teal':''"><i
-                                    class="icon git"></i>{{subFile.path.split(file.file.path + "/")[1]}} </a></div>
+                            <div class="menu" v-for="subFile in file.children">
+                                <a class="item" @click="selectFile(subFile.path)" :class="selectedFile===subFile.path ? 'active teal':''">
+                                    <i class="icon git"></i>
+                                    {{subFile.path.split(file.file.path + "/")[1]}} 
+                                </a>
+                            </div>
                         </template>
-                        <div class="menu" v-else><a class="item" @click="selectFile(file.file.path)"
-                                                    :class="selectedFile===file.file.path ? 'active teal':''">{{file.file.path}} </a>
+                        <div class="menu" v-else>
+                            <a class="item" @click="selectFile(file.file.path)" :class="selectedFile===file.file.path ? 'active teal':''">
+                                {{file.file.path}} 
+                            </a>
                         </div>
                     </div>
                 </div>
+                
                 <div class="flex-grow-1 d-md-flex flex-column w-100-xs-only">
                     <div class="flex-grow-1 vh-50-xs-only" id="editor-container"></div>
                     <div class="ui raised segment m-0">
                         <a class="ui ribbon label" :class="selectedFile ? 'green':''">编辑信息</a>
                         <span class="font-weight-bold" v-if="selectedFile">
-                                正在编辑 <span class="ui label teal">{{selectedFile}}</span>
+                                正在编辑 <span class="ui label">{{selectedFile}}</span>
                             </span>
                         <span class="font-weight-bold" v-else>
                                 请选择编辑文件！
                         </span>
                         
                         </button>
-                        <button v-if="selectedFile" class="ui compact icon button ml-1" data-tooltip="刷新文件"
-                                data-position="top center" @click="loadFile(true)"><i
-                                class="sync alternate icon"></i></button>
-                        <button v-if="selectedFile"
-                                class="ui compact negative icon button ml-1" data-tooltip="删除文件" data-position="top center"
-                                @click="deleteFile"><i class="trash alternate outline icon"></i></button>
-                        <div class="ui buttons">
-                          <button @click="setRepo('webdata')" class="ui button" :class="repo==='webdata'?'active teal':''"><i class="heart icon"></i>webData</button>
-                          <div class="or"></div>
-                          <button @click="setRepo('webme')" class="ui button" :class="repo==='webme'?'active red':''"><i class="user secret icon"></i>webMe</button>
-                        </div>
                     </div>
                 </div>
                 <!--<div class="w-25">
                     预览区域
                 </div>-->
-                
-                <div class="wyd-position-right" >
-                    <button v-if="selectedFile && (selectedFile.endsWith('.html')||selectedFile.endsWith('.js'))" class="ui compact icon teal button" data-tooltip="在iframe中预览" data-position="top center" @click="previewInIframe">
-                        <i class="html5 icon large"></i>
-                    </button>
-                    <button v-if="selectedFile && selectedFile.endsWith('.js')" class="ui compact icon teal button" data-tooltip="运行选中的js" data-position="top center" @click="runJs">
-                        <i class="node js icon large"></i>
-                    </button>
-                    <button v-if="selectedFile" class="ui compact icon teal button" data-tooltip="保存文件(Ctrl+s)" data-position="top center" @click="update">
-                        <i class="save alternate outline icon large"></i>
-                    </button>
-                </div>
                 
                 <div id="ed-iframe-modal" class="ui modal large">
                   <div class="header">{{selectedFile}}</div>

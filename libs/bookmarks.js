@@ -146,7 +146,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
             // this.initSearch();
         },
         template: `
-            <div class="ui container pb-5 segment mt-2">
+            <div class="ui container pb-5 segment mt-2 mb-5">
                 <div class="mb-3 d-flex flex-row">
                     <div class="ui search flex-grow-1">
                         <div class="ui icon input d-flex">

@@ -17,3 +17,7 @@
 .wyd-border-bottom {
     border-bottom: 1px solid rgba(34, 36, 38, .8) !important;
 }
+
+.wyd-editor-operations>button{
+    margin-top: .5rem!important;
+}

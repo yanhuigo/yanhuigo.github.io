@@ -91,12 +91,12 @@ require([
             mounted() {
             },
             template: `
-            <div class="d-flex flex-column vh-100">
+            <div class="d-flex flex-column">
                 <div>
                     <app-header ref="header"/>
                 </div>
                 <app-login />
-                <div class="flex-grow-1" style="max-height: 100vh;overflow: auto">
+                <div class="flex-grow-1">
                     <keep-alive>
                         <router-view></router-view>
                     </keep-alive>
