@@ -242,7 +242,11 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
             loginStateInit();
 
             // 提前初始化配置
-            wydConfig = await getFileContent("config/wyd2021.json", false, true);
+            getFileContent("config/wyd2021.json", false, true).then(data => {
+                wydConfig = data;
+            }).catch(e => {
+                console.log("加载配置异常");
+            });
 
             fileShaMapInit(false, apiConfig.repo).then(() => {
                 console.log("数据初始化完成！");
