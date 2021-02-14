@@ -8,7 +8,7 @@ define([
 
     let vueComponents = {};
 
-    function goLogin(){
+    function goLogin() {
         if ("#/login" !== window.location.hash) {
             window.location.href = "#/login";
         }

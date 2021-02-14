@@ -1,11 +1,11 @@
-define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
+define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, sysLog) {
 
     const pubRepo = "webdata";//公开仓库
     const meRepo = "webme";//隐私仓库
 
     const storageKey = {
         lsRepo: "gitee-repo",
-        lsLoginState: "login-state",//登录状态
+        lsLoginState: "wyd-login-state",//登录状态
         lsFileTree: "file-Tree",//文件树
     };
 
@@ -45,6 +45,7 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
                 saveLocalData(storageKey.lsFileTree, data.tree, repo);
                 fileShaMapInit(false, repo)
                 resolve(data.tree);
+                sysLog.addLog(`[${repo}]获取仓库文件树`)
             }).catch(err => {
                 reject(err);
             });
@@ -77,6 +78,7 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
         }
         saveLocalData(filePath, data.content, repo);
         let content = base64.decode(data.content);
+        sysLog.addLog(`[${repo}]下载文件 ${filePath}`);
         if (parseJson) {
             return JSON.parse(content);
         }
@@ -106,6 +108,7 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
                 // loading.close();
                 await fileShaMapInit(true, repo);
                 resolve(data);
+                sysLog.addLog(`[${repo}]新增文件 ${filePath}`);
             }).catch((err) => {
                 // loading.close();
                 console.error(err);
@@ -142,6 +145,7 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
                 saveLocalData(filePath, data, repo);
                 await fileShaMapInit(true, repo);
                 resolve();
+                sysLog.addLog(`[${repo}]更新文件 ${filePath}`);
             }).catch((err) => {
                 // loading.close();
                 console.error(err);
@@ -177,6 +181,7 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
                 delLocalData(filePath, repo)
                 await fileShaMapInit(true, repo);
                 resolve();
+                sysLog.addLog(`[${repo}]删除文件 ${filePath}`);
             }).catch((err) => {
                 // loading.close();
                 console.error(err);
@@ -234,6 +239,9 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
 
             loginStateInit();
 
+            // 提前初始化配置
+            await getFileContent("config/wyd2021.json", false, true);
+
             fileShaMapInit(false, apiConfig.repo).then(() => {
                 console.log("数据初始化完成！");
                 resolve();
@@ -280,12 +288,11 @@ define(['axios', 'base64', 'utils'], function (axios, base64, utils) {
     function clearAllCache() {
         for (let key in localStorage) {
             if (localStorage.hasOwnProperty(key)) {
-                if (key && key !== storageKey.lsLoginState) {
+                if (key && !key.startsWith("wyd-")) {
                     localStorage.removeItem(key);
                 }
             }
         }
-        location.reload();
     }
 
     /**

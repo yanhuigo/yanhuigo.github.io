@@ -1,4 +1,4 @@
-define([], function () {
+define(['gitee'], function (gitee) {
 
     return {
         data() {
@@ -17,13 +17,7 @@ define([], function () {
             },
             clearStorage() {
                 if (!confirm("确认清空缓存？")) return;
-                for (let key in localStorage) {
-                    if (localStorage.hasOwnProperty(key)) {
-                        if (key && key !== "login-state") {
-                            localStorage.removeItem(key);
-                        }
-                    }
-                }
+                gitee.clearAllCache();
                 this.refresh();
             },
             refresh() {

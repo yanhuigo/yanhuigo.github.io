@@ -2,7 +2,7 @@ let isProd = true;
 if (window.location.host.indexOf('localhost') !== -1) isProd = false;
 
 // 本地js定义
-let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home","storageView"];
+let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home", "storageView", "sysLog"];
 let localPath = {};
 for (let lib of localLibs) {
     localPath[lib] = isProd ? lib + "-min" : lib;
@@ -125,6 +125,7 @@ require([
                 clearCache() {
                     if (confirm("确认清空所有缓存？")) {
                         gitee.clearAllCache();
+                        location.reload();
                     }
                 }
             },
@@ -134,7 +135,7 @@ require([
         });
     }
 
-    const routeNames = ["home", "bookmarks", "editor", "login","storageView"];
+    const routeNames = ["home", "bookmarks", "editor", "login", "storageView", "sysLog"];
 
     function vueRouterInit() {
         const routes = [
@@ -143,7 +144,13 @@ require([
         for (let routeName of routeNames) {
             routes.push({
                 path: `/${routeName}`, component: resolve => {
-                    require([routeName], resolve);
+                    require([routeName], (data) => {
+                        if (data.cps) {
+                            resolve(data.cps);
+                        } else {
+                            resolve(data);
+                        }
+                    });
                 }
             });
         }
