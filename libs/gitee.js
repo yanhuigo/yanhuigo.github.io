@@ -18,6 +18,8 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
         repo: lsRepo ? lsRepo : pubRepo,
     };
 
+    let wydConfig = {};
+
     let state = {
         // 登录状态
         loginState: {},
@@ -240,7 +242,7 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
             loginStateInit();
 
             // 提前初始化配置
-            await getFileContent("config/wyd2021.json", false, true);
+            wydConfig = await getFileContent("config/wyd2021.json", false, true);
 
             fileShaMapInit(false, apiConfig.repo).then(() => {
                 console.log("数据初始化完成！");
@@ -309,6 +311,10 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
         return apiConfig.repo;
     }
 
+    function getWydConfig() {
+        return wydConfig;
+    }
+
     return {
         getFileTree,
         getFileContent,
@@ -320,7 +326,8 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
         setRepo,
         getRepo,
         storageKey,
-        apiConfig
+        apiConfig,
+        getWydConfig
     }
 
 });

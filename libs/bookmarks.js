@@ -31,7 +31,9 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                 checkedType: "",
                 checkedTag: "",
                 searchTxt: "",
-                loading: false
+                loading: false,
+                bmSourceFile: "",
+                bmSourceFiles: []
             }
         },
         watch: {
@@ -62,10 +64,15 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                 }
             },
             search() {
-                this.bmList = bmList.filter(
-                    n => n.b.toUpperCase().indexOf(this.searchTxt.toUpperCase()) !== -1 ||
-                        n.c.toUpperCase().indexOf(this.searchTxt.toUpperCase()) !== -1
-                );
+                if (this.searchTxt === "") {
+                    this.bmList = bmList.filter(n => n.type === this.checkedType);
+                } else {
+                    this.bmList = bmList.filter(
+                        n => n.b.toUpperCase().indexOf(this.searchTxt.toUpperCase()) !== -1 ||
+                            n.c.toUpperCase().indexOf(this.searchTxt.toUpperCase()) !== -1
+                    );
+                }
+
                 this.checkedTag = "";
                 this.searchTxt = "";
             },
@@ -114,7 +121,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                 return false;
             },
             loadData(refreshCache) {
-                gitee.getFileContent("json/chrome.bookmark.json", refreshCache).then(data => {
+                gitee.getFileContent(this.bmSourceFile, refreshCache).then(data => {
                     this.bmDataHandle(data);
                 });
             },
@@ -136,18 +143,34 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                 this.bmTagList = bmTagList;
                 this.bmList = bmList;
                 this.loading = false;
+            },
+            changeSource(path) {
+                bmTypeList = [];
+                bmTagList = [];
+                bmList = [];
+                this.bmSourceFile = path;
+                this.loadData();
             }
         },
         mounted() {
             bmTypeList = [];
             bmTagList = [];
             bmList = [];
+            let config = gitee.getWydConfig();
+            this.bmSourceFiles = config?.bookmarks?.bmSourceFiles;
+            this.bmSourceFile = this.bmSourceFiles[0].path;
             this.loadData();
             // this.initSearch();
         },
         template: `
             <div class="ui container pb-5 segment mt-2 mb-5">
-                <div class="mb-3 d-flex flex-row">
+                <div class="ui buttons">
+                    <template v-for="(bsf,index) in bmSourceFiles">
+                      <button :title="bsf.note+'-'+bsf.path" class="ui button" :class="bsf.path===bmSourceFile ? 'active blue':''" @click="changeSource(bsf.path)">{{bsf.name}}</button>
+                      <div class="or" v-if="index<bmSourceFiles.length-1"></div>
+                    </template>
+                </div>
+                <div class="my-3 d-flex flex-row">
                     <div class="ui search flex-grow-1">
                         <div class="ui icon input d-flex">
                             <input class="search" type="text" @keyup.enter="search" v-model="searchTxt" placeholder="搜索书签..."

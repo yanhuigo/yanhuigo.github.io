@@ -27,6 +27,7 @@ define(["gitee", "utils"], function (gitee, utils) {
         } else {
             lsData[type] = [logObj];
         }
+        if (lsData[type].length > 30) lsData[type].pop();
         localStorage.setItem(lsKey, JSON.stringify(lsData));
     }
 
