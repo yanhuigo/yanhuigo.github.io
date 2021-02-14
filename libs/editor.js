@@ -282,7 +282,7 @@ define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue
                             <div class="menu" v-for="subFile in file.children">
                                 <a class="item" @click="selectFile(subFile.path)" :class="selectedFile===subFile.path ? 'active teal':''">
                                     <i class="icon git"></i>
-                                    {{subFile.path.split(file.file.path + "/")[1]}} 
+                                    <span>{{subFile.path.split(file.file.path + "/")[1]}}</span> 
                                 </a>
                             </div>
                         </template>

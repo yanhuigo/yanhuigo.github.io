@@ -12,6 +12,19 @@
     <a class="item" v-for="lv1Menu in level1Menus" @click="itemClick(lv1Menu[1])">
         <i class="large" :class="lv1Menu[2]"></i> {{lv1Menu[0]}}
     </a>
+    <div class="item" v-for="lv2Menu in level2Menus">
+        <i class="icon" :class="lv2Menu.icon"></i>
+        <div class="header">{{lv2Menu.title}}</div>
+        <div class="menu">
+            <template v-for="lv2Link in lv2Menu.children">
+                <div v-if="typeof lv2Link==='string'" class="header">{{lv2Link}}</div>
+                <a v-else class="item" @click="itemClick(lv2Link[1])">
+                    <p>{{lv2Link[0]}}</p>
+                </a>
+            </template>
+        </div>
+    </div>
+
     <!-- 清空所有缓存 -->
     <a class="item" @click="clearCache">
         <i class="icon sync large"></i> 清空缓存

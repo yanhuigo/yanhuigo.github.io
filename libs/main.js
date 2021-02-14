@@ -109,12 +109,18 @@ require([
         new Vue({
             el: "#app-leftMenu",
             data() {
-                return {level1Menus: []}
+                return {
+                    level1Menus: [],
+                    level2Menus: [],
+                    level3Menus: []
+                }
             },
             methods: {
                 loadLevelMenu() {
                     gitee.getFileContent("config/wyd2021.json", false, true).then(data => {
                         this.level1Menus = data.level1Menus;
+                        this.level2Menus = data.level2Menus;
+                        this.level3Menus = data.level3Menus;
                     });
                 },
                 itemClick(name) {
