@@ -221,7 +221,7 @@ define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue
                 
                 <div class="ui vertical menu p-1 m-0 file-tree overflow-auto w-100-xs-only" style="min-width:240px;" v-show="showTree">
                     <div class="d-flex justify-content-start flex-wrap wyd-editor-operations">
-                        <div class="ui buttons">
+                        <div class="ui buttons w-100">
                               <button @click="setRepo('webdata')" class="ui button" :class="repo==='webdata'?'active teal':''"><i class="heart icon"></i>webData</button>
                               <div class="or"></div>
                               <button @click="setRepo('webme')" class="ui button" :class="repo==='webme'?'active red':''"><i class="user secret icon"></i>webMe</button>

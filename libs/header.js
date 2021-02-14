@@ -6,6 +6,7 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                 active: "bookmarks",
                 level1Menus: [],
                 level2Menus: [],
+                level3Menus: [],
             }
         },
         watch: {
@@ -30,6 +31,7 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                 gitee.getFileContent("config/wyd2021.json", false, true).then(data => {
                     this.level1Menus = data.level1Menus;
                     this.level2Menus = data.level2Menus;
+                    this.level3Menus = data.level3Menus;
                     this.$nextTick(() => {
                         $(".dropdown").dropdown({
                             on: 'hover',
@@ -48,7 +50,7 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
             this.loadLevelMenu();
         },
         template: `
-            <div class="ui menu raised inverted wyd-header wyd-border-bottom" wydFlag="header" v-if="active!=='login'">
+            <div class="ui menu raised inverted wyd-header wyd-border-bottom" wydFlag="header">
             
               <div class="header item link" @click="toggleLeftMenu">
                 <img class="ui avatar image" src="/cdn/logo.jpg" />
@@ -57,14 +59,26 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
               
               <a class="item hidden-xs-only" :class="active===lv1Menu[1]?'active':''" v-for="lv1Menu in level1Menus" @click="route(lv1Menu[1])"><i :class="lv1Menu[2]"></i>{{lv1Menu[0]}}</a>
                
-              <div flag="lv2MenuList" class="ui pointing dropdown link item hidden-xs-only" v-for="lv2Menu in level2Menus">
+              <div class="ui pointing dropdown link item hidden-xs-only" v-for="lv2Menu in level2Menus">
                 <i class="icon" :class="lv2Menu.icon"></i>
                 <span class="text">{{lv2Menu.title}}</span>
                 <i class="dropdown icon"></i>
                 <div class="menu">
                     <template v-for="lv2Link in lv2Menu.children">
                         <div v-if="typeof lv2Link==='string'" class="header">{{lv2Link}}</div>
-                        <div v-else  class="item" @click="goURL(lv2Link[1])">{{lv2Link[0]}}</div>
+                        <div v-else class="item" :class="active===lv2Link[1]?'active':''" @click="route(lv2Link[1])">{{lv2Link[0]}}</div>
+                    </template>
+                </div>
+              </div>
+              
+              <div class="ui pointing dropdown link item hidden-xs-only" v-for="lv3Menu in level3Menus">
+                <i class="icon" :class="lv3Menu.icon"></i>
+                <span class="text">{{lv3Menu.title}}</span>
+                <i class="dropdown icon"></i>
+                <div class="menu">
+                    <template v-for="lv3Link in lv3Menu.children">
+                        <div v-if="typeof lv3Link==='string'" class="header">{{lv3Link}}</div>
+                        <div v-else  class="item" @click="goURL(lv3Link[1])">{{lv3Link[0]}}</div>
                     </template>
                 </div>
               </div>

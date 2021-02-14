@@ -2,7 +2,7 @@ let isProd = true;
 if (window.location.host.indexOf('localhost') !== -1) isProd = false;
 
 // 本地js定义
-let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home"];
+let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home","storageView"];
 let localPath = {};
 for (let lib of localLibs) {
     localPath[lib] = isProd ? lib + "-min" : lib;
@@ -95,7 +95,6 @@ require([
                 <div>
                     <app-header ref="header"/>
                 </div>
-                <app-login />
                 <div class="flex-grow-1">
                     <keep-alive>
                         <router-view></router-view>
@@ -135,7 +134,7 @@ require([
         });
     }
 
-    const routeNames = ["home", "bookmarks", "editor", "login"];
+    const routeNames = ["home", "bookmarks", "editor", "login","storageView"];
 
     function vueRouterInit() {
         const routes = [

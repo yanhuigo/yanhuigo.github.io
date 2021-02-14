@@ -5,6 +5,7 @@ define(['jquery', 'semantic', 'utils', 'gitee', 'axios'], function ($, semantic,
             return {
                 username: "",
                 password: "",
+                loginState: {}
             }
         },
         methods: {
@@ -37,7 +38,8 @@ define(['jquery', 'semantic', 'utils', 'gitee', 'axios'], function ($, semantic,
             loginValid() {
                 let loginStorageData = localStorage.getItem(gitee.storageKey.lsLoginState);
                 if (loginStorageData) {
-                    let {created_at, expires_in, refresh_token} = JSON.parse(loginStorageData);
+                    this.loginState = JSON.parse(loginStorageData);
+                    let {created_at, expires_in, refresh_token} = this.loginState;
                     if (Math.floor(Date.now() / 1000) - created_at > expires_in) {
                         axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`).then(response => {
                             if (response.status === 200) {
@@ -56,8 +58,8 @@ define(['jquery', 'semantic', 'utils', 'gitee', 'axios'], function ($, semantic,
             this.loginValid();
         },
         template: `
-            <div class="ui inverted segment middle aligned center aligned grid vh-100 p-2 m-0">
-              <div class="column" style="max-width: 450px">
+            <div class="ui inverted segment middle aligned center aligned grid flex-grow-1 rounded-0 p-2 m-0 wyd-home">
+              <div class="column border border-secondary rounded" style="max-width: 450px">
                 <h1 class="ui teal image header">
                   <div class="content">
                      请登录 <i class="sign in alternate icon"></i>
@@ -78,6 +80,13 @@ define(['jquery', 'semantic', 'utils', 'gitee', 'axios'], function ($, semantic,
                       </div>
                     </div>
                     <div class="ui fluid large teal submit button" @click="login">登录</div>
+                    <div class="mt-3" v-if="loginState.access_token">
+                        <div class="text-success my-3">已有登录状态</div>
+                        <div class="text-left mb-2">登录时间 => {{new Date(loginState.created_at*1000).toLocaleString()}}</div>
+                        <div class="text-left mb-2">过期时间 => {{new Date((loginState.created_at+loginState.expires_in)*1000).toLocaleString()}}</div>
+                        <div class="text-left mb-2 text-truncate">AccessToken => {{loginState.access_token}}</div>
+                        <div class="text-left mb-2 text-truncate">RefreshToken => {{loginState.refresh_token}}</div>
+                    </div>
                   </div>
                 </div>
               </div>
