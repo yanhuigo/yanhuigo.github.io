@@ -157,7 +157,9 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
             bmTagList = [];
             bmList = [];
             let config = gitee.getWydConfig();
-            this.bmSourceFiles = config?.bookmarks?.bmSourceFiles;
+            if (config && config.bookmarks) {
+                this.bmSourceFiles = config.bookmarks.bmSourceFiles;
+            }
             this.bmSourceFile = this.bmSourceFiles[0].path;
             this.loadData();
             // this.initSearch();
