@@ -12,7 +12,10 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                 renderFileContent: "<h2>Hello</h2>",
                 repo: gitee.getRepo(),
                 mdContent: "",
-                hasMdf: false
+                hasMdf: false,
+                originalModel: null,
+                modifiedModel: null,
+                diffEditor: null
             }
         },
         watch: {
@@ -42,6 +45,26 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                     this.renderFileContent = editor.getValue();
                 }
                 this.showIframe = true;
+            },
+
+            previewDiff() {
+                $("#ed-diff-modal").modal("show");
+                let originTxt = localStorage.getItem(`${this.repo}#${this.selectedFile}`);
+                let mdfTxt = localStorage.getItem(`${this.repo}#@${this.selectedFile}`);
+                if (!this.diffEditor) {
+                    this.originalModel = monaco.editor.createModel(originTxt, "text/plain");
+                    this.modifiedModel = monaco.editor.createModel(mdfTxt, "text/plain");
+                    this.diffEditor = monaco.editor.createDiffEditor(document.getElementById("ed-diff-content"));
+                    this.diffEditor.setModel({
+                        original: this.originalModel,
+                        modified: this.modifiedModel
+                    });
+                }else{
+                    this.originalModel.setValue(originTxt);
+                    this.modifiedModel.setValue(mdfTxt);
+                }
+                this.setLanguage(this.originalModel);
+                this.setLanguage(this.modifiedModel);
             },
 
             runJs() {
@@ -100,20 +123,24 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                 });
             },
 
+            setLanguage(model){
+                let suffix = this.selectedFile.substr(this.selectedFile.lastIndexOf(".") + 1);
+                switch (suffix) {
+                    case "md":
+                        suffix = "markdown";
+                        break;
+                    case "js":
+                        suffix = "javascript";
+                        break;
+                    default:
+                        break;
+                }
+                monaco.editor.setModelLanguage(model, suffix);
+            },
+
             loadFile(sync = false) {
                 gitee.getFileContent(this.selectedFile, sync, false, this.repo).then(data => {
-                    let suffix = this.selectedFile.substr(this.selectedFile.lastIndexOf(".") + 1);
-                    switch (suffix) {
-                        case "md":
-                            suffix = "markdown";
-                            break;
-                        case "js":
-                            suffix = "javascript";
-                            break;
-                        default:
-                            break;
-                    }
-                    monaco.editor.setModelLanguage(editor.getModel(), suffix);
+                    this.setLanguage(editor.getModel());
                     editor.setValue(data);
                     if (sync) {
                         utils.notify(`已重新加载文件 ${this.selectedFile}`, "success");
@@ -315,7 +342,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                         <div class="ml-3">
                             <template v-if="selectedFile">
                                 <el-tooltip content="上传文件" placement="top" v-if="hasMdf">
-                                    <button class="ui compact icon red button ml-1" @click="update(false)">
+                                    <button class="ui compact icon red button ml-1" @click="previewDiff">
                                         <i class="upload icon"></i>
                                     </button>
                                 </el-tooltip>
@@ -345,6 +372,18 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                     <iframe class="border-0" :srcdoc="renderFileContent" width="100%" height="600px"></iframe>
                   </div>
                   <div class="actions">
+                    <div class="ui cancel button">取消</div>
+                  </div>
+                </div>
+                
+                <div id="ed-diff-modal" class="ui modal large">
+                  <div class="header">差异对比【{{selectedFile}}】</div>
+                  <div class="content p-0">
+                    <div id="ed-diff-content" style="height: 50vh"></div>
+                  </div>
+                  <div class="actions">
+                    <div class="ui approve green button" @click="update(false)">上传</div>
+                    <div class="ui cancel button" @click="loadFile(true)">还原</div>
                     <div class="ui cancel button">取消</div>
                   </div>
                 </div>
