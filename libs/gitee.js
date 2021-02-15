@@ -167,7 +167,7 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
             utils.notify(`未匹配文件 ${repo}#${filePath}`, 'warning');
             return null;
         }
-        saveLocalData(`@${filePath}`, content);
+        saveLocalData(`@${filePath}`, content, repo);
         utils.notify(`更新[${filePath}]成功！`, "success");
     }
 
