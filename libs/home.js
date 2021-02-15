@@ -1,6 +1,6 @@
-define(['vue', 'require', 'gitee', 'utils', 'vue-markdown'], function (Vue, require, gitee, utils, vueMarkdown) {
+define(['vue', 'require', 'gitee', 'utils', "markdownIt"], function (Vue, require, gitee, utils, markdownIt) {
 
-    Vue.use(vueMarkdown);
+    const md = markdownIt();
 
     return {
         data() {
@@ -17,7 +17,7 @@ define(['vue', 'require', 'gitee', 'utils', 'vue-markdown'], function (Vue, requ
             });
 
             gitee.getFileContent("md/home.md").then(content => {
-                this.mdContent = content;
+                this.mdContent = md.render(content);
             })
 
         },
@@ -25,7 +25,7 @@ define(['vue', 'require', 'gitee', 'utils', 'vue-markdown'], function (Vue, requ
         <div class="wyd-home d-flex flex-column">
             <div class="ui inverted vertical segment flex-grow-1 wyd-home-content">
                 <div class="ui text container mt-5">
-                    <vue-markdown :source="mdContent"></vue-markdown>
+                    <div v-html="mdContent"></div>
                 </div>
             </div>
             

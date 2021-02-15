@@ -1,4 +1,6 @@
-define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue, require, gitee, utils) {
+define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'], function (Vue, require, gitee, utils, markdownIt) {
+
+    const md = markdownIt();
 
     return {
         data() {
@@ -8,7 +10,14 @@ define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue
                 showTree: true,
                 showIframe: true,
                 renderFileContent: "<h2>Hello</h2>",
-                repo: gitee.getRepo()
+                repo: gitee.getRepo(),
+                mdContent: "",
+                hasMdf: false
+            }
+        },
+        watch: {
+            selectedFile(newVal) {
+                this.hasMdf = !!localStorage.getItem(`${this.repo}#@${newVal}`);
             }
         },
         methods: {
@@ -27,13 +36,19 @@ define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue
 
             previewInIframe() {
                 $("#ed-iframe-modal").modal("show");
-                let value = editor.getValue();
-                this.renderFileContent = value;
+                if (this.selectedFile.endsWith(".md")) {
+                    this.renderFileContent = md.render(editor.getValue());
+                } else {
+                    this.renderFileContent = editor.getValue();
+                }
                 this.showIframe = true;
             },
 
             runJs() {
                 let selectionTxt = editor.getModel().getValueInRange(editor.getSelection());
+                if (!selectionTxt) {
+                    selectionTxt = editor.getValue();
+                }
                 window.eval(selectionTxt);
             },
 
@@ -100,7 +115,10 @@ define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue
                     }
                     monaco.editor.setModelLanguage(editor.getModel(), suffix);
                     editor.setValue(data);
-                    if (sync) utils.notify(`已重新加载文件 ${this.selectedFile}`, "success");
+                    if (sync) {
+                        utils.notify(`已重新加载文件 ${this.selectedFile}`, "success");
+                        this.hasMdf = false;
+                    }
                 });
             },
 
@@ -154,21 +172,26 @@ define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue
                 this.loadFile();
             },
 
-            update() {
+            update(saveLocal = true) {
                 if (this.selectedFile === "") {
                     utils.message("请选择编辑文件", "info");
                     return;
                 }
                 let value = editor.getValue();
-                gitee.getFileContent(this.selectedFile, false, false, this.repo).then(data => {
-                    if (data !== value) {
-                        gitee.updateFile(this.selectedFile, value, this.repo);
-                    } else {
-                        utils.message("文件内容未变化！", "info");
-                    }
-                });
-
-
+                if (saveLocal) {
+                    gitee.getFileContent(this.selectedFile, false, false, this.repo).then(data => {
+                        if (data !== value) {
+                            gitee.updateFileCache(this.selectedFile, value, this.repo);
+                            this.hasMdf = true;
+                        } else {
+                            utils.message("文件内容未变化！", "info");
+                        }
+                    });
+                } else {
+                    gitee.updateFile(this.selectedFile, value, this.repo).then(() => {
+                        this.hasMdf = false;
+                    });
+                }
             },
 
             initEditorActions() {
@@ -241,30 +264,15 @@ define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue
                                 <i class="arrow left icon"></i>
                             </button>
                         </el-tooltip>
-                        <template v-if="selectedFile" >
+                        <template v-if="selectedFile">
                             <el-tooltip content="保存文件(Ctrl+s)" placement="bottom">
                                 <button class="ui compact icon teal button" @click="update">
                                     <i class="save alternate outline icon"></i>
                                 </button>
                             </el-tooltip>
-                            <el-tooltip content="同步文件" placement="bottom">
-                                <button class="ui compact icon teal button ml-1" @click="loadFile(true)">
-                                    <i class="cloud download icon"></i>
-                                </button>
-                            </el-tooltip>
                             <el-tooltip content="删除文件" placement="bottom">
                                 <button class="ui compact teal icon button ml-1" @click="deleteFile">
                                     <i class="trash alternate outline icon"></i>
-                                </button>
-                            </el-tooltip>
-                            <el-tooltip content="在iframe中预览" placement="bottom">
-                                <button v-if="selectedFile.endsWith('.html')||selectedFile.endsWith('.js')" class="ui compact icon green button" @click="previewInIframe">
-                                    <i class="html5 icon"></i>
-                                </button>
-                            </el-tooltip>
-                            <el-tooltip content="运行选中的js" placement="bottom">
-                                <button v-if="selectedFile.endsWith('.js')" class="ui compact icon green button" @click="runJs">
-                                    <i class="node js icon"></i>
                                 </button>
                             </el-tooltip>
                         </template>
@@ -296,7 +304,7 @@ define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue
                 
                 <div class="flex-grow-1 d-md-flex flex-column w-100-xs-only">
                     <div class="flex-grow-1 vh-50-xs-only" id="editor-container"></div>
-                    <div class="ui raised segment m-0">
+                    <div class="ui raised segment m-0 d-flex flex-row">
                         <a class="ui ribbon label" :class="selectedFile ? 'green':''">编辑信息</a>
                         <span class="font-weight-bold" v-if="selectedFile">
                                 正在编辑 <span class="ui label">{{selectedFile}}</span>
@@ -304,13 +312,32 @@ define(['vue', 'require', 'gitee', 'utils', 'jquery', 'semantic'], function (Vue
                         <span class="font-weight-bold" v-else>
                                 请选择编辑文件！
                         </span>
-                        
-                        </button>
+                        <div class="ml-3">
+                            <template v-if="selectedFile">
+                                <el-tooltip content="上传文件" placement="top" v-if="hasMdf">
+                                    <button class="ui compact icon red button ml-1" @click="update(false)">
+                                        <i class="upload icon"></i>
+                                    </button>
+                                </el-tooltip>
+                                <el-tooltip content="下载文件" placement="top">
+                                    <button class="ui compact icon teal button ml-1" @click="loadFile(true)">
+                                        <i class="download icon"></i>
+                                    </button>
+                                </el-tooltip>
+                                <el-tooltip content="在iframe中预览" placement="top">
+                                    <button v-show="selectedFile.endsWith('.html')||selectedFile.endsWith('.md')" class="ui compact icon primary button" @click="previewInIframe">
+                                        <i class="html5 icon"></i>
+                                    </button>
+                                </el-tooltip>
+                                <el-tooltip content="运行选中的js" placement="top">
+                                    <button v-show="selectedFile.endsWith('.js')" class="ui compact icon primary button" @click="runJs">
+                                        <i class="node js icon"></i>
+                                    </button>
+                                </el-tooltip>
+                            </template>
+                        </div>
                     </div>
                 </div>
-                <!--<div class="w-25">
-                    预览区域
-                </div>-->
                 
                 <div id="ed-iframe-modal" class="ui modal large">
                   <div class="header">{{selectedFile}}</div>

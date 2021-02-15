@@ -40,6 +40,7 @@ require.config({
         "semantic": '/cdn/semantic/semantic.min',
         "vs": '/cdn/monaco-editor/min/vs',
         "vue-markdown": '/cdn/vue/vue-markdown.min',
+        "markdownIt": 'https://cdn.bootcdn.net/ajax/libs/markdown-it/12.0.3/markdown-it',
         ...localPath
     },
     // 加载非AMD规范的JS文件
@@ -160,6 +161,36 @@ require([
                 }
             });
         }
+
+        let autoRouteList = gitee.getWydConfig()["autoRouteList"];
+        if (autoRouteList) {
+            try {
+                for (let autoRoute of autoRouteList) {
+                    let meRoute = `ar_${autoRoute}`;
+                    routes.push({
+                        path: `/${meRoute}`, component: resolve => {
+                            gitee.getFileContent(`cps/${autoRoute}.js`).then(data => {
+                                // 动态注入脚本
+                                let script = document.createElement('script');
+                                script.type = 'text/javascript';
+                                script.append(data);
+                                document.body.appendChild(script);
+                                require([meRoute], (data) => {
+                                    if (data.cps) {
+                                        resolve(data.cps);
+                                    } else {
+                                        resolve(data);
+                                    }
+                                });
+                            });
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
         let router = new VueRouter({
             routes
         });

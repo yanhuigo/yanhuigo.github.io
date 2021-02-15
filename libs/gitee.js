@@ -64,13 +64,15 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
      * @returns {Promise<null|*>}
      */
     async function getFileContent(filePath, refresh = false, parseJson = false, repo = pubRepo) {
-        let cache = getLocalData(filePath, false, repo);
+        let cacheKey = `@${filePath}`;
+        let cache;
+        let localMdfCache = getLocalData(cacheKey, false, repo);
+        cache = localMdfCache ? localMdfCache : getLocalData(filePath, false, repo);
         if (!refresh && cache) {
-            let cacheContent = base64.decode(cache);
             if (parseJson) {
-                return JSON.parse(cacheContent);
+                return JSON.parse(cache);
             } else {
-                return cacheContent;
+                return cache;
             }
         }
         let data = await axios.get(`${apiConfig.reposUrlPrefix}/${repo}/contents/${filePath}?${access_token ? 'access_token=' + access_token : ''}`);
@@ -78,8 +80,9 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
             utils.message(`获取文件内容失败! [${filePath}]`, "error");
             return null;
         }
-        saveLocalData(filePath, data.content, repo);
         let content = base64.decode(data.content);
+        delLocalData(cacheKey, repo);
+        saveLocalData(filePath, content, repo);
         sysLog.addLog(`[${repo}]下载文件 ${filePath}`);
         if (parseJson) {
             return JSON.parse(content);
@@ -99,7 +102,6 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
             return null;
         }
         let data = base64.encode(content);
-        // let loading = utils.loading({text: "新增文件中..."});
         return new Promise((resolve) => {
             axios.post(`${apiConfig.reposUrlPrefix}/${repo}/contents/${filePath}`, {
                 access_token,
@@ -107,12 +109,10 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
                 message: `open api new ${window.location.pathname}`
             }).then(async (data) => {
                 utils.notify("新增成功！", "success");
-                // loading.close();
                 await fileShaMapInit(true, repo);
                 resolve(data);
                 sysLog.addLog(`[${repo}]新增文件 ${filePath}`);
             }).catch((err) => {
-                // loading.close();
                 console.error(err);
                 utils.notify("新增异常！", "error");
             })
@@ -133,7 +133,6 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
             utils.notify(`未匹配文件 ${repo}#${filePath}`, 'warning');
             return null;
         }
-        // let loading = utils.loading({text: "更新文件中..."});
         let data = base64.encode(content);
         return new Promise((resolve) => {
             axios.put(`${apiConfig.reposUrlPrefix}/${repo}/contents/${filePath}`, {
@@ -142,19 +141,34 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
                 sha,
                 message: `open api update ${window.location.pathname}`
             }).then(async () => {
-                // loading.close();
-                utils.notify(`更新[${filePath}]成功！`, "success");
-                saveLocalData(filePath, data, repo);
+                utils.notify(`上传[${filePath}]成功！`, "success");
+                delLocalData(filePath, repo);
+                saveLocalData(filePath, base64.decode(data), repo);
                 await fileShaMapInit(true, repo);
                 resolve();
-                sysLog.addLog(`[${repo}]更新文件 ${filePath}`);
+                sysLog.addLog(`[${repo}]上传文件 ${filePath}`);
             }).catch((err) => {
-                // loading.close();
                 console.error(err);
-                utils.notify("更新异常！", "error");
+                utils.notify("上传异常！", "error");
             })
         })
+    }
 
+    /**
+     * 更新文件本地缓存
+     * @param filePath
+     * @param content
+     * @param repo
+     * @returns {null}
+     */
+    function updateFileCache(filePath, content, repo = pubRepo) {
+        let sha = state.fileShaMap.get(`${repo}#${filePath}`);
+        if (!sha) {
+            utils.notify(`未匹配文件 ${repo}#${filePath}`, 'warning');
+            return null;
+        }
+        saveLocalData(`@${filePath}`, content);
+        utils.notify(`更新[${filePath}]成功！`, "success");
     }
 
     /**
@@ -169,7 +183,6 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
             utils.notify(`未匹配文件 ${repo}#${filePath}`, 'warning');
             return null;
         }
-        // let loading = utils.loading({text: "删除文件中..."});
         return new Promise((resolve) => {
             axios.delete(`${apiConfig.reposUrlPrefix}/${repo}/contents/${filePath}`, {
                 params: {
@@ -178,16 +191,14 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
                     message: `open api delete ${window.location.pathname}`
                 }
             }).then(async () => {
-                // loading.close();
                 utils.notify(`删除[${filePath}]成功！`, "success");
-                delLocalData(filePath, repo)
+                delLocalData(filePath, repo);
                 await fileShaMapInit(true, repo);
                 resolve();
                 sysLog.addLog(`[${repo}]删除文件 ${filePath}`);
             }).catch((err) => {
-                // loading.close();
                 console.error(err);
-                // utils.notify.error("删除异常！", "error");
+                utils.notify("删除异常！", "error");
             })
         })
 
@@ -230,6 +241,7 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
      */
     function delLocalData(key, repo = pubRepo) {
         localStorage.removeItem(`${repo}#${key}`);
+        localStorage.removeItem(`${repo}#@${key}`);
     }
 
     /**
@@ -331,7 +343,8 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
         getRepo,
         storageKey,
         apiConfig,
-        getWydConfig
+        getWydConfig,
+        updateFileCache
     }
 
 });
