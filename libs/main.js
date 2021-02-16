@@ -134,6 +134,9 @@ require([
                         gitee.clearAllCache();
                         location.reload();
                     }
+                },
+                toggle(){
+                    utils.getVueCps("header").toggleLeftMenu();
                 }
             },
             mounted() {
@@ -146,7 +149,7 @@ require([
 
     function vueRouterInit() {
         const routes = [
-            {path: '/', redirect: '/home'}
+            {path: '/', redirect: '/bookmarks'}
         ]
         for (let routeName of routeNames) {
             routes.push({

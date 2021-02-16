@@ -25,7 +25,7 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                 this.active = name;
             },
             toggleLeftMenu() {
-                $("#app-leftMenu").sidebar('toggle');
+                $("#app-leftMenu").sidebar({closable: false}).sidebar('toggle');
             },
             loadLevelMenu() {
                 gitee.getFileContent("config/wyd2021.json", false, true).then(data => {
