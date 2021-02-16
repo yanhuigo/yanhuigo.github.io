@@ -18,6 +18,15 @@
     border-bottom: 1px solid rgba(34, 36, 38, .8) !important;
 }
 
-.wyd-editor-operations>button{
-    margin-top: .5rem!important;
+.wyd-editor-operations > button {
+    margin-top: .5rem !important;
 }
+
+@media (min-width: 576px) {
+    .wyd-bottom-menu > .item {
+        margin-left: 1rem;
+        display: flex!important;
+        align-items: center;
+    }
+}
+

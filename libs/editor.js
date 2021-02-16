@@ -54,7 +54,9 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                 if (!this.diffEditor) {
                     this.originalModel = monaco.editor.createModel(originTxt, "text/plain");
                     this.modifiedModel = monaco.editor.createModel(mdfTxt, "text/plain");
-                    this.diffEditor = monaco.editor.createDiffEditor(document.getElementById("ed-diff-content"));
+                    this.diffEditor = monaco.editor.createDiffEditor(document.getElementById("ed-diff-content"),{
+                        automaticLayout: true
+                    });
                     this.diffEditor.setModel({
                         original: this.originalModel,
                         modified: this.modifiedModel
