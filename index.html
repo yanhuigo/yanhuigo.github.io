@@ -19,7 +19,7 @@
     </a>
     <template v-for="lv2Menu in level2Menus">
         <a v-for="lv2Link in lv2Menu.children" class="item" @click="itemClick(lv2Link[1])">
-            <i class="icon" :class="lv2Link[2]?lv2Link[2]:'html5'"></i>
+            <i class="icon large" :class="lv2Link[2]?lv2Link[2]:'html5'"></i>
             <span>{{lv2Link[0]}}</span>
         </a>
     </template>

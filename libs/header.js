@@ -50,17 +50,20 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
             this.loadLevelMenu();
         },
         template: `
-            <div class="ui menu raised inverted wyd-header wyd-border-bottom" wydFlag="header">
+            <div class="ui menu fixed-top raised inverted wyd-header wyd-border-bottom" wydFlag="header">
             
               <div class="header item link" @click="toggleLeftMenu">
                 <img class="ui avatar image" src="/cdn/logo.jpg" />
-                <a class="font-weight-bold">Wyd2021</a>
+                <span class="font-weight-bold">Wyd2021</span>
               </div>
               
-              <a class="item hidden-xs-only" :class="active===lv1Menu[1]?'active':''" v-for="lv1Menu in level1Menus" @click="route(lv1Menu[1])"><i :class="lv1Menu[2]"></i>{{lv1Menu[0]}}</a>
+              <a class="item hidden-xs-only" :class="active===lv1Menu[1]?'active':''" v-for="lv1Menu in level1Menus" @click="route(lv1Menu[1])">
+                <i class="icon large" :class="lv1Menu[2]"></i>
+                <span>{{lv1Menu[0]}}</span>
+              </a>
                
               <div class="ui pointing dropdown link item hidden-xs-only" v-for="lv2Menu in level2Menus">
-                <i class="icon" :class="lv2Menu.icon"></i>
+                <i class="icon large" :class="lv2Menu.icon"></i>
                 <span class="text">{{lv2Menu.title}}</span>
                 <i class="dropdown icon"></i>
                 <div class="menu">
@@ -72,7 +75,7 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
               </div>
               
               <div class="ui pointing dropdown link item hidden-xs-only" v-for="lv3Menu in level3Menus">
-                <i class="icon" :class="lv3Menu.icon"></i>
+                <i class="icon large" :class="lv3Menu.icon"></i>
                 <span class="text">{{lv3Menu.title}}</span>
                 <i class="dropdown icon"></i>
                 <div class="menu">

@@ -56,7 +56,7 @@ define(['jquery', 'semantic', 'utils', 'gitee', 'axios'], function ($, semantic,
             this.loginValid();
         },
         template: `
-            <div class="ui inverted segment middle aligned center aligned grid flex-grow-1 rounded-0 p-2 m-0 wyd-home">
+            <div class="ui middle aligned center aligned grid flex-grow-1 rounded-0 p-2 m-0 wyd-home">
               <div class="column border border-secondary rounded" style="max-width: 450px">
                 <h1 class="ui teal image header">
                   <div class="content">

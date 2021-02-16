@@ -96,7 +96,7 @@ require([
                 <div>
                     <app-header ref="header"/>
                 </div>
-                <div class="flex-grow-1">
+                <div class="flex-grow-1 wyd-app-router">
                     <keep-alive>
                         <router-view></router-view>
                     </keep-alive>

@@ -1,5 +1,5 @@
 .wyd-home {
-    min-height: calc(100vh - 4rem);
+    min-height: calc(100vh - 65px);
 }
 
 .wyd-header {
@@ -26,5 +26,8 @@
     margin-left: 1rem;
     display: flex !important;
     align-items: center;
+}
+.wyd-app-router{
+    margin-top: 65px;
 }
 
