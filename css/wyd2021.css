@@ -22,15 +22,9 @@
     margin-top: .5rem !important;
 }
 
-@media (min-width: 576px) {
-    .wyd-bottom-menu > .item {
-        margin-left: 1rem;
-        display: flex !important;
-        align-items: center;
-    }
-}
-
-.wyd-bottom-menu {
-    max-height: 50vh !important;
+.wyd-bottom-menu > .item {
+    margin-left: 1rem;
+    display: flex !important;
+    align-items: center;
 }
 
