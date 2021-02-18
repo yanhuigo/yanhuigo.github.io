@@ -7,6 +7,13 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                 level1Menus: [],
                 level2Menus: [],
                 level3Menus: [],
+                showMenu: false,
+                showOperation: false,
+                operationList: [
+                    ["清空缓存", "clearCache"]
+                ],
+                asyncOperations: [],
+                cpsOperations: {},
             }
         },
         watch: {
@@ -23,15 +30,21 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                 if (name === this.active) return;
                 this.$router.push(name);
                 this.active = name;
+                this.showMenu = false;
             },
             toggleLeftMenu() {
-                $("#app-leftMenu").sidebar({closable: false}).sidebar('toggle');
+                this.showMenu = true;
+                //$("#app-leftMenu").sidebar({closable: false}).sidebar('toggle');
+            },
+            openOperation() {
+                this.showOperation = true;
             },
             loadLevelMenu() {
                 gitee.getFileContent("config/wyd2021.json", false, true).then(data => {
                     this.level1Menus = data.level1Menus;
                     this.level2Menus = data.level2Menus;
                     this.level3Menus = data.level3Menus;
+                    this.asyncOperations = data.asyncOperations;
                     this.$nextTick(() => {
                         $(".dropdown").dropdown({
                             on: 'hover',
@@ -44,25 +57,45 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
             },
             goURL(url) {
                 window.open(url);
+            },
+            toggle() {
+                utils.getVueCps("header").toggleLeftMenu();
+            },
+            callMethods(method) {
+                this[method]();
+                this.showOperation = false;
+            },
+            asyncLoadOperations() {
+                gitee.getFileContent(`cps/operations.js`).then(data => {
+                    // 动态注入脚本
+                    let script = document.createElement('script');
+                    script.type = 'text/javascript';
+                    script.append(data);
+                    document.body.appendChild(script);
+                    require(["cps_operations"], (data) => {
+                        this.cpsOperations = data;
+                    });
+                });
             }
         },
         mounted() {
             this.loadLevelMenu();
+            this.asyncLoadOperations();
         },
         template: `
-            <div class="ui menu fixed-top raised inverted wyd-header wyd-border-bottom" wydFlag="header">
+        <div class="ui menu fixed-top raised inverted wyd-header wyd-border-bottom" wydFlag="header">
             
-              <div class="header item link" @click="toggleLeftMenu">
+            <div class="header item link" @click="toggleLeftMenu">
                 <img class="ui avatar image" src="/cdn/logo.jpg" />
                 <span class="font-weight-bold">Wyd2021</span>
-              </div>
+            </div>
               
-              <a class="item hidden-xs-only" :class="active===lv1Menu[1]?'active':''" v-for="lv1Menu in level1Menus" @click="route(lv1Menu[1])">
+            <a class="item hidden-xs-only" :class="active===lv1Menu[1]?'active':''" v-for="lv1Menu in level1Menus" @click="route(lv1Menu[1])">
                 <i class="icon large" :class="lv1Menu[2]"></i>
                 <span>{{lv1Menu[0]}}</span>
-              </a>
+            </a>
                
-              <div class="ui pointing dropdown link item hidden-xs-only" v-for="lv2Menu in level2Menus">
+            <div class="ui pointing dropdown link item hidden-xs-only" v-for="lv2Menu in level2Menus">
                 <i class="icon large" :class="lv2Menu.icon"></i>
                 <span class="text">{{lv2Menu.title}}</span>
                 <i class="dropdown icon"></i>
@@ -72,9 +105,9 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                         <div v-else class="item" :class="active===lv2Link[1]?'active':''" @click="route(lv2Link[1])">{{lv2Link[0]}}</div>
                     </template>
                 </div>
-              </div>
-              
-              <div class="ui pointing dropdown link item hidden-xs-only" v-for="lv3Menu in level3Menus">
+            </div>
+
+            <div class="ui pointing dropdown link item hidden-xs-only" v-for="lv3Menu in level3Menus">
                 <i class="icon large" :class="lv3Menu.icon"></i>
                 <span class="text">{{lv3Menu.title}}</span>
                 <i class="dropdown icon"></i>
@@ -84,10 +117,41 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                         <div v-else  class="item" @click="goURL(lv3Link[1])">{{lv3Link[0]}}</div>
                     </template>
                 </div>
-              </div>
-              
-              
             </div>
+
+            <div class="right menu">
+                <a class="ui item" @click="openOperation">
+                    <i class="windows large icon"></i>
+                </a>
+            </div>
+              
+            <el-drawer title="导航菜单" :visible.sync="showMenu" :append-to-body="true" direction="ltr" size="80%">
+                <div class="ui selection list d-flex flex-row flex-wrap">
+
+                    <button @click="route(lv1Menu[1])" class="ui basic button d-flex justify-content-center align-items-center m-1" v-for="lv1Menu in level1Menus">
+                        <i class="icon large" :class="lv1Menu[2]"></i>
+                        {{lv1Menu[0]}}
+                    </button>
+
+                    <template v-for="lv2Menu in level2Menus">
+                        <button @click="route(lv2Link[1])" class="ui basic button d-flex justify-content-center align-items-center m-1" v-for="lv2Link in lv2Menu.children">
+                            <i class="icon large" :class="lv2Link[2]?lv2Link[2]:'html5'"></i>
+                            {{lv2Link[0]}}
+                        </button>
+                    </template>
+
+                </div>
+            </el-drawer>
+
+            <el-drawer title="快捷操作" :visible.sync="showOperation" :append-to-body="true" direction="rtl" size="60%">
+                <div class="ui selection list d-flex flex-row flex-wrap p-2">
+                    <button class="ui basic button" v-for="operation in asyncOperations" @click="cpsOperations[operation[1]]()">
+                            <i class="icon large" :class="operation[2]?operation[2]:'code'"></i>{{operation[0]}}
+                    </button>
+                </div>
+            </el-drawer>
+            
+        </div>
         `,
     }
 

@@ -8,30 +8,7 @@
 </head>
 <body>
 
-<div id="app-leftMenu"
-     class="ui sidebar bottom vertical inverted fixed menu p-2 d-flex flex-row flex-wrap wyd-bottom-menu">
-    <a class="item" @click="toggle">
-        <i class="icon arrow alternate circle up outline large"></i> 返回
-    </a>
-    <a class="item" v-for="lv1Menu in level1Menus" @click="itemClick(lv1Menu[1])">
-        <i class="large" :class="lv1Menu[2]"></i>
-        <span>{{lv1Menu[0]}}</span>
-    </a>
-    <template v-for="lv2Menu in level2Menus">
-        <a v-for="lv2Link in lv2Menu.children" class="item" @click="itemClick(lv2Link[1])">
-            <i class="icon large" :class="lv2Link[2]?lv2Link[2]:'html5'"></i>
-            <span>{{lv2Link[0]}}</span>
-        </a>
-    </template>
-
-    <!-- 清空所有缓存 -->
-    <a class="item" @click="clearCache">
-        <i class="icon sync large"></i> 清空缓存
-    </a>
-</div>
-<div class="pusher dimmed">
-    <div id="root"></div>
-</div>
+<div id="root"></div>
 
 <script src="/cdn/require.min.js" data-main="libs/main"></script>
 </body>

@@ -79,7 +79,6 @@ require([
         vueMixin();
         // 数据初始化完成
         appInit();
-        leftAppInit();
     });
 
     function appInit() {
@@ -101,47 +100,11 @@ require([
                         <router-view></router-view>
                     </keep-alive>
                 </div>
+                <div>
+                    <el-backtop target="body" :visibility-height="100"></el-backtop>
+                </div>
             </div>
         `
-        });
-    }
-
-    function leftAppInit() {
-        new Vue({
-            el: "#app-leftMenu",
-            data() {
-                return {
-                    level1Menus: [],
-                    level2Menus: [],
-                    level3Menus: []
-                }
-            },
-            methods: {
-                loadLevelMenu() {
-                    gitee.getFileContent("config/wyd2021.json", false, true).then(data => {
-                        this.level1Menus = data.level1Menus;
-                        this.level2Menus = data.level2Menus;
-                        this.level3Menus = data.level3Menus;
-                    });
-                },
-                itemClick(name) {
-                    let headerCps = utils.getVueCps("header");
-                    headerCps.route(name);
-                    headerCps.toggleLeftMenu();
-                },
-                clearCache() {
-                    if (confirm("确认清空所有缓存？")) {
-                        gitee.clearAllCache();
-                        location.reload();
-                    }
-                },
-                toggle(){
-                    utils.getVueCps("header").toggleLeftMenu();
-                }
-            },
-            mounted() {
-                this.loadLevelMenu();
-            }
         });
     }
 
