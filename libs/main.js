@@ -112,7 +112,7 @@ require([
 
     function vueRouterInit() {
         const routes = [
-            {path: '/', redirect: '/bookmarks'}
+            { path: '/', redirect: '/bookmarks' }
         ]
         for (let routeName of routeNames) {
             routes.push({
@@ -161,9 +161,26 @@ require([
             routes
         });
 
-        /*router.beforeEach((to, from, next) => {
+        let loading;
+        let loadedRoute = [];
+        router.beforeEach((to, from, next) => {
+            if (!loadedRoute.includes(to.path)) {
+                loading = element.Loading.service({
+                    lock: true,
+                    text: '努力加载中~~~',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 0.9)'
+                });
+            }
             next();
-        })*/
+        });
+
+        router.afterEach((to, from) => {
+            if (!loadedRoute.includes(to.path)) {
+                loadedRoute.push(to.path);
+                loading && loading.close();
+            }
+        });
 
         return router;
     }
