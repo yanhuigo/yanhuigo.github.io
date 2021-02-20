@@ -25,12 +25,14 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
         },
         methods: {
             setRepo(repo) {
-                this.repo = repo;
                 if (repo !== gitee.getRepo()) {
-                    this.selectedFile = "";
-                    editor.setValue("");
-                    gitee.setRepo(repo);
-                    this.initSemantic(false);
+                    gitee.getFileTree(false, repo).then(() => {
+                        this.repo = repo;
+                        this.selectedFile = "";
+                        editor.setValue("");
+                        gitee.setRepo(repo);
+                        this.initSemantic(false);
+                    });
                 }
             },
             closeIframe() {
@@ -54,14 +56,14 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                 if (!this.diffEditor) {
                     this.originalModel = monaco.editor.createModel(originTxt, "text/plain");
                     this.modifiedModel = monaco.editor.createModel(mdfTxt, "text/plain");
-                    this.diffEditor = monaco.editor.createDiffEditor(document.getElementById("ed-diff-content"),{
+                    this.diffEditor = monaco.editor.createDiffEditor(document.getElementById("ed-diff-content"), {
                         automaticLayout: true
                     });
                     this.diffEditor.setModel({
                         original: this.originalModel,
                         modified: this.modifiedModel
                     });
-                }else{
+                } else {
                     this.originalModel.setValue(originTxt);
                     this.modifiedModel.setValue(mdfTxt);
                 }
@@ -81,7 +83,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                 utils.prompt('请输入文件路径', '新增文件', {
                     inputPattern: /^[\w/](.)+[a-z]+$/,
                     inputErrorMessage: '格式不正确'
-                }).then(({value}) => {
+                }).then(({ value }) => {
                     gitee.newFile(value, "new File init", this.repo).then(() => {
                         this.initSemantic(true);
                     })
@@ -125,7 +127,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                 });
             },
 
-            setLanguage(model){
+            setLanguage(model) {
                 let suffix = this.selectedFile.substr(this.selectedFile.lastIndexOf(".") + 1);
                 switch (suffix) {
                     case "md":
@@ -173,17 +175,17 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                         if (lastDir && file.path.startsWith(lastDir.file.path + "/")) {
                             // 子目录
                         } else {
-                            lastDir = {file, children: []};
+                            lastDir = { file, children: [] };
                             fileList.push(lastDir);
                         }
                     } else if (lastDir && file.path.indexOf(lastDir.file.path) !== -1) {
                         lastDir.children.push(file);
                     } else {
-                        fileList.push({file});
+                        fileList.push({ file });
                     }
                 }
 
-                let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({title: file.path}));
+                let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({ title: file.path }));
                 this.fileList = fileList;
                 let app = this;
                 $('#ed-file-search').search({

@@ -40,7 +40,7 @@ require.config({
         "semantic": '/cdn/semantic/semantic.min',
         "vs": '/cdn/monaco-editor/min/vs',
         "vue-markdown": '/cdn/vue/vue-markdown.min',
-        "markdownIt": 'https://cdn.bootcdn.net/ajax/libs/markdown-it/12.0.3/markdown-it',
+        "markdownIt": '/cdn/markdown-it.min',
         ...localPath
     },
     // 加载非AMD规范的JS文件

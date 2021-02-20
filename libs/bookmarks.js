@@ -8,7 +8,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
         if (bm.a) { // 子分类文件夹
             for (let cbm of bm.a) {
                 if (cbm.a) {
-                    bmTagList.push({name: cbm.b, type});
+                    bmTagList.push({ name: cbm.b, type });
                     recursionBookmark(cbm, type, cbm.b);
                 } else {
                     recursionBookmark(cbm, type, tag);
@@ -32,7 +32,8 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                 checkedTag: "",
                 searchTxt: "",
                 loading: false,
-                bmSourceFile: "",
+                bmSourceFilePath: "",
+                bmSourceFile: {},
                 bmSourceFiles: []
             }
         },
@@ -47,7 +48,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
             initSearch() {
                 $('.ui.search').search({
                     source: [
-                        {title: 'test', actionUrl: "https://zijieke.com/semantic-ui/modules/search.php#/settings"},
+                        { title: 'test', actionUrl: "https://zijieke.com/semantic-ui/modules/search.php#/settings" },
                     ],
                     minCharacters: 0,
                     selectFirstResult: true,
@@ -114,19 +115,19 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                     this.bmTypeList = [];
                     this.bmTagList = [];
                     this.bmList = [];
-                    this.loadData(true);
+                    this.loadData(true, this.bmSourceFile);
                 }).catch(() => {
 
                 });
                 return false;
             },
-            loadData(refreshCache) {
-                gitee.getFileContent(this.bmSourceFile, refreshCache).then(data => {
+            loadData(refreshCache, file, call) {
+                gitee.getFileContent(file.path, refreshCache, true, file.repo).then(data => {
                     this.bmDataHandle(data);
+                    call();
                 });
             },
-            bmDataHandle(bmJsonData) {
-                let bmRoot = JSON.parse(bmJsonData);
+            bmDataHandle(bmRoot) {
                 // 书签栏书签集合 a = children b=title c=url
                 let rootBmList = bmRoot.a;
                 for (let bm of rootBmList) {
@@ -144,12 +145,17 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                 this.bmList = bmList;
                 this.loading = false;
             },
-            changeSource(path) {
+            changeSource(file) {
+                if (file.path === this.bmSourceFilePath) {
+                    return;
+                }
                 bmTypeList = [];
                 bmTagList = [];
                 bmList = [];
-                this.bmSourceFile = path;
-                this.loadData();
+                this.loadData(false, file, () => {
+                    this.bmSourceFile = file;
+                    this.bmSourceFilePath = file.path;
+                });
             }
         },
         mounted() {
@@ -159,16 +165,14 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
             let config = gitee.getWydConfig();
             if (config && config.bookmarks) {
                 this.bmSourceFiles = config.bookmarks.bmSourceFiles;
+                this.changeSource(this.bmSourceFiles[0]);
             }
-            this.bmSourceFile = this.bmSourceFiles[0].path;
-            this.loadData();
-            // this.initSearch();
         },
         template: `
             <div class="ui container pb-5 segment mt-2 mb-5">
                 <div class="ui buttons">
                     <template v-for="(bsf,index) in bmSourceFiles">
-                      <button :title="bsf.note+'-'+bsf.path" class="ui button" :class="bsf.path===bmSourceFile ? 'active blue':''" @click="changeSource(bsf.path)">{{bsf.name}}</button>
+                      <button :title="bsf.note+'-'+bsf.path" class="ui button" :class="bsf.path===bmSourceFilePath ? 'active blue':''" @click="changeSource(bsf)">{{bsf.name}}</button>
                       <div class="or" v-if="index<bmSourceFiles.length-1"></div>
                     </template>
                 </div>
