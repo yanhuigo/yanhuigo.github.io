@@ -126,8 +126,11 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
             </div>
               
             <el-drawer :visible.sync="showMenu" :append-to-body="true" direction="ltr" size="80%">
-                <h2 slot="title" class="ui header"><i class="icon html5"></i>导航菜单</h2>
-                <div class="ui selection list d-flex flex-row flex-wrap">
+                <h3 slot="title" class="ui header d-flex justify-content-center align-items-center m-0">
+                    <span><i class="ui icon html5 large"></i>导航菜单</span>
+                </h3>
+                
+                <div class="ui selection list d-flex flex-row flex-wrap p-3">
                     <button @click="route(lv1Menu[1])" class="ui basic button d-flex justify-content-center align-items-center m-1" v-for="lv1Menu in level1Menus">
                         <i class="icon large" :class="lv1Menu[2]"></i>
                         {{lv1Menu[0]}}
@@ -143,9 +146,11 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                 </div>
             </el-drawer>
 
-            <el-drawer :visible.sync="showOperation" :append-to-body="true" direction="rtl" size="60%">
-                <h2 slot="title" class="ui header"><i class="icon windows"></i>快捷操作</h2>
-                <div class="ui selection list d-flex flex-row flex-wrap p-2">
+            <el-drawer :visible.sync="showOperation" :append-to-body="true" direction="rtl" size="80%">
+                <h3 slot="title" class="ui header d-flex justify-content-center align-items-center m-0">
+                    <span><i class="ui icon windows large"></i>快捷操作</span>
+                </h3>
+                <div class="ui selection list d-flex flex-row flex-wrap p-3">
                     <button class="ui basic button d-flex justify-content-center align-items-center m-1" v-for="operation in asyncOperations" @click="cpsOperations[operation[1]]()">
                             <i class="icon large" :class="operation[2]?operation[2]:'code'"></i>{{operation[0]}}
                     </button>

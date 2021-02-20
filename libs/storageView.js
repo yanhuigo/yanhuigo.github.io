@@ -46,13 +46,13 @@ define(['gitee'], function (gitee) {
         template: `
         <div class="ui container mt-5 d-flex flex-column segment">
             <div class="mb-3">
-                <button class="ui button" @click="refresh">
+                <button class="ui button mt-2" @click="refresh">
                     <i class="refresh icon"></i>刷新缓存
                 </button>
-                <button class="ui button" @click="clearStorage">
+                <button class="ui button mt-2" @click="clearStorage">
                     <i class="download icon"></i>清空缓存
                 </button>
-                <button class="ui button disabled">
+                <button class="ui button mt-2 disabled">
                     <i class="download icon"></i>下载缓存
                 </button>
             </div>
