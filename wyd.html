@@ -4,42 +4,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="icon" type="image/jpeg" sizes="80x80" href="/imgs/logo.jpg" />
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="/imgs/logo.jpg"/>
     <title>Hello</title>
 </head>
 <body>
-    <div id="app"></div>
-    <script src="/cdn/vue/vue.min.js"></script>
-    <script src="/cdn/base64.js"></script>
-    <script src="/cdn/require.min.js"></script>
-    <script>
-        let filename = location.search.split("=")[1];
-        let runFile = `pages/${filename}.js`;
-        let storageKey = `webdata#${runFile}`;
-        let webCache = localStorage.getItem(storageKey);
-        document.title = filename;
-        if (webCache) {
-            let localKey = `webdata#@${runFile}`;
-            let localCache = localStorage.getItem(localKey);
-            let data = localCache ? localCache : webCache;
-            start(data);
-        } else {
-            fetch(`https://gitee.com/api/v5/repos/yanhui1993/webdata/contents/${runFile}`)
-                .then(res => res.json())
-                .then(data => {
-                    let content = data.content;
-                    content && localStorage.setItem(storageKey, base64.decode(content));
+<div id="app"></div>
+<script src="/cdn/vue/vue.min.js"></script>
+<script src="/cdn/base64.js"></script>
+<script src="/cdn/require.min.js"></script>
+<script>
+    let filename = location.search.split("=")[1];
+    let runFile = `pages/${filename}.js`;
+    let storageKey = `webdata#${runFile}`;
+    let webCache = localStorage.getItem(storageKey);
+    document.title = filename;
+    if (webCache) {
+        let localKey = `webdata#@${runFile}`;
+        let localCache = localStorage.getItem(localKey);
+        let data = localCache ? localCache : webCache;
+        start(data);
+    } else {
+        fetch(`https://gitee.com/api/v5/repos/yanhui1993/webdata/contents/${runFile}`)
+            .then(res => res.json())
+            .then(data => {
+                let content = data.content;
+                if (content) {
+                    content = base64.decode(content);
+                    localStorage.setItem(storageKey, content);
                     start(content);
-                });
-        }
-        function start(data) {
-            let script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.append(data);
-            document.body.appendChild(script);
-        }
+                }
 
-    </script>
+            });
+    }
+
+    function start(data) {
+        let script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.append(data);
+        document.body.appendChild(script);
+    }
+
+</script>
 
 </body>
 
