@@ -258,6 +258,10 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                         run: action.call
                     });
                 }
+            },
+
+            openInMdEditor(){
+                
             }
 
         },
@@ -357,6 +361,11 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                                 </el-tooltip>
                                 <el-tooltip content="在iframe中预览" placement="top">
                                     <button v-show="selectedFile.endsWith('.html')||selectedFile.endsWith('.md')" class="ui compact icon primary button" @click="previewInIframe">
+                                        <i class="html5 icon"></i>
+                                    </button>
+                                </el-tooltip>
+                                <el-tooltip content="使用markdown编辑器" placement="top">
+                                    <button v-show="selectedFile.endsWith('.md')" class="ui compact icon primary button" @click="openInMdEditor">
                                         <i class="html5 icon"></i>
                                     </button>
                                 </el-tooltip>
