@@ -83,7 +83,7 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
             this.asyncLoadOperations();
         },
         template: `
-        <div class="ui menu fixed-top raised inverted wyd-header wyd-border-bottom" wydFlag="header">
+        <div class="ui menu raised inverted wyd-header wyd-border-bottom" wydFlag="header">
             
             <div class="header item link" @click="toggleLeftMenu">
                 <img class="ui avatar image" src="/cdn/logo.jpg" />

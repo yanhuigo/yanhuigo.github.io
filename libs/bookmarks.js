@@ -169,7 +169,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
             }
         },
         template: `
-            <div class="ui container pb-5 segment mt-2 mb-5">
+            <div class="ui container pb-5 segment mb-5">
                 <div class="ui buttons">
                     <template v-for="(bsf,index) in bmSourceFiles">
                       <button :title="bsf.note+'-'+bsf.path" class="ui button" :class="bsf.path===bmSourceFilePath ? 'active blue':''" @click="changeSource(bsf)">{{bsf.name}}</button>

@@ -260,8 +260,8 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                 }
             },
 
-            openInMdEditor(){
-                
+            openInMdEditor() {
+                this.$router.push({ path: "ar_simplemde", query: { filepath: this.selectedFile } });
             }
 
         },
@@ -270,7 +270,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
             this.initSemantic();
         },
         template: `
-            <div class="mt-header d-sm-flex ui segment m-2" wydFlag="editor" style="height: 90vh">
+            <div class="mt-header d-sm-flex ui segment mx-2" wydFlag="editor" style="height: 90vh">
                 
                 <button v-if="!showTree" class="ui icon button green" title="显示文件树" style="height: 3rem"
                         @click="showTree=!showTree">
@@ -366,7 +366,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                                 </el-tooltip>
                                 <el-tooltip content="使用markdown编辑器" placement="top">
                                     <button v-show="selectedFile.endsWith('.md')" class="ui compact icon primary button" @click="openInMdEditor">
-                                        <i class="html5 icon"></i>
+                                        <i class="medium m icon"></i>
                                     </button>
                                 </el-tooltip>
                                 <el-tooltip content="运行选中的js" placement="top">
