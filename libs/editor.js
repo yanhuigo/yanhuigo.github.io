@@ -261,7 +261,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
             },
 
             openInMdEditor() {
-                this.$router.push({ path: "ar_simplemde", query: { filepath: this.selectedFile } });
+                this.$router.push({ path: "ar_simplemde", query: { filepath: this.selectedFile, repo: this.repo } });
             }
 
         },
@@ -299,18 +299,6 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                                 <i class="arrow left icon"></i>
                             </button>
                         </el-tooltip>
-                        <template v-if="selectedFile">
-                            <el-tooltip content="保存文件(Ctrl+s)" placement="bottom">
-                                <button class="ui compact icon teal button" @click="update">
-                                    <i class="save alternate outline icon"></i>
-                                </button>
-                            </el-tooltip>
-                            <el-tooltip content="删除文件" placement="bottom">
-                                <button class="ui compact teal icon button ml-1" @click="deleteFile">
-                                    <i class="trash alternate outline icon"></i>
-                                </button>
-                            </el-tooltip>
-                        </template>
                     </div>
                     <div class="item ui search my-1" id="ed-file-search">
                         <div class="ui icon input search">
@@ -357,6 +345,16 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                                 <el-tooltip content="下载文件" placement="top">
                                     <button class="ui compact icon teal button ml-1" @click="loadFile(true)">
                                         <i class="download icon"></i>
+                                    </button>
+                                </el-tooltip>
+                                <el-tooltip content="保存文件(Ctrl+s)" placement="bottom">
+                                    <button class="ui compact icon teal button" @click="update">
+                                        <i class="save alternate outline icon"></i>
+                                    </button>
+                                </el-tooltip>
+                                <el-tooltip content="删除文件" placement="bottom">
+                                    <button class="ui compact teal icon button ml-1" @click="deleteFile">
+                                        <i class="trash alternate outline icon"></i>
                                     </button>
                                 </el-tooltip>
                                 <el-tooltip content="在iframe中预览" placement="top">
