@@ -89,6 +89,7 @@ require([
                 "app-header": Header,
             },
             mounted() {
+                gitee.refreshToken();
             },
             template: `
             <div class="d-flex flex-column">

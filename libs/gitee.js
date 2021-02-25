@@ -331,6 +331,22 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
         return wydConfig;
     }
 
+    function refreshToken() {
+        let loginStorageData = localStorage.getItem(storageKey.lsLoginState);
+        if (loginStorageData) {
+            let loginState = JSON.parse(loginStorageData);
+            let { created_at, expires_in, refresh_token } = loginState;
+            if (Math.floor(Date.now() / 1000) - created_at > expires_in) {
+                axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`).then(data => {
+                    localStorage.setItem(storageKey.lsLoginState, JSON.stringify(data));
+                    initState().then(() => {
+                        utils.notify("Token刷新成功", "success");
+                    });
+                });
+            }
+        }
+    }
+
     return {
         getFileTree,
         getFileContent,
@@ -344,7 +360,8 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
         storageKey,
         apiConfig,
         getWydConfig,
-        updateFileCache
+        updateFileCache,
+        refreshToken
     }
 
 });

@@ -36,20 +36,7 @@ define(['jquery', 'semantic', 'utils', 'gitee', 'axios'], function ($, semantic,
                 return false;
             },
             loginValid() {
-                let loginStorageData = localStorage.getItem(gitee.storageKey.lsLoginState);
-                if (loginStorageData) {
-                    this.loginState = JSON.parse(loginStorageData);
-                    let {created_at, expires_in, refresh_token} = this.loginState;
-                    if (Math.floor(Date.now() / 1000) - created_at > expires_in) {
-                        axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`).then(data => {
-                            localStorage.setItem(gitee.storageKey.lsLoginState, JSON.stringify(data));
-                            gitee.initState().then(() => {
-                                utils.notify("Token刷新成功", "success");
-                                this.$router.go(-1);
-                            });
-                        });
-                    }
-                }
+                gitee.refreshToken();
             },
         },
         mounted() {
