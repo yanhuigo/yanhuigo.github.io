@@ -1,4 +1,4 @@
-define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'], function (Vue, require, gitee, utils, markdownIt) {
+define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jquery', 'semantic'], function (Vue, require, gitee, utils, markdownIt, monacoSupport) {
 
     const md = markdownIt();
 
@@ -38,15 +38,12 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
             closeIframe() {
                 this.showIframe = false;
             },
+            openInNewTab() {
+                window.open(`/preview.html?p=${this.selectedFile.split("/")[1].split(".")[0]}`);
+            },
+            openCpsInNewTab() {
+                window.open(`/#/ar_${this.selectedFile.split("/")[1].split(".")[0]}`);
 
-            previewInIframe() {
-                $("#ed-iframe-modal").modal("show");
-                if (this.selectedFile.endsWith(".md")) {
-                    this.renderFileContent = md.render(editor.getValue());
-                } else {
-                    this.renderFileContent = editor.getValue();
-                }
-                this.showIframe = true;
             },
 
             previewDiff() {
@@ -155,6 +152,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
 
             initMonacoEditor() {
                 require(['vs/editor/editor.main'], () => {
+                    monacoSupport.suggestion();
                     editor = monaco.editor.create(document.getElementById('editor-container'), {
                         value: '点击左侧列表文件开始编辑...',
                         language: "markdown",
@@ -357,11 +355,6 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                                         <i class="trash alternate outline icon"></i>
                                     </button>
                                 </el-tooltip>
-                                <el-tooltip content="在iframe中预览" placement="top">
-                                    <button v-show="selectedFile.endsWith('.html')||selectedFile.endsWith('.md')" class="ui compact icon primary button" @click="previewInIframe">
-                                        <i class="html5 icon"></i>
-                                    </button>
-                                </el-tooltip>
                                 <el-tooltip content="使用markdown编辑器" placement="top">
                                     <button v-show="selectedFile.endsWith('.md')" class="ui compact icon primary button" @click="openInMdEditor">
                                         <i class="medium m icon"></i>
@@ -372,19 +365,19 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'jquery', 'semantic'],
                                         <i class="node js icon"></i>
                                     </button>
                                 </el-tooltip>
+                                <el-tooltip content="新窗口打开当前组件" placement="top">
+                                    <button v-show="selectedFile.startsWith('cps/')" class="ui compact icon primary button" @click="openCpsInNewTab">
+                                        <i class="html5 icon"></i>
+                                    </button>
+                                </el-tooltip>
+                                <el-tooltip content="在新窗口打开页面" placement="top">
+                                    <button v-show="selectedFile.startsWith('pages/')" class="ui compact icon primary button" @click="openInNewTab">
+                                        <i class="html5 icon"></i>
+                                    </button>
+                                </el-tooltip>
                             </template>
                         </div>
                     </div>
-                </div>
-                
-                <div id="ed-iframe-modal" class="ui modal large">
-                  <div class="header">{{selectedFile}}</div>
-                  <div class="content p-0">
-                    <iframe class="border-0" :srcdoc="renderFileContent" width="100%" height="600px"></iframe>
-                  </div>
-                  <div class="actions">
-                    <div class="ui cancel button">取消</div>
-                  </div>
                 </div>
                 
                 <div id="ed-diff-modal" class="ui modal large">

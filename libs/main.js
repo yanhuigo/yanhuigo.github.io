@@ -2,7 +2,7 @@ let isProd = true;
 if (window.location.host.indexOf('localhost') !== -1) isProd = false;
 
 // 本地js定义
-let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home", "storageView", "sysLog"];
+let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home", "storageView", "sysLog", "monacoSupport"];
 let localPath = {};
 for (let lib of localLibs) {
     localPath[lib] = isProd ? lib + "-min" : lib;
