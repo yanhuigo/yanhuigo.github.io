@@ -419,8 +419,8 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                                 </button>
                             </el-tooltip>
                             <el-tooltip content="关闭所有下拉框" placement="top" v-if="editorFiles.length>0">
-                                <button class="ui compact icon red button ml-1" @click="closeAllModel">
-                                    <i class="upload icon"></i>
+                                <button class="ui compact icon button ml-1" @click="closeAllModel">
+                                    <i class="close icon"></i>
                                 </button>
                             </el-tooltip>
                         </template>
