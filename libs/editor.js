@@ -245,7 +245,6 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
 
             selectFile(file) {
                 let lastPosition = this.editor.getPosition();
-                console.log("lastPosition", lastPosition);
                 this.position[this.selectedFile] = lastPosition;
                 this.selectedFile = file;
                 this.loadFile();
