@@ -18,7 +18,8 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                 diffEditor: null,
                 editorFiles: [],
                 editor: null,
-                models: {}
+                models: {},
+                position: {}
             }
         },
         watch: {
@@ -74,7 +75,6 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
             },
             openCpsInNewTab() {
                 window.open(`/#/ar_${this.selectedFile.split("/")[1].split(".")[0]}`);
-
             },
 
             previewDiff() {
@@ -175,6 +175,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                     if (this.editorFiles.indexOf(this.selectedFile) === -1) {
                         this.editorFiles.push(this.selectedFile);
                     }
+
                     let oldModel = this.models[this.selectedFile];
                     if (!oldModel) {
                         oldModel = monaco.editor.createModel(data, "text/plain");
@@ -182,6 +183,10 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                         this.models[this.selectedFile] = oldModel;
                     }
                     this.editor.setModel(oldModel);
+                    let lastPosition = this.position[this.selectedFile];
+                    if (lastPosition) {
+                        this.editor.revealPositionInCenter(lastPosition);
+                    }
                     if (sync) {
                         utils.notify(`已重新加载文件 ${this.selectedFile}`, "success");
                         this.hasMdf = false;
@@ -198,6 +203,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                         theme: "vs",
                         automaticLayout: true
                     });
+                    window.wyd_editor = this.editor;
                     this.initEditorActions();
                 });
             },
@@ -236,6 +242,9 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
             },
 
             selectFile(file) {
+                let lastPosition = this.editor.getPosition();
+                console.log("lastPosition", lastPosition);
+                this.position[this.selectedFile] = lastPosition;
                 this.selectedFile = file;
                 this.loadFile();
             },
