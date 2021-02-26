@@ -3,9 +3,6 @@ define([
     'axios'
 ], function (element, axios) {
 
-
-    console.log("element ui 加载成功", element);
-
     let vueComponents = {};
 
     function goLogin() {
@@ -13,6 +10,8 @@ define([
             window.location.href = "#/login";
         }
     }
+
+    let isApp = !!window.ReactNativeWebView;
 
     /**
      * 获取标记有wydFlag属性的vue组件
@@ -76,7 +75,8 @@ define([
         getVueCps,
         setVueCps,
         getAllVueCps,
-        goLogin
+        goLogin,
+        isApp
     }
 
 })

@@ -15,7 +15,10 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                 hasMdf: false,
                 originalModel: null,
                 modifiedModel: null,
-                diffEditor: null
+                diffEditor: null,
+                editorFiles: [],
+                editor: null,
+                models: {}
             }
         },
         watch: {
@@ -24,12 +27,40 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
             }
         },
         methods: {
+            closeAllModel() {
+                let models = monaco.editor.getModels();
+                if (models) {
+                    for (let model of models) {
+                        model.dispose();
+                    }
+                    this.editorFiles = [];
+                    this.models = {};
+                    this.selectedFile = "";
+                }
+            },
+            tabClick(tab) {
+                this.selectFile(tab.label);
+            },
+            tabRemove(name) {
+                let pos = this.editorFiles.findIndex(item => item === name);
+                this.editorFiles.splice(pos, 1);
+                this.models[name].dispose();
+                delete this.models[name];
+                if (this.editorFiles.length === 0) {
+                    this.selectedFile = ""
+                } else {
+                    if (name === this.selectedFile) {
+                        this.selectFile(this.editorFiles[0]);
+                    }
+                }
+            },
             setRepo(repo) {
                 if (repo !== gitee.getRepo()) {
                     gitee.getFileTree(false, repo).then(() => {
+                        this.closeAllModel();
                         this.repo = repo;
                         this.selectedFile = "";
-                        editor.setValue("");
+                        this.editor.setValue("");
                         gitee.setRepo(repo);
                         this.initSemantic(false);
                     });
@@ -69,9 +100,9 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
             },
 
             runJs() {
-                let selectionTxt = editor.getModel().getValueInRange(editor.getSelection());
+                let selectionTxt = this.editor.getModel().getValueInRange(this.editor.getSelection());
                 if (!selectionTxt) {
-                    selectionTxt = editor.getValue();
+                    selectionTxt = this.editor.getValue();
                 }
                 window.eval(selectionTxt);
             },
@@ -115,7 +146,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                     type: 'warning'
                 }).then(() => {
                     gitee.deleteFile(this.selectedFile, this.repo).then(data => {
-                        editor.setValue("");
+                        this.editor.setValue("");
                         this.selectedFile = "";
                         this.initSemantic(true);
                     });
@@ -141,8 +172,16 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
 
             loadFile(sync = false) {
                 gitee.getFileContent(this.selectedFile, sync, false, this.repo).then(data => {
-                    this.setLanguage(editor.getModel());
-                    editor.setValue(data);
+                    if (this.editorFiles.indexOf(this.selectedFile) === -1) {
+                        this.editorFiles.push(this.selectedFile);
+                    }
+                    let oldModel = this.models[this.selectedFile];
+                    if (!oldModel) {
+                        oldModel = monaco.editor.createModel(data, "text/plain");
+                        this.setLanguage(oldModel);
+                        this.models[this.selectedFile] = oldModel;
+                    }
+                    this.editor.setModel(oldModel);
                     if (sync) {
                         utils.notify(`已重新加载文件 ${this.selectedFile}`, "success");
                         this.hasMdf = false;
@@ -153,7 +192,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
             initMonacoEditor() {
                 require(['vs/editor/editor.main'], () => {
                     monacoSupport.suggestion();
-                    editor = monaco.editor.create(document.getElementById('editor-container'), {
+                    this.editor = monaco.editor.create(document.getElementById('editor-container'), {
                         value: '点击左侧列表文件开始编辑...',
                         language: "markdown",
                         theme: "vs",
@@ -206,7 +245,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                     utils.message("请选择编辑文件", "info");
                     return;
                 }
-                let value = editor.getValue();
+                let value = this.editor.getValue();
                 if (saveLocal) {
                     gitee.getFileContent(this.selectedFile, false, false, this.repo).then(data => {
                         if (data !== value) {
@@ -245,7 +284,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
 
                 let index = 0;
                 for (let action of actions) {
-                    editor.addAction({
+                    this.editor.addAction({
                         id: `yh-editor-${++index}`,
                         label: action.name,
                         keybindings: action.keys ? action.keys : [],
@@ -268,7 +307,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
             this.initSemantic();
         },
         template: `
-            <div class="mt-header d-sm-flex ui segment mx-2" wydFlag="editor" style="height: 90vh">
+            <div class="mt-header d-sm-flex ui mx-2" wydFlag="editor" style="height: calc(100vh - 86px)">
                 
                 <button v-if="!showTree" class="ui icon button green" title="显示文件树" style="height: 3rem"
                         @click="showTree=!showTree">
@@ -324,59 +363,67 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                 </div>
                 
                 <div class="flex-grow-1 d-md-flex flex-column w-100-xs-only">
+                    <div class="wyd-editor-tabs">
+                        <el-tabs style="max-width:90%" :value="selectedFile" type="card" closable @tab-click="tabClick" @tab-remove="tabRemove">
+                            <el-tab-pane disabled>
+                                <span slot="label"><i class="ui icon edit"></i></span>
+                            </el-tab-pane>
+                            <el-tab-pane v-for="editorFile in editorFiles" :name="editorFile" :label="editorFile"></el-tab-pane>
+                        </el-tabs>
+                    </div>
                     <div class="flex-grow-1 vh-50-xs-only" id="editor-container"></div>
-                    <div class="ui raised segment m-0 d-flex flex-row">
-                        <a class="ui ribbon label" :class="selectedFile ? 'green':''">编辑信息</a>
-                        <span class="font-weight-bold" v-if="selectedFile">
-                                正在编辑 <span class="ui label">{{selectedFile}}</span>
-                            </span>
-                        <span class="font-weight-bold" v-else>
-                                请选择编辑文件！
-                        </span>
-                        <div class="ml-3">
-                            <template v-if="selectedFile">
-                                <el-tooltip content="上传文件" placement="top" v-if="hasMdf">
-                                    <button class="ui compact icon red button ml-1" @click="previewDiff">
-                                        <i class="upload icon"></i>
-                                    </button>
-                                </el-tooltip>
-                                <el-tooltip content="下载文件" placement="top">
-                                    <button class="ui compact icon teal button ml-1" @click="loadFile(true)">
-                                        <i class="download icon"></i>
-                                    </button>
-                                </el-tooltip>
-                                <el-tooltip content="保存文件(Ctrl+s)" placement="bottom">
-                                    <button class="ui compact icon teal button" @click="update">
-                                        <i class="save alternate outline icon"></i>
-                                    </button>
-                                </el-tooltip>
-                                <el-tooltip content="删除文件" placement="bottom">
-                                    <button class="ui compact teal icon button ml-1" @click="deleteFile">
-                                        <i class="trash alternate outline icon"></i>
-                                    </button>
-                                </el-tooltip>
-                                <el-tooltip content="使用markdown编辑器" placement="top">
-                                    <button v-show="selectedFile.endsWith('.md')" class="ui compact icon primary button" @click="openInMdEditor">
-                                        <i class="medium m icon"></i>
-                                    </button>
-                                </el-tooltip>
-                                <el-tooltip content="运行选中的js" placement="top">
-                                    <button v-show="selectedFile.endsWith('.js')" class="ui compact icon primary button" @click="runJs">
-                                        <i class="node js icon"></i>
-                                    </button>
-                                </el-tooltip>
-                                <el-tooltip content="新窗口打开当前组件" placement="top">
-                                    <button v-show="selectedFile.startsWith('cps/')" class="ui compact icon primary button" @click="openCpsInNewTab">
-                                        <i class="html5 icon"></i>
-                                    </button>
-                                </el-tooltip>
-                                <el-tooltip content="在新窗口打开页面" placement="top">
-                                    <button v-show="selectedFile.startsWith('pages/')" class="ui compact icon primary button" @click="openInNewTab">
-                                        <i class="html5 icon"></i>
-                                    </button>
-                                </el-tooltip>
-                            </template>
-                        </div>
+                    <div class="ui divider m-0"></div>
+                    <div class="d-flex justify-content-start flex-wrap pl-2 pt-1">
+                        <button class="ui button disabled">
+                            <i class="smile outline icon"></i>操作区 <i class="arrow right icon"></i>
+                        </button>
+                        <template v-if="selectedFile">
+                            <el-tooltip content="上传文件" placement="top" v-if="hasMdf">
+                                <button class="ui compact icon red button ml-1" @click="previewDiff">
+                                    <i class="upload icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="下载文件" placement="top">
+                                <button class="ui compact icon teal button ml-1" @click="loadFile(true)">
+                                    <i class="download icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="保存文件(Ctrl+s)" placement="bottom">
+                                <button class="ui compact icon teal button" @click="update">
+                                    <i class="save alternate outline icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="删除文件" placement="bottom">
+                                <button class="ui compact teal icon button ml-1" @click="deleteFile">
+                                    <i class="trash alternate outline icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="使用markdown编辑器" placement="top">
+                                <button v-show="selectedFile.endsWith('.md')" class="ui compact icon primary button" @click="openInMdEditor">
+                                    <i class="medium m icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="运行选中的js" placement="top">
+                                <button v-show="selectedFile.endsWith('.js')" class="ui compact icon primary button" @click="runJs">
+                                    <i class="node js icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="新窗口打开当前组件" placement="top">
+                                <button v-show="selectedFile.startsWith('cps/')" class="ui compact icon primary button" @click="openCpsInNewTab">
+                                    <i class="html5 icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="在新窗口打开页面" placement="top">
+                                <button v-show="selectedFile.startsWith('pages/')" class="ui compact icon primary button" @click="openInNewTab">
+                                    <i class="html5 icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="关闭所有下拉框" placement="top" v-if="editorFiles.length>0">
+                                <button class="ui compact icon red button ml-1" @click="closeAllModel">
+                                    <i class="upload icon"></i>
+                                </button>
+                            </el-tooltip>
+                        </template>
                     </div>
                 </div>
                 

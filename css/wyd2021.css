@@ -18,16 +18,20 @@
     border-bottom: 1px solid rgba(34, 36, 38, .8) !important;
 }
 
-.wyd-editor-operations > button {
+.wyd-editor-operations>button {
     margin-top: .5rem !important;
 }
 
-.wyd-bottom-menu > .item {
+.wyd-bottom-menu>.item {
     margin-left: 1rem;
     display: flex !important;
     align-items: center;
 }
-.wyd-app-router{
+
+.wyd-app-router {
     margin-top: 15px;
 }
 
+.wyd-editor-tabs .el-tabs__header{
+    margin: 0!important;
+}

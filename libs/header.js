@@ -81,8 +81,7 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
         mounted() {
             this.loadLevelMenu();
             this.asyncLoadOperations();
-            if(window.ReactNativeWebView){
-                // React App
+            if (utils.isApp) {
                 $("#wyd-header").addClass("pt-3");
             }
         },
