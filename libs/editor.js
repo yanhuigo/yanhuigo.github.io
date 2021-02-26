@@ -179,13 +179,15 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                     let oldModel = this.models[this.selectedFile];
                     if (!oldModel) {
                         oldModel = monaco.editor.createModel(data, "text/plain");
-                        this.setLanguage(oldModel);
                         this.models[this.selectedFile] = oldModel;
                     }
+                    this.setLanguage(oldModel);
                     this.editor.setModel(oldModel);
                     let lastPosition = this.position[this.selectedFile];
                     if (lastPosition) {
+                        this.editor.focus();
                         this.editor.revealPositionInCenter(lastPosition);
+                        this.editor.setPosition(lastPosition);
                     }
                     if (sync) {
                         utils.notify(`已重新加载文件 ${this.selectedFile}`, "success");
