@@ -89,8 +89,8 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
         <div id="wyd-header" class="ui menu raised inverted wyd-header wyd-border-bottom" wydFlag="header">
             
             <div class="header item link" @click="toggleLeftMenu">
-                <img class="ui avatar image" src="/cdn/logo.jpg" />
-                <span class="font-weight-bold">Wyd2021</span>
+                <img class="ui avatar image" src="/imgs/logo.jpg" />
+                <span class="font-weight-bold">Doraemon</span>
             </div>
               
             <a class="item hidden-xs-only" :class="active===lv1Menu[1]?'active':''" v-for="lv1Menu in level1Menus" @click="route(lv1Menu[1])">

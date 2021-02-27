@@ -111,7 +111,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                 utils.prompt('请输入文件路径', '新增文件', {
                     inputPattern: /^[\w/](.)+[a-z]+$/,
                     inputErrorMessage: '格式不正确'
-                }).then(({ value }) => {
+                }).then(({value}) => {
                     gitee.newFile(value, "new File init", this.repo).then(() => {
                         this.initSemantic(true);
                     })
@@ -146,8 +146,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                     type: 'warning'
                 }).then(() => {
                     gitee.deleteFile(this.selectedFile, this.repo).then(data => {
-                        this.editor.setValue("");
-                        this.selectedFile = "";
+                        this.tabRemove(this.selectedFile);
                         this.initSemantic(true);
                     });
                 }).catch(() => {
@@ -180,6 +179,8 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                     if (!oldModel) {
                         oldModel = monaco.editor.createModel(data, "text/plain");
                         this.models[this.selectedFile] = oldModel;
+                    } else {
+                        oldModel.setValue(data);
                     }
                     this.setLanguage(oldModel);
                     this.editor.setModel(oldModel);
@@ -220,17 +221,17 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                         if (lastDir && file.path.startsWith(lastDir.file.path + "/")) {
                             // 子目录
                         } else {
-                            lastDir = { file, children: [] };
+                            lastDir = {file, children: []};
                             fileList.push(lastDir);
                         }
                     } else if (lastDir && file.path.indexOf(lastDir.file.path) !== -1) {
                         lastDir.children.push(file);
                     } else {
-                        fileList.push({ file });
+                        fileList.push({file});
                     }
                 }
 
-                let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({ title: file.path }));
+                let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({title: file.path}));
                 this.fileList = fileList;
                 let app = this;
                 $('#ed-file-search').search({
@@ -244,8 +245,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
             },
 
             selectFile(file) {
-                let lastPosition = this.editor.getPosition();
-                this.position[this.selectedFile] = lastPosition;
+                this.position[this.selectedFile] = this.editor.getPosition();
                 this.selectedFile = file;
                 this.loadFile();
             },
@@ -308,7 +308,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
             },
 
             openInMdEditor() {
-                this.$router.push({ path: "ar_simplemde", query: { filepath: this.selectedFile, repo: this.repo } });
+                this.$router.push({path: "ar_simplemde", query: {filepath: this.selectedFile, repo: this.repo}});
             }
 
         },
@@ -428,7 +428,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                                     <i class="html5 icon"></i>
                                 </button>
                             </el-tooltip>
-                            <el-tooltip content="关闭所有下拉框" placement="top" v-if="editorFiles.length>0">
+                            <el-tooltip content="关闭所有编辑窗口" placement="top" v-if="editorFiles.length>0">
                                 <button class="ui compact icon button ml-1" @click="closeAllModel">
                                     <i class="close icon"></i>
                                 </button>
