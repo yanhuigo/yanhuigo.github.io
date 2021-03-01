@@ -36,7 +36,9 @@ define(['jquery', 'semantic', 'utils', 'gitee', 'axios'], function ($, semantic,
                 return false;
             },
             loginValid() {
-                gitee.refreshToken();
+                gitee.refreshToken((data) => {
+                    this.loginState = data;
+                });
             },
         },
         mounted() {

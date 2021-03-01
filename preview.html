@@ -17,10 +17,10 @@
 
         let gitee = {
 
-            loadFile(file, call) {
+            loadFile(file, call, repo = "webdata") {
 
-                let storageKey = `webdata#${file}`;
-                let cacheKey = `webdata#@${file}`;
+                let storageKey = `${repo}#${file}`;
+                let cacheKey = `${repo}#@${file}`;
 
                 let cache = localStorage.getItem(cacheKey);
                 if (cache) {
@@ -34,12 +34,14 @@
                     return;
                 }
 
-                fetch(`https://gitee.com/api/v5/repos/yanhui1993/webdata/contents/${file}`)
+                fetch(`https://gitee.com/api/v5/repos/yanhui1993/${repo}/contents/${file}`)
                     .then(res => res.json())
                     .then(data => {
                         let content = data.content;
                         content && localStorage.setItem(storageKey, base64.decode(content));
                         call && call(content);
+                    }).catch(e => {
+                        // location.href = "/login.html";
                     });
             }
 

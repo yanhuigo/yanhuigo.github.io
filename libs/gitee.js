@@ -47,7 +47,7 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
                 saveLocalData(storageKey.lsFileTree, data.tree, repo);
                 fileShaMapInit(false, repo)
                 resolve(data.tree);
-                sysLog.addLog(`[${repo}]获取仓库文件树`)
+                sysLog.addLog(`[${repo}]获取仓库文件树`);
             }).catch(err => {
                 reject(err);
             });
@@ -127,7 +127,7 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
      * @param repo
      * @returns {Promise<void>}
      */
-    async function updateFile(filePath, content, repo = pubRepo) {
+    async function updateFile(filePath, content, repo = pubRepo, refreshFileTree = true) {
         let sha = state.fileShaMap.get(`${repo}#${filePath}`);
         if (!sha) {
             utils.notify(`未匹配文件 ${repo}#${filePath}`, 'warning');
@@ -144,7 +144,7 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
                 utils.notify(`上传[${filePath}]成功！`, "success");
                 delLocalData(filePath, repo);
                 saveLocalData(filePath, base64.decode(data), repo);
-                await fileShaMapInit(true, repo);
+                if (refreshFileTree) await fileShaMapInit(true, repo);
                 resolve();
                 sysLog.addLog(`[${repo}]上传文件 ${filePath}`);
             }).catch((err) => {
@@ -331,7 +331,7 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
         return wydConfig;
     }
 
-    function refreshToken() {
+    function refreshToken(call) {
         let loginStorageData = localStorage.getItem(storageKey.lsLoginState);
         if (loginStorageData) {
             let loginState = JSON.parse(loginStorageData);
@@ -340,9 +340,11 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
                 axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`).then(data => {
                     localStorage.setItem(storageKey.lsLoginState, JSON.stringify(data));
                     initState().then(() => {
-                        utils.notify("Token刷新成功", "success");
+                        call && call(data);
                     });
                 });
+            } else {
+                call && call(loginState);
             }
         }
     }

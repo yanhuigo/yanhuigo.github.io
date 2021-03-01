@@ -1,6 +1,4 @@
-define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jquery', 'semantic'], function (Vue, require, gitee, utils, markdownIt, monacoSupport) {
-
-    const md = markdownIt();
+define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic'], function (Vue, require, gitee, utils, monacoSupport) {
 
     return {
         data() {
@@ -111,7 +109,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                 utils.prompt('请输入文件路径', '新增文件', {
                     inputPattern: /^[\w/](.)+[a-z]+$/,
                     inputErrorMessage: '格式不正确'
-                }).then(({value}) => {
+                }).then(({ value }) => {
                     gitee.newFile(value, "new File init", this.repo).then(() => {
                         this.initSemantic(true);
                     })
@@ -180,7 +178,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                         oldModel = monaco.editor.createModel(data, "text/plain");
                         this.models[this.selectedFile] = oldModel;
                     } else {
-                        oldModel.setValue(data);
+                        sync && oldModel.setValue(data);
                     }
                     this.setLanguage(oldModel);
                     this.editor.setModel(oldModel);
@@ -221,17 +219,17 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
                         if (lastDir && file.path.startsWith(lastDir.file.path + "/")) {
                             // 子目录
                         } else {
-                            lastDir = {file, children: []};
+                            lastDir = { file, children: [] };
                             fileList.push(lastDir);
                         }
                     } else if (lastDir && file.path.indexOf(lastDir.file.path) !== -1) {
                         lastDir.children.push(file);
                     } else {
-                        fileList.push({file});
+                        fileList.push({ file });
                     }
                 }
 
-                let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({title: file.path}));
+                let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({ title: file.path }));
                 this.fileList = fileList;
                 let app = this;
                 $('#ed-file-search').search({
@@ -308,7 +306,7 @@ define(['vue', 'require', 'gitee', 'utils', 'markdownIt', 'monacoSupport', 'jque
             },
 
             openInMdEditor() {
-                this.$router.push({path: "ar_simplemde", query: {filepath: this.selectedFile, repo: this.repo}});
+                this.$router.push({ path: "ar_simplemde", query: { filepath: this.selectedFile, repo: this.repo } });
             }
 
         },
