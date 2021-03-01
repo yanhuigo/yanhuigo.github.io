@@ -14,6 +14,7 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                 ],
                 asyncOperations: [],
                 cpsOperations: {},
+                appcfg: {},
             }
         },
         watch: {
@@ -45,6 +46,8 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                     this.level2Menus = data.level2Menus;
                     this.level3Menus = data.level3Menus;
                     this.asyncOperations = data.asyncOperations;
+                    this.appcfg = data.appcfg;
+                    document.title = this.appcfg.title;
                     this.$nextTick(() => {
                         $(".dropdown").dropdown({
                             on: 'hover',
@@ -89,8 +92,8 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
         <div id="wyd-header" class="ui menu raised inverted wyd-header wyd-border-bottom" wydFlag="header">
             
             <div class="header item link" @click="toggleLeftMenu">
-                <img class="ui avatar image" src="/imgs/logo.jpg" />
-                <span class="font-weight-bold">Doraemon</span>
+                <img class="ui avatar image" :src="appcfg.logo" />
+                <span class="font-weight-bold">{{appcfg.title}}</span>
             </div>
               
             <a class="item hidden-xs-only" :class="active===lv1Menu[1]?'active':''" v-for="lv1Menu in level1Menus" @click="route(lv1Menu[1])">
