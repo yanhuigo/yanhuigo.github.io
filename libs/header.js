@@ -89,7 +89,7 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
             }
         },
         template: `
-        <div id="wyd-header" class="ui menu raised inverted wyd-header wyd-border-bottom" wydFlag="header">
+        <div id="wyd-header" class="ui menu wyd-header" wydFlag="header">
             
             <div class="header item link" @click="toggleLeftMenu">
                 <img class="ui avatar image" :src="appcfg.logo" />
@@ -97,12 +97,12 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
             </div>
               
             <a class="item hidden-xs-only" :class="active===lv1Menu[1]?'active':''" v-for="lv1Menu in level1Menus" @click="route(lv1Menu[1])">
-                <i class="icon large" :class="lv1Menu[2]"></i>
+                <i class="icon large blue" :class="lv1Menu[2]"></i>
                 <span>{{lv1Menu[0]}}</span>
             </a>
                
             <div class="ui pointing dropdown link item hidden-xs-only" v-for="lv2Menu in level2Menus">
-                <i class="icon large" :class="lv2Menu.icon"></i>
+                <i class="icon large blue" :class="lv2Menu.icon"></i>
                 <span class="text">{{lv2Menu.title}}</span>
                 <i class="dropdown icon"></i>
                 <div class="menu">
@@ -114,7 +114,7 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
             </div>
 
             <div class="ui pointing dropdown link item hidden-xs-only" v-for="lv3Menu in level3Menus">
-                <i class="icon large" :class="lv3Menu.icon"></i>
+                <i class="icon large blue" :class="lv3Menu.icon"></i>
                 <span class="text">{{lv3Menu.title}}</span>
                 <i class="dropdown icon"></i>
                 <div class="menu">
@@ -127,13 +127,13 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
 
             <div class="right menu">
                 <a class="ui item" @click="openOperation">
-                    <i class="windows large icon"></i>
+                    <i class="windows large icon blue"></i>
                 </a>
             </div>
               
             <el-drawer :visible.sync="showMenu" :append-to-body="true" direction="ltr" size="80%">
                 <h3 slot="title" class="ui header d-flex justify-content-center align-items-center m-0">
-                    <span><i class="ui icon html5 large"></i>导航菜单</span>
+                    <span><i class="ui icon html5 large blue"></i>导航菜单</span>
                 </h3>
                 
                 <div class="ui selection list d-flex flex-row flex-wrap p-3">
@@ -154,7 +154,7 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
 
             <el-drawer :visible.sync="showOperation" :append-to-body="true" direction="rtl" size="80%">
                 <h3 slot="title" class="ui header d-flex justify-content-center align-items-center m-0">
-                    <span><i class="ui icon windows large"></i>快捷操作</span>
+                    <span><i class="ui icon windows large blue"></i>快捷操作</span>
                 </h3>
                 <div class="ui selection list d-flex flex-row flex-wrap p-3">
                     <button class="ui basic button d-flex justify-content-center align-items-center m-1" v-for="operation in asyncOperations" @click="cpsOperations[operation[1]]()">
