@@ -1,4 +1,3 @@
-let isProd = true;
 
 // 本地js定义
 let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home", "storageView", "sysLog", "monacoSupport"];
@@ -108,11 +107,11 @@ require([
         });
     }
 
-    const routeNames = ["home", "bookmarks", "editor", "login", "storageView", "sysLog"];
+    const routeNames = ["home", "bookmarks", "bookmarks.chrome", "editor", "login", "storageView", "sysLog"];
 
     function vueRouterInit() {
         const routes = [
-            { path: '/', redirect: '/bookmarks' }
+            { path: '/', redirect: '/bookmarks.chrome' }
         ]
         for (let routeName of routeNames) {
             routes.push({
@@ -167,10 +166,13 @@ require([
             if (!loadedRoute.includes(to.path)) {
                 loading = element.Loading.service({
                     lock: true,
-                    text: '努力加载中~~~',
+                    text: 'Loading~~~',
                     spinner: 'el-icon-loading',
                     background: 'rgba(0, 0, 0, 0.9)'
                 });
+                setTimeout(() => {
+                    loading.close();
+                }, 3000)
             }
             next();
         });

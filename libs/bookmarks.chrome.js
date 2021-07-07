@@ -4,6 +4,23 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
     let bmTagList = [];//标签集合  分类下的多级子分类
     let bmList = [];
 
+    function recursionBookmark(bm, type, tag) {
+        if (bm.a) { // 子分类文件夹
+            for (let cbm of bm.a) {
+                if (cbm.a) {
+                    bmTagList.push({ name: cbm.b, type });
+                    recursionBookmark(cbm, type, cbm.b);
+                } else {
+                    recursionBookmark(cbm, type, tag);
+                }
+            }
+        } else if (bm.c) {//书签
+            type && (bm.type = type);
+            tag && (bm.tag = tag);
+            bmList.push(bm);
+        }
+    }
+
     return {
         name: "bookmarks",
         data() {
@@ -64,7 +81,6 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                 this.bmList = bmList.filter(n => n.type === type);
             },
             tagClick(tag) {
-
                 let checkedTag = tag.name;
                 if (tag.name === this.checkedTag) {
                     this.checkedTag = "";
@@ -72,16 +88,17 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                 }
 
                 this.checkedTag = checkedTag;
+
                 if (checkedTag === "") {
                     this.bmList = bmList.filter(n => n.type === this.checkedType);
                     return;
                 }
 
                 this.bmList = bmList.filter(bm => {
-                    if (!bm.tags) {
+                    if (!bm.tag) {
                         return false;
                     }
-                    return bm.tags.indexOf(checkedTag) !== -1;
+                    return bm.tag === checkedTag;
                 });
             },
             refreshData() {
@@ -112,27 +129,21 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
             },
             bmDataHandle(bmRoot) {
                 // 书签栏书签集合 a = children b=title c=url
-                let rootBmList = bmRoot;
-                const bmTagSet = new Set();
-                const bmTypeSet = new Set();
+                let rootBmList = bmRoot.a;
                 for (let bm of rootBmList) {
-                    let [title, url, type, tags] = bm;
-                    bmTypeSet.add(type);
-                    if (tags !== "") tags.split(",").forEach(x => bmTagSet.add({ name: x, type }));
-                    bmList.push({ title, url, type, tags });
+                    // 如果有子节点  则代表分类
+                    if (bm.a) {
+                        recursionBookmark(bm, bm.b, null);
+                        bmTypeList.push(bm.b);
+                    } else {
+                        recursionBookmark(bm, null, null);
+                    }
                 }
-
-
-                bmTypeList = Array.from(bmTypeSet);
+                this.checkedType = bmTypeList[0];
                 this.bmTypeList = bmTypeList;
-
-                bmTagList = Array.from(bmTagSet);
                 this.bmTagList = bmTagList;
-
                 this.bmList = bmList;
-                this.checkedType = this.bmTypeList[0];
                 this.loading = false;
-                console.log(bmList);
             },
             changeSource(file) {
                 if (file.path === this.bmSourceFilePath) {
@@ -152,8 +163,8 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
             bmTagList = [];
             bmList = [];
             let config = gitee.getWydConfig();
-            if (config && config.bookmarks) {
-                this.bmSourceFiles = config.bookmarks.bmSourceFiles;
+            if (config && config.bookmarksChrome) {
+                this.bmSourceFiles = config.bookmarksChrome.bmSourceFiles;
                 this.changeSource(this.bmSourceFiles[0]);
             }
         },
@@ -188,11 +199,11 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                         class="ui tag label mt-1" :class="checkedTag==tag.name ? 'teal' :'' " v-for="tag in bmTagList"
                         @click="tagClick(tag)">{{tag.name}}</a></div>
                 <div class="ui cards centered mt-4">
-                    <a class="card" target="_blank" :href="bm.url" v-for="bm in bmList">
+                    <a class="card" target="_blank" :href="bm.c" v-for="bm in bmList">
                         <div class="content overflow-hidden">
-                            <p class="ui header small d-inline text-nowrap" :title="bm.b">{{bm.title}} </p>
-                            <div class="meta text-nowrap">{{bm.tags}}</div>
-                            <div class="description text-nowrap" :title="bm.url">{{bm.url}}</div>
+                            <p class="ui header small d-inline text-nowrap" :title="bm.b">{{bm.b}} </p>
+                            <div class="meta text-nowrap">{{bm.tag}}</div>
+                            <div class="description text-nowrap" :title="bm.c">{{bm.c}}</div>
                         </div>
                     </a>
                 </div>
