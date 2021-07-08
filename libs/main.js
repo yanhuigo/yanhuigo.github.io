@@ -1,88 +1,101 @@
 
-// 本地js定义
-let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home", "storageView", "sysLog", "monacoSupport"];
-let localPath = {};
-for (let lib of localLibs) {
-    localPath[lib] = isProd ? lib + ".min" : lib;
-}
+requireJsConfig();
 
-// 本地css定义
-let localCssList = ["util", "wyd2021"];
-let localCssPath = [];
-for (let css of localCssList) {
-    localCssPath.push(isProd ? `css!/css/min/${css}` + ".min.css" : `css!/css/${css}.css`);
-}
+initApp();
 
-// 路径配置
-require.config({
-    map: {
-        '*': {
-            'css': '/cdn/css.min.js',
-        }
-    },
-    // 默认自动加载的模块
-    deps: [
-        "vue", "vueRouter", "axios", "ELEMENT", "jquery", "semantic",
-        "css!/cdn/element-ui/lib/theme-chalk/index.css",
-        "css!/cdn/element-ui/lib/theme-chalk/display.css",
-        "css!/cdn/semantic/semantic.min.css",
-        ...localCssPath
-    ],
-    // 定义模块 名称key-路径value
-    paths: {
-        "vue": "/cdn/vue/vue.min",
-        "vueRouter": "/cdn/vue/vue-router",
-        "axios": "/cdn/axios.min",
-        "ELEMENT": "/cdn/element-ui/lib/index",
-        "jquery": '/cdn/bootstrap/jquery.min',
-        "semantic": '/cdn/semantic/semantic.min',
-        "vs": '/cdn/monaco-editor/min/vs',
-        "vue-markdown": '/cdn/vue/vue-markdown.min',
-        "markdownIt": '/cdn/markdown-it.min',
-        ...localPath
-    },
-    // 加载非AMD规范的JS文件
-    shim: {
-        "semantic": {
-            deps: ['jquery']
-        }
+function requireJsConfig() {
+    // 本地js定义
+    let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home", "storageView", "sysLog", "monacoSupport"];
+    let localPath = {};
+    for (let lib of localLibs) {
+        localPath[lib] = isProd ? lib + ".min" : lib;
     }
-});
 
-// app入口
-require([
-    'vue',
-    'axios',
-    'gitee',
-    'ELEMENT',
-    'vueRouter',
-    'header',
-    'utils',
-], function (
-    Vue,
-    axios,
-    gitee,
-    element,
-    VueRouter,
-    Header,
-    utils,
-) {
+    // 本地css定义
+    let localCssList = ["util", "wyd2021"];
+    let localCssPath = [];
+    for (let css of localCssList) {
+        localCssPath.push(isProd ? `css!/css/min/${css}` + ".min.css" : `css!/css/${css}.css`);
+    }
 
-    axiosInit();
-
-    Vue.use(element);
-    Vue.use(VueRouter);
-
-    gitee.initState().then(data => {
-        vueMixin();
-        // 数据初始化完成
-        appInit();
+    // 路径配置
+    require.config({
+        map: {
+            '*': {
+                'css': '/cdn/css.min.js',
+            }
+        },
+        // 默认自动加载的模块
+        deps: [
+            "vue", "vueRouter", "axios", "ELEMENT", "jquery", "semantic",
+            "css!/cdn/element-ui/lib/theme-chalk/index.css",
+            "css!/cdn/element-ui/lib/theme-chalk/display.css",
+            "css!/cdn/semantic/semantic.min.css",
+            ...localCssPath
+        ],
+        // 定义模块 名称key-路径value
+        paths: {
+            "vue": "/cdn/vue/vue.min",
+            "vueRouter": "/cdn/vue/vue-router",
+            "axios": "/cdn/axios.min",
+            "ELEMENT": "/cdn/element-ui/lib/index",
+            "jquery": '/cdn/bootstrap/jquery.min',
+            "semantic": '/cdn/semantic/semantic.min',
+            "vs": '/cdn/monaco-editor/min/vs',
+            "vue-markdown": '/cdn/vue/vue-markdown.min',
+            "markdownIt": '/cdn/markdown-it.min',
+            ...localPath
+        },
+        // 加载非AMD规范的JS文件
+        shim: {
+            "semantic": {
+                deps: ['jquery']
+            }
+        }
     });
+}
 
-    function appInit() {
+
+function initApp() {
+    require([
+        'vue',
+        'gitee',
+        'ELEMENT',
+        'vueRouter',
+    ], function (
+        Vue,
+        gitee,
+        element,
+        VueRouter,
+    ) {
+
+        axiosInit();
+        Vue.use(element);
+        Vue.use(VueRouter);
+        gitee.initState().then(data => {
+            vueMixin();
+            startVueApp();
+        });
+    })
+}
+
+function startVueApp() {
+    require([
+        'vue',
+        'gitee',
+        'vueRouter',
+        'header',
+        'ELEMENT'
+    ], function (
+        Vue,
+        gitee,
+        VueRouter,
+        Header,
+        element
+    ) {
         window.wyd2021 = new Vue({
             el: "#root",
-            router: vueRouterInit(),
+            router: vueRouterInit(gitee, VueRouter, element),
             components: {
                 "app-header": Header,
             },
@@ -105,92 +118,95 @@ require([
             </div>
         `
         });
-    }
+    })
+}
 
+function vueRouterInit(gitee, VueRouter, element) {
     const routeNames = ["home", "bookmarks", "bookmarks.chrome", "editor", "login", "storageView", "sysLog"];
-
-    function vueRouterInit() {
-        const routes = [
-            { path: '/', redirect: '/bookmarks.chrome' }
-        ]
-        for (let routeName of routeNames) {
-            routes.push({
-                path: `/${routeName}`, component: resolve => {
-                    require([routeName], (data) => {
-                        if (data.cps) {
-                            resolve(data.cps);
-                        } else {
-                            resolve(data);
-                        }
-                    });
-                }
-            });
-        }
-
-        let autoRouteList = gitee.getWydConfig()["autoRouteList"];
-        if (autoRouteList) {
-            try {
-                for (let autoRoute of autoRouteList) {
-                    let meRoute = `ar_${autoRoute}`;
-                    routes.push({
-                        path: `/${meRoute}`, component: resolve => {
-                            gitee.getFileContent(`cps/${autoRoute}.js`).then(data => {
-                                // 动态注入脚本
-                                let script = document.createElement('script');
-                                script.type = 'text/javascript';
-                                script.append(data);
-                                document.body.appendChild(script);
-                                require([meRoute], (data) => {
-                                    if (data.cps) {
-                                        resolve(data.cps);
-                                    } else {
-                                        resolve(data);
-                                    }
-                                });
-                            });
-                        }
-                    });
-                }
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
-        let router = new VueRouter({
-            routes
-        });
-
-        let loading;
-        let loadedRoute = [];
-        router.beforeEach((to, from, next) => {
-            if (!loadedRoute.includes(to.path)) {
-                loading = element.Loading.service({
-                    lock: true,
-                    text: 'Loading~~~',
-                    spinner: 'el-icon-loading',
-                    background: 'rgba(0, 0, 0, 0.9)'
+    const routes = [
+        { path: '/', redirect: '/bookmarks.chrome' }
+    ]
+    for (let routeName of routeNames) {
+        routes.push({
+            path: `/${routeName}`, component: resolve => {
+                require([routeName], (data) => {
+                    if (data.cps) {
+                        resolve(data.cps);
+                    } else {
+                        resolve(data);
+                    }
                 });
-                setTimeout(() => {
-                    loading.close();
-                }, 3000)
-            }
-            next();
-        });
-
-        router.afterEach((to, from) => {
-            if (!loadedRoute.includes(to.path)) {
-                loadedRoute.push(to.path);
-                loading && loading.close();
             }
         });
-
-        return router;
     }
 
-    /**
-     * axios拦截器初始化
-     */
-    function axiosInit() {
+    let autoRouteList = gitee.getWydConfig()["autoRouteList"];
+    if (autoRouteList) {
+        try {
+            for (let autoRoute of autoRouteList) {
+                let meRoute = `ar_${autoRoute}`;
+                routes.push({
+                    path: `/${meRoute}`, component: resolve => {
+                        gitee.getFileContent(`cps/${autoRoute}.js`).then(data => {
+                            // 动态注入脚本
+                            let script = document.createElement('script');
+                            script.type = 'text/javascript';
+                            script.append(data);
+                            document.body.appendChild(script);
+                            require([meRoute], (data) => {
+                                if (data.cps) {
+                                    resolve(data.cps);
+                                } else {
+                                    resolve(data);
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    let router = new VueRouter({
+        routes
+    });
+
+    let loading;
+    let loadedRoute = [];
+    router.beforeEach((to, from, next) => {
+        if (!loadedRoute.includes(to.path)) {
+            loading = element.Loading.service({
+                lock: true,
+                text: 'Loading~~~',
+                spinner: 'el-icon-loading',
+                background: 'rgba(0, 0, 0, 0.9)'
+            });
+            setTimeout(() => {
+                loading.close();
+            }, 3000)
+        }
+        next();
+    });
+
+    router.afterEach((to, from) => {
+        if (!loadedRoute.includes(to.path)) {
+            loadedRoute.push(to.path);
+            loading && loading.close();
+        }
+    });
+
+    return router;
+}
+
+/**
+ * axios拦截器初始化
+ */
+function axiosInit() {
+
+    require(['axios', 'utils'], function (axios, utils) {
+
         axios.interceptors.request.use(function (config) {
             return config;
         }, function (error) {
@@ -208,9 +224,14 @@ require([
             }
             return Promise.reject(error);
         });
-    }
 
-    function vueMixin() {
+    })
+
+
+}
+
+function vueMixin() {
+    require(['vue', 'utils'], (Vue, utils) => {
         // 全局混入
         Vue.mixin({
             mounted() {
@@ -223,5 +244,10 @@ require([
                 }
             }
         })
-    }
-});
+    })
+}
+
+
+
+
+
