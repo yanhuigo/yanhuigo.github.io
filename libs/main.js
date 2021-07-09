@@ -5,7 +5,7 @@ initApp();
 
 function requireJsConfig() {
     // 本地js定义
-    let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home", "storageView", "sysLog", "monacoSupport", "bookmarks.chrome"];
+    let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "login", "home", "storageView", "sysLog", "monacoSupport", "bookmarks.chrome"];
     let localPath = {};
     for (let lib of localLibs) {
         localPath[lib] = isProd ? lib + ".min" : lib;
@@ -128,7 +128,7 @@ function startVueApp() {
 function vueRouterInit(gitee, VueRouter, element) {
     const routeNames = ["home", "bookmarks", "bookmarks.chrome", "editor", "login", "storageView", "sysLog"];
     const routes = [
-        { path: '/', redirect: '/bookmarks.chrome' }
+        { path: '/', redirect: '/editor' }
     ]
     for (let routeName of routeNames) {
         routes.push({
