@@ -8,11 +8,11 @@
     <title>Json View</title>
     <style type="text/css">
         .jv-json-txt {
-            height: 80vh !important;
+            height: 90vh !important;
         }
 
         .jv-json-view {
-            max-height: 80vh !important;
+            max-height: 90vh !important;
             overflow: auto;
         }
     </style>
@@ -34,10 +34,10 @@
         let storage_jsontxt_key = "pages-jsonview-jsontxt";
 
         function AppRoot() {
-
-            let [jsonTxt, setJsonTxt] = React.useState(localStorage.getItem(storage_jsontxt_key));
+            let storageTxt = localStorage.getItem(storage_jsontxt_key);
+            if (!storageTxt) storageTxt = "{}";
+            let [jsonTxt, setJsonTxt] = React.useState(storageTxt);
             let [data, setData] = React.useState({});
-            let [editable, setEditable] = React.useState(false);
             let updatedSrc = {};
 
             React.useEffect(() => {
@@ -50,6 +50,7 @@
             }
 
             function jsonChange(value) {
+                if (!value) value = "{}";
                 localStorage.setItem(storage_jsontxt_key, value);
                 setJsonTxt(value);
                 setData(JSON.parse(value));
@@ -70,18 +71,15 @@
                         <span class="navbar-brand mb-0 h1">Json View</span>
                     </nav>
                     <div class="container-fluid">
-                        <div class="my-3 ml-1">
-                            <button type="button" class="btn btn-info" onClick={() => { setEditable(!editable) }}>{editable ? "取消编辑" : "编辑"}</button>
-                        </div>
-                        <div class="row p-1">
+                        <div class="row p-1 mt-2">
                             <div class="col-md-5">
                                 <textarea placeholder="请输入json字符串" class="form-control jv-json-txt" onChange={e => jsonChange(e.target.value)} value={jsonTxt}></textarea>
                             </div>
                             <div class="col-md-7 p-2 jv-json-view border border-secondary rounded">
                                 <reactJsonView.default src={data}
-                                    onEdit={editable ? modifyEvent : false}
-                                    onAdd={editable ? modifyEvent : false}
-                                    onDelete={editable ? modifyEvent : false}
+                                    onEdit={modifyEvent}
+                                    onAdd={modifyEvent}
+                                    onDelete={modifyEvent}
                                     displayDataTypes={false} />
                             </div>
                         </div>
