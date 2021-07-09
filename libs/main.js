@@ -5,7 +5,7 @@ initApp();
 
 function requireJsConfig() {
     // 本地js定义
-    let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home", "storageView", "sysLog", "monacoSupport"];
+    let localLibs = ["header", "utils", "gitee", "editor", "bookmarks", "base64", "home", "storageView", "sysLog", "monacoSupport", "bookmarks.chrome"];
     let localPath = {};
     for (let lib of localLibs) {
         localPath[lib] = isProd ? lib + ".min" : lib;
