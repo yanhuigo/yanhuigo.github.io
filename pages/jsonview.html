@@ -22,13 +22,14 @@
 
     <div id="root"></div>
 
-    <link rel="stylesheet" href="../cdn/bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" href="../cdn/bootswatch/bootstrap.Morph.min.css" />
+    <link href="../cdn/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
     <script src="../cdn/react/react.production.min.js"></script>
     <script src="../cdn/react/react-dom.production.min.js"></script>
     <script src="../cdn/react/babel.min.js"></script>
     <script src="../cdn/react/react-json-view.js"></script>
-
+    <script src="../cdn/ionicons/ionicons.js"></script>
     <script type="text/babel">
 
         let storage_jsontxt_key = "pages-jsonview-jsontxt";
@@ -67,8 +68,12 @@
 
             return (
                 <div>
-                    <nav class="navbar navbar-dark bg-dark">
-                        <span class="navbar-brand mb-0 h1">Json View</span>
+                    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                        <div class="container-fluid">
+                            <div class="navbar-brand" href="#">
+                                <h2><i class="fa fa-camera"></i> <span>Json View</span></h2>
+                            </div>
+                        </div>
                     </nav>
                     <div class="container-fluid">
                         <div class="row p-1 mt-2">

@@ -26,6 +26,14 @@
                     <ion-icon size="large" name="navigate-outline" style="vertical-align: bottom;"></ion-icon>
                     <span>Pages Navgation</span>
                 </a>
+                <div class="collapse navbar-collapse" id="navbarColor03">
+                    <ul class="navbar-nav me-auto">
+
+                    </ul>
+                    <div class="d-flex">
+                        <input class="form-control me-sm-2" type="text" placeholder="Search Links" @keyup="filter" v-model="searchTxt" />
+                    </div>
+                </div>
             </div>
         </nav>
         <div class="container mt-4">
@@ -46,15 +54,25 @@
     <link rel="stylesheet" href="cdn/bootswatch/bootstrap.Morph.min.css" />
     <script>
 
+        let originLinks = [];
+
         new Vue({
             el: "#root",
             methods: {
                 open(link) {
+                    this.searchTxt = "";
+                    this.links = originLinks;
                     window.open(link.url);
+                },
+                filter() {
+                    if (!this.searchTxt) this.links = originLinks;
+                    let txt = this.searchTxt.toUpperCase();
+                    this.links = originLinks.filter(link => link.title.toUpperCase().indexOf(txt) !== -1 || link.note.toUpperCase().indexOf(txt) !== -1)
                 }
             },
             data() {
                 return {
+                    searchTxt: "",
                     links: []
                 }
             },
@@ -62,7 +80,8 @@
                 gitee.getPublicFile("data/pages.link.json").then(data => {
                     let linkArray = JSON.parse(data);
                     let links = linkArray.map(link => ({ title: link[0], url: link[1], note: link[2] }));
-                    this.links = links;
+                    originLinks = links;
+                    this.links = originLinks;
                 })
             }
         })
