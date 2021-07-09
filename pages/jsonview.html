@@ -4,7 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" type="image/jpeg" sizes="80x80" href="/imgs/logo.jpg" />
     <title>Json View</title>
+    <style type="text/css">
+        .jv-json-txt {
+            height: 80vh !important;
+        }
+
+        .jv-json-view {
+            max-height: 80vh !important;
+            overflow: auto;
+        }
+    </style>
 </head>
 
 <body>
@@ -52,21 +63,30 @@
             }
 
             return (
-                <div class="container">
-                    <h1 class="text-center my-3">Json View</h1>
-                    <div class="my-3">
-                        <textarea placeholder="请输入json字符串" class="form-control" rows="10" onChange={e => jsonChange(e.target.value)} value={jsonTxt}></textarea>
+                <div>
+                    <nav class="navbar navbar-dark bg-dark">
+                        <span class="navbar-brand mb-0 h1">Json View</span>
+                    </nav>
+                    <div class="container-fluid">
+                        <div class="my-3 ml-5">
+                            <button type="button" class="btn btn-success" onClick={initJsonTree}>生成JSON树</button>
+                            <button type="button" class="btn btn-secondary mx-3" onClick={getJsonTxt}>反向生成JSON字符串</button>
+                            <button type="button" class="btn btn-info" onClick={() => { setEditable(!editable) }}>{editable ? "取消编辑" : "编辑"}</button>
+                        </div>
+                        <div class="row p-1">
+                            <div class="col-md-5">
+                                <textarea placeholder="请输入json字符串" class="form-control jv-json-txt" onChange={e => jsonChange(e.target.value)} value={jsonTxt}></textarea>
+                            </div>
+                            <div class="col-md-7 p-2 jv-json-view border border-secondary rounded">
+                                <reactJsonView.default src={data}
+                                    onEdit={editable ? modifyEvent : false}
+                                    onAdd={editable ? modifyEvent : false}
+                                    onDelete={editable ? modifyEvent : false}
+                                    displayDataTypes={false} />
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-center mb-3">
-                        <button type="button" class="btn btn-success" onClick={initJsonTree}>生成JSON树</button>
-                        <button type="button" class="btn btn-secondary mx-3" onClick={getJsonTxt}>反向生成JSON字符串</button>
-                        <button type="button" class="btn btn-info" onClick={() => { setEditable(!editable) }}>{editable ? "取消编辑" : "编辑"}</button>
-                    </div>
-                    <div><reactJsonView.default src={data}
-                        onEdit={editable ? modifyEvent : false}
-                        onAdd={editable ? modifyEvent : false}
-                        onDelete={editable ? modifyEvent : false}
-                        displayDataTypes={false} /></div>
+
                 </div>
             )
 
