@@ -62,14 +62,18 @@ function initApp() {
         'gitee',
         'ELEMENT',
         'vueRouter',
+        'axios',
+        'utils'
     ], function (
         Vue,
         gitee,
         element,
         VueRouter,
+        axios,
+        utils
     ) {
 
-        axiosInit();
+        axiosInit(axios, utils);
         Vue.use(element);
         Vue.use(VueRouter);
         gitee.initState().then(data => {
@@ -203,31 +207,24 @@ function vueRouterInit(gitee, VueRouter, element) {
 /**
  * axios拦截器初始化
  */
-function axiosInit() {
+function axiosInit(axios, utils) {
+    axios.interceptors.request.use(function (config) {
+        return config;
+    }, function (error) {
+        return Promise.reject(error);
+    });
 
-    require(['axios', 'utils'], function (axios, utils) {
-
-        axios.interceptors.request.use(function (config) {
-            return config;
-        }, function (error) {
-            return Promise.reject(error);
-        });
-
-        axios.interceptors.response.use(function (response) {
-            if (response.status === 200) {
-                return response.data;
-            }
-            return response;
-        }, function (error) {
-            if (error.response && error.response.status === 401) {
-                utils.goLogin();
-            }
-            return Promise.reject(error);
-        });
-
-    })
-
-
+    axios.interceptors.response.use(function (response) {
+        if (response.status === 200) {
+            return response.data;
+        }
+        return response;
+    }, function (error) {
+        if (error.response && error.response.status === 401) {
+            utils.goLogin();
+        }
+        return Promise.reject(error);
+    });
 }
 
 function vueMixin() {
