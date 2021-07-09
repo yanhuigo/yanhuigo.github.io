@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Json View</title>
+</head>
+
+<body>
+
+    <div id="root"></div>
+
+    <link rel="stylesheet" href="../cdn/bootstrap/bootstrap.min.css" />
+
+    <script src="../cdn/react/react.production.min.js"></script>
+    <script src="../cdn/react/react-dom.production.min.js"></script>
+    <script src="../cdn/react/babel.min.js"></script>
+    <script src="../cdn/react/react-json-view.js"></script>
+
+    <script type="text/babel">
+
+        let storage_jsontxt_key = "pages-jsonview-jsontxt";
+
+        function AppRoot() {
+
+            let [jsonTxt, setJsonTxt] = React.useState(localStorage.getItem(storage_jsontxt_key));
+            let [data, setData] = React.useState({});
+            let [editable, setEditable] = React.useState(false);
+            let updatedSrc = {};
+
+            React.useEffect(() => {
+                console.log("effect func running...")
+            }, [])
+
+            function initJsonTree() {
+                updatedSrc = JSON.parse(jsonTxt);
+                setData(updatedSrc);
+            }
+
+            function jsonChange(value) {
+                localStorage.setItem(storage_jsontxt_key, value);
+                setJsonTxt(value);
+            }
+
+            function getJsonTxt() {
+                setJsonTxt(JSON.stringify(updatedSrc, null, 4));
+            }
+
+            function modifyEvent(e) {
+                updatedSrc = e.updated_src;
+            }
+
+            return (
+                <div class="container">
+                    <h1 class="text-center my-3">Json View</h1>
+                    <div class="my-3">
+                        <textarea placeholder="请输入json字符串" class="form-control" rows="10" onChange={e => jsonChange(e.target.value)} value={jsonTxt}></textarea>
+                    </div>
+                    <div class="text-center mb-3">
+                        <button type="button" class="btn btn-success" onClick={initJsonTree}>生成JSON树</button>
+                        <button type="button" class="btn btn-secondary mx-3" onClick={getJsonTxt}>反向生成JSON字符串</button>
+                        <button type="button" class="btn btn-info" onClick={() => { setEditable(!editable) }}>{editable ? "取消编辑" : "编辑"}</button>
+                    </div>
+                    <div><reactJsonView.default src={data}
+                        onEdit={editable ? modifyEvent : false}
+                        onAdd={editable ? modifyEvent : false}
+                        onDelete={editable ? modifyEvent : false}
+                        displayDataTypes={false} /></div>
+                </div>
+            )
+
+        }
+
+        ReactDOM.render(
+            <AppRoot />,
+            document.getElementById('root')
+        );
+
+
+    </script>
+</body>
+
+</html>
