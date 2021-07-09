@@ -41,7 +41,7 @@
             let updatedSrc = {};
 
             React.useEffect(() => {
-                console.log("effect func running...")
+                initJsonTree();
             }, [])
 
             function initJsonTree() {
@@ -52,6 +52,7 @@
             function jsonChange(value) {
                 localStorage.setItem(storage_jsontxt_key, value);
                 setJsonTxt(value);
+                setData(JSON.parse(value));
             }
 
             function getJsonTxt() {
@@ -60,6 +61,7 @@
 
             function modifyEvent(e) {
                 updatedSrc = e.updated_src;
+                setJsonTxt(JSON.stringify(updatedSrc, null, 4));
             }
 
             return (
@@ -68,9 +70,7 @@
                         <span class="navbar-brand mb-0 h1">Json View</span>
                     </nav>
                     <div class="container-fluid">
-                        <div class="my-3 ml-5">
-                            <button type="button" class="btn btn-success" onClick={initJsonTree}>生成JSON树</button>
-                            <button type="button" class="btn btn-secondary mx-3" onClick={getJsonTxt}>反向生成JSON字符串</button>
+                        <div class="my-3 ml-1">
                             <button type="button" class="btn btn-info" onClick={() => { setEditable(!editable) }}>{editable ? "取消编辑" : "编辑"}</button>
                         </div>
                         <div class="row p-1">
