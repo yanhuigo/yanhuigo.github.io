@@ -15,7 +15,7 @@ function requireJsConfig() {
     let localCssList = ["util", "wyd2021"];
     let localCssPath = [];
     for (let css of localCssList) {
-        localCssPath.push(isProd ? `css!/css/min/${css}` + ".min.css" : `css!/css/${css}.css`);
+        localCssPath.push(isProd ? `css!/css/${css}` + ".min.css" : `css!/css/${css}.css`);
     }
 
     // 路径配置
