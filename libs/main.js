@@ -1,7 +1,9 @@
-
-requireJsConfig();
-
-initApp();
+if (!localStorage.getItem("wyd-login-state")) {
+    window.location.href = isProd ? "/login.min.html" : "/login.html";
+} else {
+    requireJsConfig();
+    initApp();
+}
 
 function requireJsConfig() {
     // 本地js定义
