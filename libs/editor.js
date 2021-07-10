@@ -359,7 +359,7 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
                     <i class="arrow right icon"></i>
                 </button>
                 
-                <div class="ui vertical menu p-1 m-0 file-tree overflow-auto w-100-xs-only" style="min-width:240px;" v-show="showTree">
+                <div class="ui vertical menu large p-1 m-0 file-tree overflow-auto w-100-xs-only" style="min-width:240px;" v-show="showTree">
                     <div class="d-flex justify-content-start flex-wrap wyd-editor-operations">
                         <div class="ui buttons w-100">
                               <button @click="setRepo('webdata')" class="ui button" :class="repo==='webdata'?'active teal':''"><i class="heart icon"></i>webData</button>
@@ -394,14 +394,14 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
                             <div class="header">{{file.file.path}}</div>
                             <div class="menu" v-for="subFile in file.children">
                                 <a class="item" @click="selectFile(subFile.path)" :class="selectedFile===subFile.path ? 'active teal':''">
-                                    <i :class="subFile.mdf ? 'icon git red large':'icon git'"></i>
+                                    <i class="icon git" :class="subFile.mdf ? 'red' : selectedFile===subFile.path ? 'square' : ''"></i>
                                     <span :class="subFile.mdf ? 'ui red':''">{{subFile.path.split(file.file.path + "/")[1]}}</span> 
                                 </a>
                             </div>
                         </template>
                         <div class="menu" v-else>
                             <a class="item" @click="selectFile(file.file.path)" :class="selectedFile===file.file.path ? 'active teal':''">
-                                <i :class="file.file.mdf ? 'icon git red large':'icon git'"></i>
+                                <i class="icon git" :class="file.file.mdf ? 'red': selectedFile===file.file.path ? 'square' : ''"></i>
                                 <span>{{file.file.path}}</span>
                             </a>
                         </div>
