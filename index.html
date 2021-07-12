@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="icon" type="image/jpeg" sizes="80x80" href="/imgs/logo.jpg" />
-    <title>Pages Navgation</title>
+    <title>Links</title>
+    <link rel="stylesheet" href="cdn/bootswatch/bootstrap.Morph.min.css" />
+    <link href="cdn/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <style type="text/css">
         .pages-link {
             cursor: pointer;
@@ -24,16 +26,33 @@
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">
                     <div class="navbar-brand" href="#">
-                        <h2><i class="fa fa-link"></i> <span>Pages Navgation</span></h2>
+                        <h2><i class="fa fa-link"></i> <span>Links</span></h2>
                     </div>
                 </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03"
+                    aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
                 <div class="collapse navbar-collapse" id="navbarColor03">
                     <ul class="navbar-nav me-auto">
-
+                        <template v-for="link in headerLinks">
+                            <li v-if="typeof link[1] === 'string'" class="nav-item">
+                                <a class="nav-link" :href="link[1]">{{link[0]}}</a>
+                            </li>
+                            <li v-else class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                                    aria-haspopup="true" aria-expanded="false">{{link[0]}}</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" :href="subLink[1]"
+                                        v-for="subLink in link[1]">{{subLink[0]}}</a>
+                                </div>
+                            </li>
+                        </template>
                     </ul>
-                    <div class="d-flex">
+                    <div class="d-flex align-items-end">
                         <input class="form-control me-sm-2" type="text" placeholder="Search Links" @keyup="filter"
                             v-model="searchTxt" />
+                        <h2><i class="fa fa-refresh" style="cursor: pointer;" @click="refreshCache"></i></h2>
                     </div>
                 </div>
             </div>
@@ -50,10 +69,11 @@
         </div>
     </div>
 
+    <script src="cdn/bootstrap/popper.min.js"></script>
+    <script src="cdn/bootstrap/bootstrap.min.js"></script>
+
     <script src="cdn/vue/vue.min.js"></script>
     <script src="api/gitee.js"></script>
-    <link rel="stylesheet" href="cdn/bootswatch/bootstrap.Morph.min.css" />
-    <link href="../cdn/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <script>
 
         let originLinks = [];
@@ -70,21 +90,39 @@
                     if (!this.searchTxt) this.links = originLinks;
                     let txt = this.searchTxt.toUpperCase();
                     this.links = originLinks.filter(link => link.title.toUpperCase().indexOf(txt) !== -1 || link.note.toUpperCase().indexOf(txt) !== -1)
+                },
+                loadData() {
+                    gitee.getPublicFile("data/pages.link.json", this.cache).then(data => {
+                        let linkArray = JSON.parse(data);
+                        let links = linkArray.map(link => ({ title: link[0], url: link[1], note: link[2] }));
+                        originLinks = links;
+                        this.links = originLinks;
+                    });
+
+                    gitee.getPublicFile("data/pages.header.json", this.cache).then(data => {
+                        let headerLinks = JSON.parse(data);
+                        this.headerLinks = headerLinks;
+                    });
+                },
+                refreshCache() {
+                    if (confirm("确认重新加载数据?")) {
+                        this.cache = false;
+                        this.loadData();
+                        this.cache = true;
+                    }
+
                 }
             },
             data() {
                 return {
                     searchTxt: "",
-                    links: []
+                    links: [],
+                    cache: true,
+                    headerLinks: []
                 }
             },
             mounted() {
-                gitee.getPublicFile("data/pages.link.json").then(data => {
-                    let linkArray = JSON.parse(data);
-                    let links = linkArray.map(link => ({ title: link[0], url: link[1], note: link[2] }));
-                    originLinks = links;
-                    this.links = originLinks;
-                })
+                this.loadData();
             }
         })
 

@@ -2,20 +2,20 @@ const gitee = (function () {
 
     async function getPublicFile(path, cache = true) {
         return new Promise((resolve, reject) => {
-
-            // 修改但是未同步的数据
-            let mdfDataKey = `webdata#@${path}`;
-            let mdfCacheData = localStorage.getItem(mdfDataKey);
-            if (mdfCacheData) {
-                resolve(mdfCacheData);
-                return;
-            }
-
             let dataKey = `webdata#${path}`;
-            let cacheData = localStorage.getItem(dataKey);
-            if (cacheData) {
-                resolve(cacheData);
-                return;
+            if (cache) {
+                // 修改但是未同步的数据
+                let mdfDataKey = `webdata#@${path}`;
+                let mdfCacheData = localStorage.getItem(mdfDataKey);
+                if (mdfCacheData) {
+                    resolve(mdfCacheData);
+                    return;
+                }
+                let cacheData = localStorage.getItem(dataKey);
+                if (cacheData) {
+                    resolve(cacheData);
+                    return;
+                }
             }
             fetch(`https://gitee.com/api/v5/repos/yanhui1993/webdata/contents/${path}`).then(response => response.json())
                 .then(data => {
