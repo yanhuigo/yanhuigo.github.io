@@ -1,7 +1,9 @@
-
-requireJsConfig();
-
-initApp();
+if (!localStorage.getItem("wyd-login-state")) {
+    window.location.href = isProd ? "/login.min.html" : "/login.html";
+} else {
+    requireJsConfig();
+    initApp();
+}
 
 function requireJsConfig() {
     // 本地js定义
@@ -15,7 +17,7 @@ function requireJsConfig() {
     let localCssList = ["util", "wyd2021"];
     let localCssPath = [];
     for (let css of localCssList) {
-        localCssPath.push(isProd ? `css!/css/min/${css}` + ".min.css" : `css!/css/${css}.css`);
+        localCssPath.push(isProd ? `css!/css/${css}` + ".min.css" : `css!/css/${css}.css`);
     }
 
     // 路径配置

@@ -26,6 +26,39 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
             }
         },
         methods: {
+
+            // 同步文件的编辑状态
+            syncMdfState() {
+                this.rEachFileList(this.fileList);
+            },
+
+            rEachFileList(fileList) {
+                let lsRepo = this.repo;
+                for (let fileEntity of this.fileList) {
+                    let { file, children } = fileEntity;
+                    if (file.type === "blob") {
+                        if (localStorage.getItem(`${lsRepo}#@${file.path}`)) {
+                            console.log(`匹配修改文件${file.path}`);
+                            file.mdf = true;
+                        }else{
+                            file.mdf = false;;
+                        }
+                        continue;
+                    }
+                    if (children) {
+                        for (let cfile of children) {
+                            if (localStorage.getItem(`${lsRepo}#@${cfile.path}`)) {
+                                console.log(`匹配修改文件${cfile.path}`);
+                                cfile.mdf = true;
+                            }else{
+                                cfile.mdf = false;;
+                            }
+                        }
+                    }
+                }
+                console.log(this.fileList);
+            },
+
             closeAllModel() {
                 let models = monaco.editor.getModels();
                 if (models) {
@@ -191,6 +224,7 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
                     if (sync) {
                         utils.notify(`已重新加载文件 ${this.selectedFile}`, "success");
                         this.hasMdf = false;
+                        this.syncMdfState();
                     }
                 });
             },
@@ -231,6 +265,7 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
 
                 let source = fileListOrigin.filter(file => file.type === "blob").map(file => ({ title: file.path }));
                 this.fileList = fileList;
+                this.syncMdfState();
                 let app = this;
                 $('#ed-file-search').search({
                     source,
@@ -259,12 +294,14 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
                         if (data !== value) {
                             gitee.updateFileCache(this.selectedFile, value, this.repo);
                             this.hasMdf = true;
+                            this.syncMdfState();
                         } else {
                             utils.message("文件内容未变化！", "info");
                         }
                     });
                 } else {
                     gitee.updateFile(this.selectedFile, value, this.repo).then(() => {
+                        this.syncMdfState();
                         this.hasMdf = false;
                     });
                 }
@@ -322,7 +359,7 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
                     <i class="arrow right icon"></i>
                 </button>
                 
-                <div class="ui vertical menu p-1 m-0 file-tree overflow-auto w-100-xs-only" style="min-width:240px;" v-show="showTree">
+                <div class="ui vertical menu large p-1 m-0 file-tree overflow-auto w-100-xs-only" style="min-width:240px;" v-show="showTree">
                     <div class="d-flex justify-content-start flex-wrap wyd-editor-operations">
                         <div class="ui buttons w-100">
                               <button @click="setRepo('webdata')" class="ui button" :class="repo==='webdata'?'active teal':''"><i class="heart icon"></i>webData</button>
@@ -357,14 +394,15 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
                             <div class="header">{{file.file.path}}</div>
                             <div class="menu" v-for="subFile in file.children">
                                 <a class="item" @click="selectFile(subFile.path)" :class="selectedFile===subFile.path ? 'active teal':''">
-                                    <i class="icon git"></i>
-                                    <span>{{subFile.path.split(file.file.path + "/")[1]}}</span> 
+                                    <i class="icon git" :class="subFile.mdf ? 'red' : selectedFile===subFile.path ? 'square' : ''"></i>
+                                    <span :class="subFile.mdf ? 'ui red':''">{{subFile.path.split(file.file.path + "/")[1]}}</span> 
                                 </a>
                             </div>
                         </template>
                         <div class="menu" v-else>
                             <a class="item" @click="selectFile(file.file.path)" :class="selectedFile===file.file.path ? 'active teal':''">
-                                {{file.file.path}} 
+                                <i class="icon git" :class="file.file.mdf ? 'red': selectedFile===file.file.path ? 'square' : ''"></i>
+                                <span>{{file.file.path}}</span>
                             </a>
                         </div>
                     </div>

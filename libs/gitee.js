@@ -10,6 +10,7 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
     };
 
     let lsRepo = localStorage.getItem(storageKey.lsRepo);
+    if (!lsRepo) localStorage.setItem(storageKey.lsRepo, pubRepo);
 
     let apiConfig = {
         client_id: "f5250ed1c6f0a51423ca06aa4faf5c10d64ce8b411c425256d22fec16a531665",
