@@ -102,11 +102,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                 });
             },
             refreshData() {
-                utils.confirm('确认重新下载书签数据?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
+                if (confirm('确认重新下载书签数据?')) {
                     this.checkedType = "";
                     this.checkedTag = "";
                     bmList = [];
@@ -116,9 +112,7 @@ define(['vue', 'require', 'gitee', 'utils'], function (Vue, require, gitee, util
                     this.bmTagList = [];
                     this.bmList = [];
                     this.loadData(true, this.bmSourceFile);
-                }).catch(() => {
-
-                });
+                }
                 return false;
             },
             loadData(refreshCache, file, call) {

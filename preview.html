@@ -15,25 +15,22 @@
     <script src="/cdn/require.min.js"></script>
     <script>
 
+        let cacheKeyList = [];
         let gitee = {
-
             loadFile(file, call, repo = "webdata") {
-
+                cacheKeyList.push(file);
                 let storageKey = `${repo}#${file}`;
                 let cacheKey = `${repo}#@${file}`;
-
                 let cache = localStorage.getItem(cacheKey);
                 if (cache) {
                     call && call(cache);
                     return;
                 }
-
                 let storage = localStorage.getItem(storageKey);
                 if (storage) {
                     call && call(storage);
                     return;
                 }
-
                 fetch(`https://gitee.com/api/v5/repos/yanhui1993/${repo}/contents/${file}`)
                     .then(res => res.json())
                     .then(data => {
@@ -47,11 +44,9 @@
             }
 
         };
-
         let filename = location.search.split("=")[1];
         document.title = filename;
         let runFile = `pages/${filename}.js`;
-
         gitee.loadFile(runFile, (content) => {
             start(content);
         });
@@ -61,6 +56,24 @@
             script.type = 'text/javascript';
             script.append(data);
             document.body.appendChild(script);
+        }
+
+        function removeCache(repo = "webdata") {
+            for (let cacheKey of cacheKeyList) {
+                localStorage.removeItem(`${repo}#${cacheKey}`);
+                localStorage.removeItem(`${repo}#@${cacheKey}`);
+            }
+        }
+
+        document.onkeydown = function (e) {
+            let { ctrlKey, key } = e;
+            console.log(ctrlKey, key);
+            if (ctrlKey && key === 'd') {
+                // clear cache
+                removeCache();
+                alert("Clear Cache Success!");
+                return false;
+            }
         }
 
     </script>
