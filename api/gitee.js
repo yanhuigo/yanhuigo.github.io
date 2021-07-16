@@ -1,6 +1,29 @@
 const gitee = (function () {
 
+    const lsLoginState = 'wyd-login-state';
+
     async function getPublicFile(path, cache = true) {
+        return getFile("webdata", path, cache,null);
+    }
+
+    async function getMeFile(path, cache = true) {
+        return getFile("webme", path, cache);
+    }
+
+    function refreshToken() {
+        let loginStorageData = localStorage.getItem(lsLoginState);
+        if (loginStorageData) {
+            let loginState = JSON.parse(loginStorageData);
+            let { created_at, expires_in, refresh_token } = loginState;
+            if (Math.floor(Date.now() / 1000) - created_at > expires_in) {
+                axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`).then(data => {
+                    localStorage.setItem(lsLoginState, JSON.stringify(data));
+                });
+            }
+        }
+    }
+
+    function getFile(project = "webdata", path, cache = true, access_token) {
         return new Promise((resolve, reject) => {
             let dataKey = `webdata#${path}`;
             if (cache) {
@@ -17,7 +40,7 @@ const gitee = (function () {
                     return;
                 }
             }
-            fetch(`https://gitee.com/api/v5/repos/yanhui1993/webdata/contents/${path}`).then(response => response.json())
+            fetch(`https://gitee.com/api/v5/repos/yanhui1993/${project}/contents/${path}${access_token ? '?access_token=' + access_token : ''}`).then(response => response.json())
                 .then(data => {
                     let fileContent = decode(data.content);
                     localStorage.setItem(dataKey, fileContent);
@@ -83,7 +106,11 @@ const gitee = (function () {
     }
 
     return {
-        getPublicFile
+        getPublicFile,
+        getMeFile,
+        refreshToken
     }
 
 })();
+
+gitee.refreshToken();
