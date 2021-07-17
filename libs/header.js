@@ -108,7 +108,10 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                 <div class="menu">
                     <template v-for="lv2Link in lv2Menu.children">
                         <div v-if="typeof lv2Link==='string'" class="header">{{lv2Link}}</div>
-                        <div v-else class="item" :class="active===lv2Link[1]?'active':''" @click="route(lv2Link[1])">{{lv2Link[0]}}</div>
+                        <div v-else class="item" :class="active===lv2Link[1]?'active':''" @click="route(lv2Link[1])">
+                            <i :class="lv2Link.length===3?lv2Link[2]:''"></i>
+                            {{lv2Link[0]}}
+                        </div>
                     </template>
                 </div>
             </div>
@@ -120,7 +123,10 @@ define(['jquery', 'semantic', 'utils', 'gitee'], function ($, semantic, utils, g
                 <div class="menu">
                     <template v-for="lv3Link in lv3Menu.children">
                         <div v-if="typeof lv3Link==='string'" class="header">{{lv3Link}}</div>
-                        <div v-else  class="item" @click="goURL(lv3Link[1])">{{lv3Link[0]}}</div>
+                        <div v-else  class="item" @click="goURL(lv3Link[1])">
+                            <i :class="lv3Link.length===3?lv3Link[2]:'icon html5 blue'"></i>
+                            {{lv3Link[0]}}
+                        </div>
                     </template>
                 </div>
             </div>
