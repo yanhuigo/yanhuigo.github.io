@@ -17,7 +17,8 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
                 editorFiles: [],
                 editor: null,
                 models: {},
-                position: {}
+                position: {},
+                theme: "vs"
             }
         },
         watch: {
@@ -40,7 +41,7 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
                         if (localStorage.getItem(`${lsRepo}#@${file.path}`)) {
                             console.log(`匹配修改文件${file.path}`);
                             file.mdf = true;
-                        }else{
+                        } else {
                             file.mdf = false;;
                         }
                         continue;
@@ -50,7 +51,7 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
                             if (localStorage.getItem(`${lsRepo}#@${cfile.path}`)) {
                                 console.log(`匹配修改文件${cfile.path}`);
                                 cfile.mdf = true;
-                            }else{
+                            } else {
                                 cfile.mdf = false;;
                             }
                         }
@@ -231,16 +232,22 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
 
             initMonacoEditor() {
                 require(['vs/editor/editor.main'], () => {
-                    monacoSupport.suggestion();
-                    this.editor = monaco.editor.create(document.getElementById('editor-container'), {
-                        value: '点击左侧列表文件开始编辑...',
-                        language: "markdown",
-                        theme: "vs",
-                        automaticLayout: true
+                    monacoSupport.suggestion().then(() => {
+                        this.editor = monaco.editor.create(document.getElementById('editor-container'), {
+                            value: '点击左侧列表文件开始编辑...',
+                            language: "markdown",
+                            theme: this.theme,
+                            automaticLayout: true
+                        });
+                        window.wyd_editor = this.editor;
+                        this.initEditorActions();
                     });
-                    window.wyd_editor = this.editor;
-                    this.initEditorActions();
                 });
+            },
+
+            changeTheme() {
+                this.theme = this.theme === 'vs' ? 'vs-dark' : 'vs';
+                monaco.editor.setTheme(this.theme);
             },
 
             async initSemantic(sync = false) {
@@ -467,6 +474,11 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
                             <el-tooltip content="关闭所有编辑窗口" placement="top" v-if="editorFiles.length>0">
                                 <button class="ui compact icon button ml-1" @click="closeAllModel">
                                     <i class="close icon"></i>
+                                </button>
+                            </el-tooltip>
+                            <el-tooltip content="切换主题" placement="top">
+                                <button class="ui compact icon button ml-1" @click="changeTheme">
+                                    <i class="exchange icon"></i>
                                 </button>
                             </el-tooltip>
                         </template>

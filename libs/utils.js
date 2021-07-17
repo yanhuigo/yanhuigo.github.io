@@ -65,7 +65,7 @@ define([
         return element.MessageBox[type](msg);
     }
 
-    return {
+    let exportFunc = {
         message,
         notify,
         messageBox,
@@ -78,5 +78,9 @@ define([
         goLogin,
         isApp
     }
+
+    window.utils = exportFunc;
+
+    return exportFunc;
 
 })
