@@ -43,10 +43,10 @@
                                 <a class="nav-link" :href="link[1]">{{link[0]}}</a>
                             </li>
                             <li v-else class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                                <a class="nav-link dropdown-toggle" target="_blank" data-bs-toggle="dropdown" href="#" role="button"
                                     aria-haspopup="true" aria-expanded="false">{{link[0]}}</a>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" :href="subLink[1]"
+                                    <a class="dropdown-item" target="_blank" :href="subLink[1]"
                                         v-for="subLink in link[1]">{{subLink[0]}}</a>
                                 </div>
                             </li>
