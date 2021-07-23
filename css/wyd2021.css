@@ -35,3 +35,7 @@
 .wyd-editor-tabs .el-tabs__header{
     margin: 0!important;
 }
+
+#tab-0 .el-icon-close{
+    visibility: hidden;
+}

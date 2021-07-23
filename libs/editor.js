@@ -365,61 +365,64 @@ define(['vue', 'require', 'gitee', 'utils', 'monacoSupport', 'jquery', 'semantic
                         @click="showTree=!showTree">
                     <i class="arrow right icon"></i>
                 </button>
-                
-                <div class="ui vertical menu large p-1 m-0 file-tree overflow-auto w-100-xs-only" style="min-width:240px;" v-show="showTree">
+                <div class="ui vertical menu large p-1 m-0 w-100-xs-only" style="min-width:240px;" v-show="showTree">
                     <div class="d-flex justify-content-start flex-wrap wyd-editor-operations">
                         <div class="ui buttons w-100">
-                              <button @click="setRepo('webdata')" class="ui button" :class="repo==='webdata'?'active teal':''"><i class="heart icon"></i>webData</button>
-                              <div class="or"></div>
-                              <button @click="setRepo('webme')" class="ui button" :class="repo==='webme'?'active red':''"><i class="user secret icon"></i>webMe</button>
+                                <button @click="setRepo('webdata')" class="ui button" :class="repo==='webdata'?'active teal':''"><i class="heart icon"></i>webData</button>
+                                <div class="or"></div>
+                                <button @click="setRepo('webme')" class="ui button" :class="repo==='webme'?'active red':''"><i class="user secret icon"></i>webMe</button>
                         </div>
-                        <el-tooltip content="新增文件" placement="bottom">
-                            <button class="ui compact icon button small" @click="addFile">
-                                <i class="plus icon"></i>
-                            </button>
-                        </el-tooltip>
-                        <el-tooltip content="同步文件树" placement="bottom">
-                            <button class="ui compact icon button" @click="syncFiles">
-                                <i class="sync alternate icon"></i>
-                            </button>
-                        </el-tooltip>
-                        <el-tooltip content="隐藏文件树" placement="bottom">
-                            <button v-show="showTree" class="ui compact icon button" @click="showTree=!showTree">
-                                <i class="arrow left icon"></i>
-                            </button>
-                        </el-tooltip>
                     </div>
-                    <div class="item ui search my-1" id="ed-file-search">
+                    <div class="item ui search mt-1" id="ed-file-search">
                         <div class="ui icon input search">
                             <input class="prompt" type="text" placeholder="Search Files..."/>
                             <i class="search icon"></i>
                         </div>
                         <div class="results"></div>
                     </div>
-                    <div class="item" v-for="file in fileList">
-                        <template v-if="file.children">
-                            <div class="header">{{file.file.path}}</div>
-                            <div class="menu" v-for="subFile in file.children">
-                                <a class="item" @click="selectFile(subFile.path)" :class="selectedFile===subFile.path ? 'active teal':''">
-                                    <i class="icon git" :class="subFile.mdf ? 'red' : selectedFile===subFile.path ? 'square' : ''"></i>
-                                    <span :class="subFile.mdf ? 'ui red':''">{{subFile.path.split(file.file.path + "/")[1]}}</span> 
+                    <div class="overflow-auto ui divider" style="height: calc(100vh - 210px)">
+                        <div class="item" v-for="file in fileList">
+                            <template v-if="file.children">
+                                <div class="header">{{file.file.path}}</div>
+                                <div class="menu" v-for="subFile in file.children">
+                                    <a class="item" @click="selectFile(subFile.path)" :class="selectedFile===subFile.path ? 'active teal':''">
+                                        <i class="icon git" :class="subFile.mdf ? 'red' : selectedFile===subFile.path ? 'square' : ''"></i>
+                                        <span :class="subFile.mdf ? 'ui red':''">{{subFile.path.split(file.file.path + "/")[1]}}</span> 
+                                    </a>
+                                </div>
+                            </template>
+                            <div class="menu" v-else>
+                                <a class="item" @click="selectFile(file.file.path)" :class="selectedFile===file.file.path ? 'active teal':''">
+                                    <i class="icon git" :class="file.file.mdf ? 'red': selectedFile===file.file.path ? 'square' : ''"></i>
+                                    <span>{{file.file.path}}</span>
                                 </a>
                             </div>
-                        </template>
-                        <div class="menu" v-else>
-                            <a class="item" @click="selectFile(file.file.path)" :class="selectedFile===file.file.path ? 'active teal':''">
-                                <i class="icon git" :class="file.file.mdf ? 'red': selectedFile===file.file.path ? 'square' : ''"></i>
-                                <span>{{file.file.path}}</span>
-                            </a>
                         </div>
                     </div>
+
                 </div>
                 
                 <div class="flex-grow-1 d-md-flex flex-column w-100-xs-only">
                     <div class="wyd-editor-tabs">
                         <el-tabs style="max-width:90%" :value="selectedFile" type="card" closable @tab-click="tabClick" @tab-remove="tabRemove">
                             <el-tab-pane disabled>
-                                <span slot="label"><i class="ui icon edit"></i></span>
+                                <span slot="label" v-show="showTree">
+                                    <el-tooltip content="新增文件" placement="bottom">
+                                        <button class="ui compact icon button small" @click="addFile">
+                                            <i class="plus icon"></i>
+                                        </button>
+                                    </el-tooltip>
+                                    <el-tooltip content="同步文件树" placement="bottom">
+                                        <button class="ui compact icon button" @click="syncFiles">
+                                            <i class="sync alternate icon"></i>
+                                        </button>
+                                    </el-tooltip>
+                                    <el-tooltip content="隐藏文件树" placement="bottom">
+                                        <button v-show="showTree" class="ui compact icon button" @click="showTree=!showTree">
+                                            <i class="arrow left icon"></i>
+                                        </button>
+                                    </el-tooltip>
+                                </span>
                             </el-tab-pane>
                             <el-tab-pane v-for="editorFile in editorFiles" :name="editorFile" :label="editorFile"></el-tab-pane>
                         </el-tabs>
