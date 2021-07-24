@@ -3,7 +3,7 @@ initApp();
 
 function requireJsConfig() {
     // 本地js定义
-    let localLibs = [];
+    let localLibs = ['home','bookmarks'];
     let localPath = {};
     for (let lib of localLibs) {
         localPath[lib] = isProd ? lib + ".min" : lib;
@@ -247,7 +247,7 @@ function vueRouterInit(gitee, VueRouter, element, config) {
         });
     }
 
-    let autoRouteList = gitee.getWydConfig()["autoRouteList"];
+    let autoRouteList = config["autoRouteList"];
     if (autoRouteList) {
         try {
             for (let autoRoute of autoRouteList) {
