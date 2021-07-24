@@ -28,7 +28,7 @@ function requireJsConfig() {
             "vue", "vueRouter", "axios", "ELEMENT",
             "css!/cdn/element-ui/lib/theme-chalk/index.css",
             "css!/cdn/element-ui/lib/theme-chalk/display.css",
-            "css!/cdn/bootswatch/bootstrap.Morph.min.css",
+            "css!/libs/public/public.css",
             ...localCssPath
         ],
         // 定义模块 名称key-路径value
@@ -92,75 +92,146 @@ function startVueApp() {
         VueRouter,
         element
     ) {
-        window.wyd2021 = new Vue({
-            el: "#root",
-            router: vueRouterInit(gitee, VueRouter, element),
-            components: {
-            },
-            mounted() {
-                gitee.refreshToken();
-            },
-            template: `
-            <div class="d-flex flex-column">
-                <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                    <div class="container-fluid">
-                    <a class="navbar-brand" href="#">Navbar</a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                
-                    <div class="collapse navbar-collapse" id="navbarColor03">
-                        <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">Home
-                            <span class="visually-hidden">(current)</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Features</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Pricing</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">About</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                            <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Separated link</a>
-                            </div>
-                        </li>
-                        </ul>
-                        <form class="d-flex">
-                        <input class="form-control me-sm-2" type="text" placeholder="Search">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-                        </form>
-                    </div>
-                    </div>
-                </nav>
-                <div class="flex-grow-1 wyd-app-router">
-                    <keep-alive>
-                        <router-view></router-view>
-                    </keep-alive>
-                </div>
-                <div>
-                    <el-backtop target="body" :visibility-height="100"></el-backtop>
-                </div>
-            </div>
-        `
+
+        gitee.getFileContent('config/public.json', false, true).then(config => {
+            console.log('config', config);
+            initVue(config);
         });
+
+        function initVue(config) {
+            window.wyd2021 = new Vue({
+                el: "#root",
+                router: vueRouterInit(gitee, VueRouter, element, config),
+                data() {
+                    return {
+                        activePath: "",
+                        currentTheme: "",
+                        config: {
+                            base: {},
+                            routes: [],
+                            themes: []
+                        }
+                    }
+                },
+                methods: {
+                    route(name) {
+                        this.$router.push(name);
+                    },
+                    loadTheme(theme) {
+                        let link = document.createElement('link');
+                        link.rel = 'stylesheet';
+                        link.href = `/cdn/bootswatch/bootstrap.${theme}.min.css`;
+                        document.body.appendChild(link);
+                        this.currentTheme = theme;
+                    },
+                    setTheme(theme) {
+                        localStorage.setItem("index-theme", theme);
+                        window.location.reload();
+                    },
+                    clearCache() {
+                        let mdfFiles = [];
+                        for (let key in localStorage) {
+                            if (localStorage.hasOwnProperty(key)) {
+                                if (key && key.indexOf("@") !== -1) {
+                                    mdfFiles.push(key);
+                                }
+                            }
+                        }
+                        if (confirm("确认清空所有缓存？")) {
+                            if (mdfFiles.length > 0) {
+                                utils.confirm(`存在已修改未上传的文件，是否继续清空缓存？【${mdfFiles.join("；")}】`).then(() => {
+                                    gitee.clearAllCache();
+                                    location.reload();
+                                }).catch(() => {
+                                });
+                            } else {
+                                gitee.clearAllCache();
+                                location.reload();
+                            }
+
+                        }
+                    }
+                },
+                watch: {
+                    $route(newVal, oldVal) {
+                        this.activePath = newVal.path;
+                    }
+                },
+                mounted() {
+                    this.config = config;
+                    document.title = config.base.title;
+                    let theme = localStorage.getItem("index-theme");
+                    this.loadTheme(!!theme ? theme : config.base.defaultTheme);
+                },
+                template: `
+                <div>
+                    <nav class="navbar navbar-expand-lg navbar-dark bg-dark nav-pills">
+                        <div class="container-fluid">
+                        <a class="navbar-brand" href="#">{{config.base.title}}</a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    
+                        <div class="collapse navbar-collapse" id="navbarColor03">
+                            <ul class="navbar-nav me-auto">
+         
+    
+                                <template v-for="route in config.routes">
+                                    <li v-if="typeof route[1] === 'string'" class="nav-item">
+                                        <a class="nav-link" :class="activePath===route[1].substr(1)?'active':''" :href="route[1]">
+                                            <i v-if="route[2]" :class="'fa fa-'+route[2]"></i>
+                                            <span>{{route[0]}}</span>
+                                        </a>
+                                    </li>
+                                    <li v-else class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                            {{route[0]}}
+                                        </a>
+                                        <div class="dropdown-menu">
+                                        <a v-for="subRoute in route[1]" class="dropdown-item" :class="activePath===subRoute[1].substr(1)?'active':''" :href="subRoute[1]" :target="subRoute[1].startsWith('#')?'_self':'_blank'">
+                                            <i v-if="subRoute[2]" :class="'fa fa-'+subRoute[2]"></i>
+                                            <span>{{subRoute[0]}}</span>
+                                        </a>
+                                        </div>
+                                    </li>
+                                </template>
+    
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                        Themes
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        <a v-for="oneTheme in config.themes" :class="currentTheme==oneTheme?'active':''" class="dropdown-item yh-pointer" @click="setTheme(oneTheme)">{{oneTheme}}</a>
+                                    </div>
+                                </li>
+                                
+                            </ul>
+                            <div class="d-flex">
+                                <i class="fa fa-refresh fa-2x yh-pointer" @click="clearCache"></i>
+                            </div>
+                        </div>
+                        </div>
+                    </nav>
+                    <div class="flex-grow-1">
+                        <keep-alive>
+                            <router-view></router-view>
+                        </keep-alive>
+                    </div>
+                    <div>
+                        <el-backtop target="body" :visibility-height="100"></el-backtop>
+                    </div>
+                </div>
+            `
+            });
+        }
+
     })
 }
 
-function vueRouterInit(gitee, VueRouter, element) {
-    const routeNames = [];
+function vueRouterInit(gitee, VueRouter, element, config) {
+    const routeNames = ['home', 'bookmarks'];
     const routes = [
-        // { path: '/', redirect: '/editor' }
+        { path: '/', redirect: config.base.defaultRoute }
     ]
     for (let routeName of routeNames) {
         routes.push({
