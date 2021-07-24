@@ -42,10 +42,10 @@ define(['utils', 'gitee'], function (utils, gitee) {
         template: `
         <div class="container mt-4">
             <div class="row justify-content-center">
-                <div class="col-md-4 col-lg-3 p-2" v-for="link in links">
-                    <div class="alert alert-dismissible alert-light overflow-hidden" @click="open(link)" style="cursor:pointer">
-                        <h4 class="text-nowrap" :title="link.title">{{link.title}}</h4>
-                        <p class="d-inline text-nowrap" :title="link.note">{{link.note}}</p>
+                <div class="card m-1 yh-pointer col-md-4 col-lg-3" v-for="link in links" @click="open(link)">
+                    <div class="card-body">
+                        <h4 class="card-title">{{link.title}}</h4>
+                        <p class="card-text d-inline text-nowrap">{{link.note}}</p>
                     </div>
                 </div>
             </div>

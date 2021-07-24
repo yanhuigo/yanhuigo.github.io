@@ -107,9 +107,16 @@ function startVueApp() {
                         activePath: "",
                         currentTheme: "",
                         config: {
+                            // 网站基础信息
                             base: {},
+                            // 路由
                             routes: [],
-                            themes: []
+                            // 主题集合
+                            themes: [],
+                            // 主题配置
+                            theme:{},
+                            // 基于文件的动态路由
+                            autoRouteList:[]
                         }
                     }
                 },
@@ -161,55 +168,57 @@ function startVueApp() {
                     this.config = config;
                     document.title = config.base.title;
                     let theme = localStorage.getItem("index-theme");
-                    this.loadTheme(!!theme ? theme : config.base.defaultTheme);
+                    this.loadTheme(!!theme ? theme : config.theme.default);
                 },
                 template: `
                 <div>
-                    <nav class="navbar navbar-expand-lg navbar-dark bg-dark nav-pills">
+                    <nav class="navbar navbar-expand-lg" :class="'navbar-'+config.theme.navbar+' bg-'+config.theme.bg+(config.theme.navpills?' nav-pills':'')">
                         <div class="container-fluid">
-                        <a class="navbar-brand" href="#">{{config.base.title}}</a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                    
-                        <div class="collapse navbar-collapse" id="navbarColor03">
-                            <ul class="navbar-nav me-auto">
-         
-    
-                                <template v-for="route in config.routes">
-                                    <li v-if="typeof route[1] === 'string'" class="nav-item">
-                                        <a class="nav-link" :class="activePath===route[1].substr(1)?'active':''" :href="route[1]">
-                                            <i v-if="route[2]" :class="'fa fa-'+route[2]"></i>
-                                            <span>{{route[0]}}</span>
-                                        </a>
-                                    </li>
-                                    <li v-else class="nav-item dropdown">
+                            <a class="navbar-brand" href="#">{{config.base.title}}</a>
+                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                        
+                            <div class="collapse navbar-collapse" id="navbarColor03">
+                                <ul class="navbar-nav me-auto">
+            
+        
+                                    <template v-for="route in config.routes">
+                                        <li v-if="typeof route[1] === 'string'" class="nav-item">
+                                            <a class="nav-link" :class="activePath===route[1].substr(1)?'active':''" :href="route[1]">
+                                                <i v-if="route[2]" :class="'fa fa-'+route[2]"></i>
+                                                <span>{{route[0]}}</span>
+                                            </a>
+                                        </li>
+                                        <li v-else class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                                {{route[0]}}
+                                            </a>
+                                            <div class="dropdown-menu">
+                                            <a v-for="subRoute in route[1]" class="dropdown-item" :class="activePath===subRoute[1].substr(1)?'active':''" :href="subRoute[1]" :target="subRoute[1].startsWith('#')?'_self':'_blank'">
+                                                <i v-if="subRoute[2]" :class="'fa fa-'+subRoute[2]"></i>
+                                                <span>{{subRoute[0]}}</span>
+                                            </a>
+                                            </div>
+                                        </li>
+                                    </template>
+        
+                                    <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                            {{route[0]}}
+                                            Themes
                                         </a>
                                         <div class="dropdown-menu">
-                                        <a v-for="subRoute in route[1]" class="dropdown-item" :class="activePath===subRoute[1].substr(1)?'active':''" :href="subRoute[1]" :target="subRoute[1].startsWith('#')?'_self':'_blank'">
-                                            <i v-if="subRoute[2]" :class="'fa fa-'+subRoute[2]"></i>
-                                            <span>{{subRoute[0]}}</span>
-                                        </a>
+                                            <a v-for="oneTheme in config.themes" :class="currentTheme==oneTheme[0]?'active':''" class="dropdown-item yh-pointer" @click="setTheme(oneTheme[0])">
+                                                {{oneTheme[0]}} <i v-if="oneTheme[1]" :class="'fa fa-'+oneTheme[1]"></i>
+                                            </a>
                                         </div>
                                     </li>
-                                </template>
-    
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                        Themes
-                                    </a>
-                                    <div class="dropdown-menu">
-                                        <a v-for="oneTheme in config.themes" :class="currentTheme==oneTheme?'active':''" class="dropdown-item yh-pointer" @click="setTheme(oneTheme)">{{oneTheme}}</a>
-                                    </div>
-                                </li>
-                                
-                            </ul>
-                            <div class="d-flex">
-                                <i class="fa fa-refresh fa-2x yh-pointer" @click="clearCache"></i>
+                                    
+                                </ul>
+                                <div class="d-flex">
+                                    <i class="text-primary fa fa-refresh fa-2x yh-pointer" @click="clearCache"></i>
+                                </div>
                             </div>
-                        </div>
                         </div>
                     </nav>
                     <div class="flex-grow-1">
