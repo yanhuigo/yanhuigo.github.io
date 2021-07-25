@@ -192,7 +192,8 @@ function startVueApp() {
                                         </li>
                                         <li v-else class="nav-item dropdown">
                                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                                                {{route[0]}}
+                                                <i v-if="route[2]" :class="'fa fa-'+route[2]"></i>
+                                                <span>{{route[0]}}</span>
                                             </a>
                                             <div class="dropdown-menu">
                                             <a v-for="subRoute in route[1]" class="dropdown-item" :class="activePath===subRoute[1].substr(1)?'active':''" :href="subRoute[1]" :target="subRoute[1].startsWith('#')?'_self':'_blank'">
@@ -205,6 +206,7 @@ function startVueApp() {
         
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-sun-o"></i>
                                             Themes
                                         </a>
                                         <div class="dropdown-menu">
