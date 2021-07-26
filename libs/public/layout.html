@@ -21,7 +21,7 @@
                 <i class="fa fa-download"></i>
             </button>
         </div>
-        <div class="">
+        <div>
             <span class="fw-bold">分类：</span>
             <template v-for="type in bmTypeList">
                 <span class="badge m-1 yh-pointer" :class="checkedType==type ? 'bg-primary' :'bg-light' "
@@ -30,7 +30,7 @@
                 </span>
             </template>
         </div>
-        <div class="" v-if="bmTagList.length>0"><span class="fw-bold">标签：</span>
+        <div v-if="bmTagList.length>0"><span class="fw-bold">标签：</span>
             <span class="badge m-1 yh-pointer" :class="checkedTag==tag.name ? 'bg-primary' :'bg-light' "
                 v-for="tag in bmTagList" @click="tagClick(tag)">
                 {{tag.name}}
@@ -41,7 +41,7 @@
             <a href="#" class="list-group-item list-group-item-action d-inline text-nowrap overflow-hidden"
                 target="_blank" :href="bm.c" v-for="bm in bmList">
                 <span>{{bm.b}}</span>
-                <span class="badge bg-light">{{bm.c}}</span>
+                <span class="badge bg-light mx-1">{{bm.c}}</span>
                 <span class="badge bg-info rounded-pill">{{bm.tag}}</span>
             </a>
         </div>
