@@ -1,9 +1,12 @@
-requireJsConfig();
-initApp();
+fetch(`/libs/public/layout${isProd ? '.min' : ''}.html`).then(res => res.text()).then(data => {
+    document.querySelector('#layout').innerHTML = data;
+    requireJsConfig();
+    initApp();
+})
 
 function requireJsConfig() {
     // 本地js定义
-    let localLibs = ['home','bookmarks'];
+    let localLibs = ['home', 'bookmarks'];
     let localPath = {};
     for (let lib of localLibs) {
         localPath[lib] = isProd ? lib + ".min" : lib;
@@ -114,9 +117,9 @@ function startVueApp() {
                             // 主题集合
                             themes: [],
                             // 主题配置
-                            theme:{},
+                            theme: {},
                             // 基于文件的动态路由
-                            autoRouteList:[]
+                            autoRouteList: []
                         }
                     }
                 },

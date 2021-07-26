@@ -1,19 +1,19 @@
-define(['utils', 'gitee'], function (utils, gitee) {
-
+define(['gitee', '/cdn/markdown-it.min.js'], function (gitee, MarkdownIt) {
+    let md = new MarkdownIt({
+        html: true
+    });
     return {
         data() {
             return {
+                home: "",
             }
         },
-        methods: {
-        },
         mounted() {
+            gitee.getFileContent("md/public.home.md").then(data => {
+                this.home = md.render(data);
+            })
         },
-        template: `
-        <div class="container mt-4">
-            home
-        </div>
-        `,
+        template: document.querySelector("#layout #home")
     }
 
 });
