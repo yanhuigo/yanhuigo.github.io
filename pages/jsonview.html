@@ -29,31 +29,24 @@
     <script src="../cdn/react/react-dom.production.min.js"></script>
     <script src="../cdn/react/babel.min.js"></script>
     <script src="../cdn/react/react-json-view.js"></script>
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
     <script type="text/babel">
 
         let storage_jsontxt_key = "pages-jsonview-jsontxt";
-        let dbRequest = window.indexedDB.open("yanhui");
-        let db;
-        dbRequest.onerror = function (event) {
-            console.log('数据库打开报错');
-        };
-        dbRequest.onsuccess = function (event) {
-            db = dbRequest.result;
-            console.log('数据库打开成功');
-            ReactDOM.render(
-                <AppRoot />,
-                document.getElementById('root')
-            );
-        };
+        let dbName = 'yanhui';
+        var db = new Dexie(dbName);
+        db.version(1).stores({
+            jsonview: "++id,title,data"
+        });
 
-        dbRequest.onupgradeneeded = function (event) {
-            db = event.target.result;
-            // 新建一张jsonview的表,并自动生成主键
-            db.createObjectStore('jsonview', { autoIncrement: true });
-            console.log("新建表成功!");
-        }
+        ReactDOM.render(
+            <AppRoot />,
+            document.getElementById('root')
+        );
 
+        let pageSize = 10;
         function AppRoot() {
+
             let storageTxt = localStorage.getItem(storage_jsontxt_key);
             if (!storageTxt) storageTxt = "{}";
             let [jsonTxt, setJsonTxt] = React.useState(storageTxt);
@@ -61,25 +54,25 @@
             let [jsonList, setJsonList] = React.useState([]);
             let [selectedHis, setSelectedHis] = React.useState('');
             let [fileName, setFileName] = React.useState('');
+            let [count, setCount] = React.useState(0);
+            let [currentPage, setCurrentPage] = React.useState(1);
             let updatedSrc = {};
 
             React.useEffect(() => {
                 initJsonTree();
-                initHis();
+                initHis(currentPage);
             }, [])
 
-            function initHis() {
-                var objectStore = db.transaction('jsonview').objectStore('jsonview');
-                let dbJsonList = [];
-                objectStore.openCursor().onsuccess = function (event) {
-                    var cursor = event.target.result;
-                    if (cursor) {
-                        dbJsonList.unshift(cursor.value);
-                        cursor.continue();
-                    } else {
-                        setJsonList(dbJsonList);
-                    }
-                };
+            function initHis(page) {
+                db.transaction('rw', db.jsonview, async () => {
+                    let dataCount = await db.jsonview.count();
+                    setCount(dataCount);
+                    const dbJsonList = await db.jsonview.offset((page - 1) * pageSize).limit(pageSize).reverse().toArray();
+                    setJsonList(dbJsonList);
+                    setCurrentPage(page);
+                }).catch(e => {
+                    alert(e.stack || e);
+                });
             }
 
             function initJsonTree() {
@@ -103,23 +96,40 @@
                 setJsonTxt(JSON.stringify(updatedSrc, null, 4));
             }
 
-            function saveJson() {
-                var request = db.transaction(['jsonview'], 'readwrite')
-                    .objectStore('jsonview')
-                    .add({ data, title: fileName === '' ? new Date().toLocaleString() : fileName });
-                request.onsuccess = function (event) {
-                    console.log('数据写入成功');
-                    initHis();
-                    setFileName('');
-                };
-                request.onerror = function (event) {
-                    console.log('数据写入失败');
-                }
+            async function saveJson() {
+                await db.jsonview.add({ data, title: fileName === '' ? new Date().toLocaleString() : fileName });
+                setFileName('');
+                initHis(currentPage);
             }
 
             function selectHis(json) {
                 setSelectedHis(json.title);
                 jsonChange(JSON.stringify(json.data, null, 4));
+            }
+
+            function lastPage() {
+                if (currentPage === 1) {
+                    return;
+                }
+                initHis(currentPage - 1);
+            }
+
+            function nextPage() {
+                if (currentPage * pageSize > count) {
+                    return;
+                }
+                initHis(currentPage + 1);
+            }
+
+            function clearHis() {
+                if (count === 0) return;
+                if (!confirm('确认删除所有历史记录?')) return;
+                db.transaction('rw', db.jsonview, async () => {
+                    await db.jsonview.limit(1000).reverse().delete();
+                    initHis();
+                }).catch(e => {
+                    alert(e.stack || e);
+                });
             }
 
             return (
@@ -143,21 +153,37 @@
                                     onDelete={modifyEvent}
                                     displayDataTypes={false} />
                             </div>
-                            <div class="col-md-2 bg-light p-1">
+                            <div class="col-md-2 bg-light p-1 jv-json-view">
                                 <div>
                                     <button type="button" class="btn btn-primary mb-2" onClick={saveJson}>Save Json To IndexedDB</button>
-                                    <input value={fileName} onChange={(e) => { setFileName(e.target.value) }} class="form-control" type="text" placeholder="请输入保存文件名称" />
+                                    <input value={fileName} onChange={(e) => { setFileName(e.target.value) }} class="form-control" type="text" placeholder="请输入保存的JSON名称" />
                                 </div>
-                                <h3 class="my-3">Json History</h3>
-                                <div class="list-group mt-2">
-                                    {
-                                        jsonList.map(json => {
-                                            return (
-                                                <a href="#" onClick={() => selectHis(json)} class={`list-group-item list-group-item-action ${selectedHis === json.title ? 'active' : ''}`}>{json.title}</a>
-                                            )
-                                        })
-                                    }
-                                </div>
+                                {
+                                    count > 0 &&
+                                    <div>
+                                        <h3 class="my-3">Json History</h3>
+                                        <div class="m-1 p-1 d-flex justify-content-around">
+                                            <button type="button" class="btn btn-primary mb-2" onClick={lastPage}>Last</button>
+                                            <button type="button" class="btn btn-primary mb-2" onClick={nextPage}>Next</button>
+                                        </div>
+                                        <div class="list-group mt-2">
+                                            {
+                                                jsonList.map(json => {
+                                                    return (
+                                                        <a href="#" onClick={() => selectHis(json)} class={`list-group-item list-group-item-action ${selectedHis === json.title ? 'active' : ''}`}>{json.title}</a>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                        <div class="m-1">
+                                            <small>当前历史数据一共 <b class="text-danger">{count}</b> 条,第 <b class="text-danger">{currentPage}</b> 页</small>
+                                        </div>
+                                        <div class="m-1 p-1 d-flex justify-content-around">
+                                            <button type="button" class="btn btn-primary mb-2" onClick={clearHis}>ClearHis</button>
+                                        </div>
+                                    </div>
+                                }
+
                             </div>
                         </div>
                     </div>
