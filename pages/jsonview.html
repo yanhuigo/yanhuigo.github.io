@@ -29,7 +29,7 @@
     <script src="../cdn/react/react-dom.production.min.js"></script>
     <script src="../cdn/react/babel.min.js"></script>
     <script src="../cdn/react/react-json-view.js"></script>
-    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+    <script src="../cdn/dexie.min.js"></script>
     <script type="text/babel">
 
         let storage_jsontxt_key = "pages-jsonview-jsontxt";
@@ -162,10 +162,14 @@
                                     count > 0 &&
                                     <div>
                                         <h3 class="my-3">Json History</h3>
-                                        <div class="m-1 p-1 d-flex justify-content-around">
-                                            <button type="button" class="btn btn-primary mb-2" onClick={lastPage}>Last</button>
-                                            <button type="button" class="btn btn-primary mb-2" onClick={nextPage}>Next</button>
-                                        </div>
+                                        {
+                                            count > pageSize &&
+                                            <div class="m-1 p-1 d-flex justify-content-around">
+                                                <button type="button" class="btn btn-primary mb-2" onClick={lastPage}>Last</button>
+                                                <button type="button" class="btn btn-primary mb-2" onClick={nextPage}>Next</button>
+                                            </div>
+                                        }
+
                                         <div class="list-group mt-2">
                                             {
                                                 jsonList.map(json => {
