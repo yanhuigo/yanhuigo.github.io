@@ -78,9 +78,12 @@ function initApp() {
         axiosInit(axios, utils);
         Vue.use(element);
         Vue.use(VueRouter);
-        gitee.initState().then(data => {
-            vueMixin();
-            startVueApp();
+        gitee.refreshToken(() => {
+            console.log('Token 刷新完成！')
+            gitee.initState().then(data => {
+                vueMixin();
+                startVueApp();
+            });
         });
     })
 }
@@ -106,7 +109,7 @@ function startVueApp() {
                 "app-header": Header,
             },
             mounted() {
-                gitee.refreshToken();
+
             },
             template: `
             <div class="d-flex flex-column">

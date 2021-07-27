@@ -76,10 +76,8 @@ function initApp() {
         axiosInit(axios, utils);
         Vue.use(element);
         Vue.use(VueRouter);
-        gitee.initState().then(data => {
-            vueMixin();
-            startVueApp();
-        });
+        vueMixin();
+        startVueApp();
     })
 }
 

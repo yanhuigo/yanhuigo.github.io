@@ -45,25 +45,6 @@ define(['gitee'], function (gitee) {
             }
         },
         methods: {
-            initSearch() {
-                $('.ui.search').search({
-                    source: [
-                        { title: 'test', actionUrl: "https://zijieke.com/semantic-ui/modules/search.php#/settings" },
-                    ],
-                    minCharacters: 0,
-                    selectFirstResult: true,
-                    onSelect(result, response) {
-                        console.log(result);
-                    }
-                });
-            },
-            logout() {
-                let result = confirm("确认登出？");
-                if (result) {
-                    localStorage.clear();
-                    window.location.href = "/login.html"
-                }
-            },
             search() {
                 if (this.searchTxt === "") {
                     this.bmList = bmList.filter(n => n.type === this.checkedType);
@@ -111,14 +92,14 @@ define(['gitee'], function (gitee) {
                     this.bmTypeList = [];
                     this.bmTagList = [];
                     this.bmList = [];
-                    this.loadData(true, this.bmSourceFile);
+                    this.loadData(true);
                 }
                 return false;
             },
-            loadData(refreshCache, file, call) {
-                gitee.getFileContent(file.path, refreshCache, true, file.repo).then(data => {
+            loadData(refreshCache = false, call) {
+                gitee.getFileContent("data/bm.chrome.home.json", refreshCache, true).then(data => {
                     this.bmDataHandle(data);
-                    call();
+                    call && call();
                 });
             },
             bmDataHandle(bmRoot) {
@@ -138,29 +119,13 @@ define(['gitee'], function (gitee) {
                 this.bmTagList = bmTagList;
                 this.bmList = bmList;
                 this.loading = false;
-            },
-            changeSource(file) {
-                if (file.path === this.bmSourceFilePath) {
-                    return;
-                }
-                bmTypeList = [];
-                bmTagList = [];
-                bmList = [];
-                this.loadData(false, file, () => {
-                    this.bmSourceFile = file;
-                    this.bmSourceFilePath = file.path;
-                });
             }
         },
         mounted() {
             bmTypeList = [];
             bmTagList = [];
             bmList = [];
-            let config = gitee.getWydConfig();
-            if (config && config.bookmarksChrome) {
-                this.bmSourceFiles = config.bookmarksChrome.bmSourceFiles;
-                this.changeSource(this.bmSourceFiles[0]);
-            }
+            this.loadData();
         },
         template: document.querySelector("#layout #bookmarks"),
     }

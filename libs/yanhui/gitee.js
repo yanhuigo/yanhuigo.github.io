@@ -76,7 +76,7 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
                 return cache;
             }
         }
-        let data = await axios.get(`${apiConfig.reposUrlPrefix}/${repo}/contents/${filePath}?${access_token ? 'access_token=' + access_token : ''}`);
+        let data = await axios.get(`${apiConfig.reposUrlPrefix}/${repo}/contents/${filePath}${repo !== pubRepo && access_token ? '?access_token=' + access_token : ''}`);
         if (!data.content) {
             utils.message(`获取文件内容失败! [${filePath}]`, "error");
             return null;
@@ -340,9 +340,6 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
             if (Math.floor(Date.now() / 1000) - created_at > expires_in) {
                 axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`).then(data => {
                     localStorage.setItem(storageKey.lsLoginState, JSON.stringify(data));
-                    initState().then(() => {
-                        call && call(data);
-                    });
                 });
             } else {
                 call && call(loginState);
