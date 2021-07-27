@@ -44,6 +44,7 @@ function requireJsConfig() {
             "utils": "/libs/yanhui/utils.min",
             "base64": "/libs/yanhui/base64.min",
             "sysLog": "/libs/yanhui/sysLog.min",
+            "vs": '/cdn/monaco-editor/min/vs',
             ...localPath
         },
         // 加载非AMD规范的JS文件
