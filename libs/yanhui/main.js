@@ -78,10 +78,10 @@ function initApp() {
         axiosInit(axios, utils);
         Vue.use(element);
         Vue.use(VueRouter);
+        vueMixin();
         gitee.refreshToken(() => {
             console.log('Token 刷新完成！')
             gitee.initState().then(data => {
-                vueMixin();
                 startVueApp();
             });
         });

@@ -6,9 +6,7 @@ define([
     let vueComponents = {};
 
     function goLogin() {
-        if ("#/login" !== window.location.hash) {
-            window.location.href = "#/login";
-        }
+        message("用户未登陆!", "warning");
     }
 
     let isApp = !!window.ReactNativeWebView;

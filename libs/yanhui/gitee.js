@@ -279,6 +279,7 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
         let loginStorageData = localStorage.getItem(storageKey.lsLoginState);
         if (!loginStorageData) {
             // goLogin();
+            console.warn("未登陆!");
             return;
         }
         state.loginState = JSON.parse(loginStorageData);
@@ -339,11 +340,15 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
             let { created_at, expires_in, refresh_token } = loginState;
             if (Math.floor(Date.now() / 1000) - created_at > expires_in) {
                 axios.post(`https://gitee.com/oauth/token?grant_type=refresh_token&refresh_token=${refresh_token}`).then(data => {
-                    localStorage.setItem(storageKey.lsLoginState, JSON.stringify(data));
+                    loginState = JSON.stringify(data);
+                    localStorage.setItem(storageKey.lsLoginState, loginState);
+                    call && call(loginState);
                 });
             } else {
                 call && call(loginState);
             }
+        } else {
+            call && call(loginState);
         }
     }
 
@@ -361,7 +366,8 @@ define(['axios', 'base64', 'utils', 'sysLog'], function (axios, base64, utils, s
         apiConfig,
         getWydConfig,
         updateFileCache,
-        refreshToken
+        refreshToken,
+        loginStateInit
     }
 
 });
